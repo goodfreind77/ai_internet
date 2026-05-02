@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "인터넷 사은품"
+version = "1.0.0"
+id = "artifacts/internet-gift"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24311
+
+[services.development]
+run = "pnpm --filter @workspace/internet-gift run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/internet-gift", "run", "build" ]
+publicDir = "artifacts/internet-gift/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24311"
+BASE_PATH = "/"
