@@ -148,23 +148,30 @@ const PROVIDERS: Record<string, Provider> = {
   hellovision: {
     key: 'hellovision',
     name: 'LG헬로비전',
-    color: '#FF6600',
+    color: '#E5005A',
     plans: [
       {
-        name: '헬로 기가인터넷 + 케이블TV',
-        internet: '500MB',
-        monthlyFee: 38500,
+        name: '광랜라이트 + TV 이코노미',
+        internet: '100MB',
+        monthlyFee: 29530,
         gift: 350000,
-        features: ['500MB 기가 인터넷', '케이블 TV 80여개 채널', 'WiFi 공유기 제공', '설치비 무료'],
-        badge: '인기',
+        features: ['100MB 광랜 인터넷', 'TV 이코노미 (108채널)', 'UHD 셋탑 포함', '설치비 무료'],
+        badge: 'HOT',
       },
       {
-        name: '헬로 기가프리미엄 + VOD무제한',
-        internet: '1GB',
-        monthlyFee: 49500,
-        gift: 430000,
-        features: ['1GB 기가 인터넷', 'VOD 무제한 이용', 'WiFi 6 공유기 제공', '설치비 무료'],
-        badge: 'HOT',
+        name: '기가라이트 + TV 뉴베이직',
+        internet: '500MB',
+        monthlyFee: 39490,
+        gift: 440000,
+        features: ['500MB 기가 인터넷', 'TV 뉴베이직 (247채널)', 'UHD 셋탑 포함', '설치비 무료'],
+        badge: '판매 1위',
+      },
+      {
+        name: '광랜 160M + TV 뉴베이직',
+        internet: '160MB',
+        monthlyFee: 36460,
+        gift: 390000,
+        features: ['160MB 광랜 인터넷', 'TV 뉴베이직 (247채널)', 'UHD 셋탑 포함', '설치비 무료'],
       },
     ],
   },
@@ -999,6 +1006,60 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
                   ].map((item, idx) => (
                     <li key={idx} className="flex items-start gap-2 text-xs text-gray-600">
                       <span className="text-[#16A34A] mt-0.5 shrink-0">·</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="bg-orange-50 border border-orange-200 rounded-2xl p-6">
+                <h3 className="text-sm font-black text-orange-800 mb-3">사은품 반환 조건 사항</h3>
+                <ul className="space-y-2">
+                  {[
+                    '동일 명의나 동일 청구 계정 등 동일한 정보로 사용 중이던 다른 지역 같은 통신사 상품을 6개월 이내 해지하실 경우',
+                    '동일 명의, 동일 장소로 사용 중이던 같은 통신사 상품을 3개월 안에 해지했을 경우',
+                    '인터넷 설치 후 1년 내에 개인에서 사업자명으로 변경하는 경우',
+                    '인터넷 사용기간 중 이용정지를 90일 초과할 경우',
+                    '인터넷 설치 후 1년 이내 해지 또는 요금 미납, 직권해지, 사용중지되는 경우',
+                    '개통 후 1년 이내 다른 상품으로 변경할 경우',
+                    '자동이체를 가입 후 1년 이내 지로청구로 변경하는 경우',
+                  ].map((item, idx) => (
+                    <li key={idx} className="flex items-start gap-2 text-xs text-orange-700">
+                      <span className="text-orange-500 mt-0.5 shrink-0">·</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+          )}
+
+          {/* LG헬로비전 안내 */}
+          {provider.key === 'hellovision' && (
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="space-y-6"
+            >
+              <div className="flex items-center gap-3">
+                <span className="w-1 h-6 rounded-full bg-[#E5005A] inline-block" />
+                <h2 className="text-xl font-black text-gray-900">안내</h2>
+              </div>
+
+              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6">
+                <h3 className="text-sm font-black text-gray-800 mb-3">LG헬로비전 인터넷 가입 시 유의사항</h3>
+                <ul className="space-y-2">
+                  {[
+                    '동일 장소 3개월 이내 해지접수 건이 있을 경우 사은품 전액 환수됩니다.',
+                    '1년 이내 해지(위임해지, 직권 해지 포함) 및 정지 시 현금 사은품은 전액 영업점으로 반납됩니다.',
+                    '동일 명의 / 동일 통신사를 이용 중인 상품은 신규 가입 후 4개월(120일) 이내 명의변경, 일시정지, 해지할 경우 사은품은 전액 반환됩니다.',
+                    '휴대폰 결합은 본사에서만 결합이 가능하오니 인터넷 설치 후 30일 이내에 본사 고객센터로 결합신청하시면 됩니다.',
+                    '명의변경은 개통 후 6개월(180일) 내로 명의변경이 불가하며, 명의변경 시 사은품은 전액 반환됩니다.',
+                    '기존에 사용하시던 인터넷은 설치 받으신 후 직접 해지해 주셔야 합니다.',
+                  ].map((item, idx) => (
+                    <li key={idx} className="flex items-start gap-2 text-xs text-gray-600">
+                      <span className="text-[#E5005A] mt-0.5 shrink-0">·</span>
                       <span>{item}</span>
                     </li>
                   ))}
