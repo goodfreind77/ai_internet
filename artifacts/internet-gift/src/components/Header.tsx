@@ -22,7 +22,9 @@ export function Header() {
         <Link href="/event">
           <Button className="bg-[#fab1a0] hover:bg-[#f19066] text-white font-bold rounded-full px-5 shadow-none border-none">이벤트</Button>
         </Link>
-        <Button className="bg-[#f39c12] hover:bg-[#e67e22] text-white font-bold rounded-full px-5 border-none shadow-none">꿀TIP</Button>
+        <Link href="/tip">
+          <Button className="bg-[#f39c12] hover:bg-[#e67e22] text-white font-bold rounded-full px-5 border-none shadow-none">꿀TIP</Button>
+        </Link>
         <Button className="bg-[#55efc4] hover:bg-[#00b894] text-white font-bold rounded-full px-5 border-none shadow-none">후기</Button>
         
         <div className="ml-4 pl-4 border-l border-gray-200">

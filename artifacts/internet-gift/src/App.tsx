@@ -8,6 +8,7 @@ import ProviderPage from "@/pages/ProviderPage";
 import CardPage from "@/pages/CardPage";
 import EventPage from "@/pages/EventPage";
 import EventDetailPage from "@/pages/EventDetailPage";
+import TipPage from "@/pages/TipPage";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,12 @@ function Router() {
       </Route>
       <Route path="/event/:id">
         {(params) => <EventDetailPage eventId={params.id} />}
+      </Route>
+      <Route path="/tip">
+        {() => <TipPage />}
+      </Route>
+      <Route path="/tip/:slug">
+        {() => <TipPage />}
       </Route>
       <Route component={NotFound} />
     </Switch>
