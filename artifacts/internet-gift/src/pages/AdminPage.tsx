@@ -40,20 +40,129 @@ function formatDate(iso: string) {
   return d.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
 }
 
+const TOKEN_KEY = 'adminToken';
+
+function getStoredToken(): string | null {
+  try {
+    return localStorage.getItem(TOKEN_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function setStoredToken(token: string) {
+  try {
+    localStorage.setItem(TOKEN_KEY, token);
+  } catch {}
+}
+
+function clearStoredToken() {
+  try {
+    localStorage.removeItem(TOKEN_KEY);
+  } catch {}
+}
+
+function AdminLoginForm({ onLogin }: { onLogin: (token: string) => void }) {
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? '로그인에 실패했습니다.');
+        return;
+      }
+      onLogin(data.token);
+    } catch {
+      setError('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <Header />
+      <main className="flex-1 flex items-center justify-center px-4">
+        <div className="w-full max-w-sm bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
+          <div className="text-center mb-8">
+            <div className="text-3xl mb-3">🔒</div>
+            <h1 className="text-2xl font-black text-gray-900">어드민 로그인</h1>
+            <p className="text-gray-500 text-sm mt-1">관리자 비밀번호를 입력해주세요.</p>
+          </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                비밀번호
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="비밀번호 입력"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors text-sm"
+                autoFocus
+                required
+              />
+            </div>
+            {error && (
+              <p className="text-red-500 text-sm text-center">{error}</p>
+            )}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 rounded-xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-colors disabled:opacity-60"
+            >
+              {loading ? '확인 중...' : '로그인'}
+            </button>
+          </form>
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
 export default function AdminPage() {
+  const [token, setToken] = useState<string | null>(getStoredToken);
   const [tab, setTab] = useState<'consultations' | 'applications'>('consultations');
   const [consultations, setConsultations] = useState<ConsultationRequest[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(false);
 
+  const handleLogin = (newToken: string) => {
+    setStoredToken(newToken);
+    setToken(newToken);
+  };
+
+  const handleLogout = () => {
+    clearStoredToken();
+    setToken(null);
+    setConsultations([]);
+    setApplications([]);
+  };
+
   useEffect(() => {
+    if (!token) return;
     async function load() {
       setLoading(true);
       try {
+        const headers = { Authorization: `Bearer ${token}` };
         const [cRes, aRes] = await Promise.all([
-          fetch('/api/consultations'),
-          fetch('/api/applications'),
+          fetch('/api/consultations', { headers }),
+          fetch('/api/applications', { headers }),
         ]);
+        if (cRes.status === 401) { handleLogout(); return; }
         if (cRes.ok) setConsultations(await cRes.json());
         if (aRes.ok) setApplications(await aRes.json());
       } finally {
@@ -61,14 +170,26 @@ export default function AdminPage() {
       }
     }
     load();
-  }, []);
+  }, [token]);
+
+  if (!token) {
+    return <AdminLoginForm onLogin={handleLogin} />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
 
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-10">
-        <h1 className="text-3xl font-black text-gray-900 mb-2">어드민 페이지</h1>
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-3xl font-black text-gray-900">어드민 페이지</h1>
+          <button
+            onClick={handleLogout}
+            className="text-sm text-gray-400 hover:text-red-500 transition-colors px-3 py-1.5 rounded-lg border border-gray-200 hover:border-red-200"
+          >
+            로그아웃
+          </button>
+        </div>
         <p className="text-gray-500 mb-8">빠른 견적 문의 및 신청서 제출 내역을 확인합니다.</p>
 
         <div className="flex gap-2 mb-6">

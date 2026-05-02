@@ -1,6 +1,7 @@
 import { Router, type IRouter } from "express";
 import { db, consultationRequestsTable, applicationsTable } from "@workspace/db";
 import { desc } from "drizzle-orm";
+import { adminAuthMiddleware } from "./admin";
 
 const router: IRouter = Router();
 
@@ -22,7 +23,7 @@ router.post("/consultations", async (req, res) => {
   }
 });
 
-router.get("/consultations", async (req, res) => {
+router.get("/consultations", adminAuthMiddleware, async (req, res) => {
   try {
     const rows = await db
       .select()
@@ -49,7 +50,7 @@ router.post("/applications", async (req, res) => {
   }
 });
 
-router.get("/applications", async (req, res) => {
+router.get("/applications", adminAuthMiddleware, async (req, res) => {
   try {
     const rows = await db
       .select()
