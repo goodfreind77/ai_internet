@@ -32,7 +32,7 @@ export default function Home() {
               <button className="w-full py-3 bg-gray-100 hover:bg-gray-200 font-bold rounded-lg transition-colors text-gray-900">자세히 보기</button>
             </div>
             
-            <div className="border-2 border-primary rounded-2xl p-8 shadow-md relative cursor-pointer transform md:-translate-y-4">
+            <div className="border-2 border-primary rounded-2xl p-8 shadow-md relative cursor-pointer md:-translate-y-4">
               <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold px-4 py-1 rounded-full">가장 인기!</div>
               <h3 className="text-2xl font-black text-[#000000] mb-2 flex items-center justify-center gap-2">KT 올레</h3>
               <div className="text-4xl font-black text-primary my-6">45만원<span className="text-lg text-gray-500 font-normal"> 지원</span></div>

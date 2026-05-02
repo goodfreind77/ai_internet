@@ -1,5 +1,5 @@
 import React from 'react';
-import { Gift } from 'lucide-react';
+import { Gift, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLocation } from 'wouter';
 import { Link } from 'wouter';
@@ -7,34 +7,49 @@ import { Link } from 'wouter';
 export function Header() {
   const [, setLocation] = useLocation();
   return (
-    <header className="w-full bg-white border-b border-gray-100 py-3 px-6 flex items-center justify-between sticky top-0 z-50 shadow-sm">
+    <header className="w-full bg-white border-b border-gray-100 py-3 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-50 shadow-sm">
       <button
         onClick={() => setLocation('/')}
-        className="flex items-center gap-2 text-primary font-bold text-2xl tracking-tight hover:opacity-80 transition-opacity cursor-pointer"
+        className="flex items-center gap-2 text-primary font-bold text-xl sm:text-2xl tracking-tight hover:opacity-80 transition-opacity cursor-pointer flex-shrink-0"
         data-testid="logo-home"
       >
-        <Gift className="w-7 h-7 text-primary" />
-        <span>AI인터넷</span>
+        <Gift className="w-6 h-6 sm:w-7 sm:h-7 text-primary flex-shrink-0" />
+        <span className="whitespace-nowrap">AI인터넷</span>
       </button>
-      
-      <div className="flex items-center gap-3">
+
+      <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
         <Link href="/apply">
-          <Button className="bg-[#2ecc71] hover:bg-[#27ae60] text-white font-bold rounded-full px-5 border-none shadow-none">신청서 작성</Button>
+          <Button className="bg-[#2ecc71] hover:bg-[#27ae60] text-white font-bold rounded-full px-3 sm:px-5 border-none shadow-none text-xs sm:text-sm h-8 sm:h-9">
+            신청서 작성
+          </Button>
         </Link>
-        <Link href="/event">
-          <Button className="bg-[#fab1a0] hover:bg-[#f19066] text-white font-bold rounded-full px-5 shadow-none border-none">이벤트</Button>
+        <Link href="/event" className="hidden md:block">
+          <Button className="bg-[#fab1a0] hover:bg-[#f19066] text-white font-bold rounded-full px-3 sm:px-5 shadow-none border-none text-xs sm:text-sm h-8 sm:h-9">
+            이벤트
+          </Button>
         </Link>
-        <Link href="/tip">
-          <Button className="bg-[#f39c12] hover:bg-[#e67e22] text-white font-bold rounded-full px-5 border-none shadow-none">꿀TIP</Button>
+        <Link href="/tip" className="hidden md:block">
+          <Button className="bg-[#f39c12] hover:bg-[#e67e22] text-white font-bold rounded-full px-3 sm:px-5 border-none shadow-none text-xs sm:text-sm h-8 sm:h-9">
+            꿀TIP
+          </Button>
         </Link>
-        <Link href="/review">
-          <Button className="bg-[#55efc4] hover:bg-[#00b894] text-white font-bold rounded-full px-5 border-none shadow-none">후기</Button>
+        <Link href="/review" className="hidden md:block">
+          <Button className="bg-[#55efc4] hover:bg-[#00b894] text-white font-bold rounded-full px-3 sm:px-5 border-none shadow-none text-xs sm:text-sm h-8 sm:h-9">
+            후기
+          </Button>
         </Link>
-        
-        <div className="ml-4 pl-4 border-l border-gray-200">
-          <span className="text-xs text-gray-500 block mb-1 font-medium">가입상담 (연중무휴)</span>
-          <span className="text-2xl font-black text-primary">1666-3233</span>
+
+        <div className="hidden md:block ml-2 pl-4 border-l border-gray-200 flex-shrink-0">
+          <span className="text-xs text-gray-500 block mb-0.5 font-medium">가입상담 (연중무휴)</span>
+          <span className="text-xl font-black text-primary whitespace-nowrap">1666-3233</span>
         </div>
+
+        <a href="tel:1666-3233" className="md:hidden flex-shrink-0">
+          <Button className="bg-primary text-white font-bold rounded-full px-3 border-none shadow-none text-xs h-8 flex items-center gap-1">
+            <Phone className="w-3 h-3" />
+            1666-3233
+          </Button>
+        </a>
       </div>
     </header>
   );

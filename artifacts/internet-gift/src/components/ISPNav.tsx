@@ -15,7 +15,7 @@ export function ISPNav() {
 
   return (
     <nav className="w-full bg-gray-50 border-b border-gray-200">
-      <div className="max-w-6xl mx-auto flex items-center">
+      <div className="max-w-6xl mx-auto flex overflow-x-auto scrollbar-hide">
         {TABS.map((tab) => {
           const isActive = location === tab.path;
           return (
@@ -23,7 +23,7 @@ export function ISPNav() {
               key={tab.path}
               onClick={() => setLocation(tab.path)}
               data-testid={`nav-${tab.path.split('/').pop()}`}
-              className={`flex-1 py-4 text-center font-bold text-sm transition-colors hover:bg-gray-100 hover:text-primary ${
+              className={`flex-shrink-0 sm:flex-1 py-3.5 px-4 sm:px-2 text-center font-bold text-xs sm:text-sm whitespace-nowrap transition-colors hover:bg-gray-100 hover:text-primary ${
                 isActive
                   ? 'text-white bg-primary border-b-2 border-primary'
                   : 'text-gray-600'

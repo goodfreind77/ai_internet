@@ -271,25 +271,25 @@ function DropdownFilter({
 }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="relative flex-1">
+    <div className="relative w-full lg:flex-1">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex flex-col items-center gap-1 border border-gray-200 rounded-lg px-3 py-3 bg-white hover:border-primary transition-colors"
+        className="w-full flex flex-col items-center gap-1 border border-gray-200 rounded-lg px-2 py-2.5 bg-white hover:border-primary transition-colors"
       >
         <div className="text-gray-400">{icon}</div>
         <span className="text-xs text-gray-500">{label}</span>
-        <div className="flex items-center gap-1 font-bold text-sm">
-          {value}
-          <ChevronDown className="w-3 h-3" />
+        <div className="flex items-center gap-1 font-bold text-xs sm:text-sm text-center leading-tight">
+          <span className="line-clamp-2">{value}</span>
+          <ChevronDown className="w-3 h-3 flex-shrink-0" />
         </div>
       </button>
       {open && (
-        <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-10 mt-1">
+        <div className="absolute top-full left-0 bg-white border border-gray-200 rounded-lg shadow-lg z-20 mt-1 min-w-[160px] w-max max-w-[240px]">
           {options.map((opt) => (
             <button
               key={opt}
               onClick={() => { onChange(opt); setOpen(false); }}
-              className={`w-full px-4 py-2 text-sm text-left hover:bg-gray-50 ${value === opt ? 'text-primary font-bold' : 'text-gray-700'}`}
+              className={`w-full px-4 py-2 text-sm text-left hover:bg-gray-50 whitespace-nowrap ${value === opt ? 'text-primary font-bold' : 'text-gray-700'}`}
             >
               {opt}
             </button>
@@ -388,16 +388,16 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <h1 className="text-center text-4xl font-black mb-3 leading-tight">
+          <h1 className="text-center text-2xl sm:text-4xl font-black mb-3 leading-tight">
             <span style={{ color: provider.color }}>{provider.name}</span>
             <span className="text-gray-900">의</span>
           </h1>
-          <p className="text-center text-3xl font-black text-gray-900 mb-10">
+          <p className="text-center text-lg sm:text-3xl font-black text-gray-900 mb-6 sm:mb-10 px-2">
             상품, 혜택, 요금을 직접 확인하고 비교해보세요!
           </p>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-4">
-            <div className="flex gap-3">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:flex gap-2 sm:gap-3">
               <DropdownFilter
                 icon={<Wifi className="w-5 h-5" />}
                 label="인터넷"
@@ -455,8 +455,8 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
               />
             </div>
 
-            <div className="flex justify-between items-center mt-4 border-t border-gray-100 pt-4">
-              <div className="flex gap-4 text-sm text-gray-500">
+            <div className="flex flex-wrap justify-between items-center mt-4 border-t border-gray-100 pt-4 gap-2">
+              <div className="flex flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
                 <span>인터넷 {BASE_PRICE.toLocaleString()}원</span>
                 {wifiAdd > 0 && <span>+ 와이파이 {wifiAdd.toLocaleString()}원</span>}
                 {iptvAdd > 0 && <span>+ IPTV {iptvAdd.toLocaleString()}원</span>}
@@ -479,11 +479,11 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
             </p>
           </motion.div>
 
-          <div className="flex gap-3 justify-center mb-14">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center mb-14 px-2 sm:px-0">
             <button
               onClick={handleConsult}
               data-testid="button-quick-consult"
-              className="flex items-center gap-2 px-8 py-4 bg-primary text-white font-bold rounded-full text-lg hover:bg-primary/90 transition-colors shadow-md"
+              className="flex items-center justify-center gap-2 px-8 py-4 bg-primary text-white font-bold rounded-full text-base sm:text-lg hover:bg-primary/90 transition-colors shadow-md"
             >
               <PhoneCall className="w-5 h-5" />
               빠른 견적
@@ -491,7 +491,7 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
             <button
               onClick={() => setLocation('/apply')}
               data-testid="button-apply"
-              className="flex items-center gap-2 px-8 py-4 bg-gray-800 text-white font-bold rounded-full text-lg hover:bg-gray-700 transition-colors shadow-md"
+              className="flex items-center justify-center gap-2 px-8 py-4 bg-gray-800 text-white font-bold rounded-full text-base sm:text-lg hover:bg-gray-700 transition-colors shadow-md"
             >
               <FileText className="w-5 h-5" />
               신청서 작성
