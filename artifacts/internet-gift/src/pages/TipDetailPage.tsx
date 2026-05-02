@@ -11,7 +11,7 @@ function WhyUsContent() {
     <div className="space-y-8">
       <div className="mb-2">
         <h1 className="text-2xl md:text-3xl font-bold text-primary mb-2">
-          인터넷가입은 인터넷사은품에서!!
+          인터넷가입은 AI인터넷에서!!
         </h1>
         <p className="text-muted-foreground text-base">
           10년 차 통신비 절약 해결사가 알려드리는 실패 없는 인터넷 가입 이유
@@ -31,7 +31,7 @@ function WhyUsContent() {
         </p>
         <p className="text-base leading-relaxed">
           수많은 업체 중에서 왜 굳이{' '}
-          <strong className="text-primary">'인터넷사은품'</strong>이라는 곳을 선택해야 하는지,
+          <strong className="text-primary">'AI인터넷'</strong>이라는 곳을 선택해야 하는지,
           가입하는 고객님 입장에서{' '}
           <strong>"아, 여기 아니면 안 되겠구나"</strong>라는 생각이 확신으로 바뀔 수밖에 없는 이유를
           10년 경력의 양심을 걸고 조목조목 설명해 드리겠습니다.
@@ -40,7 +40,7 @@ function WhyUsContent() {
 
       <div className="text-center py-4">
         <h2 className="text-2xl md:text-3xl font-bold mb-2">
-          왜 다들 '인터넷사은품'에서 가입할까요?
+          왜 다들 'AI인터넷'에서 가입할까요?
         </h2>
         <p className="text-muted-foreground font-medium mb-3">실패 없는 3가지 이유</p>
         <p className="text-base text-muted-foreground max-w-[800px] mx-auto">
@@ -82,7 +82,7 @@ function WhyUsContent() {
             <p className="text-base font-bold text-primary">왜 내 돈 받는데 기다려야 하죠?</p>
           </div>
           <div className="space-y-4">
-            <p className="text-base font-bold">저희 '인터넷사은품'은 다릅니다.</p>
+            <p className="text-base font-bold">저희 'AI인터넷'은 다릅니다.</p>
             <p className="text-base">
               설치 기사님이 다녀가시고{' '}
               <strong className="text-primary">"설치 완료"</strong> 전산이 뜨는 그 즉시! 묻지도
@@ -255,7 +255,7 @@ function WhyUsContent() {
           </div>
           <div className="bg-primary/10 p-6 rounded-lg border-2 border-primary">
             <p className="text-base mb-4">
-              저희 <strong className="text-primary">'인터넷사은품'</strong>은 법을 어기고 몰래 더
+              저희 <strong className="text-primary">'AI인터넷'</strong>은 법을 어기고 몰래 더
               준다고 거짓말하지 않습니다.
             </p>
             <p className="text-base mb-4">
@@ -308,7 +308,7 @@ function WhyUsContent() {
           말씀드릴 수 있는 건 딱 하나입니다.
         </p>
         <p className="text-xl font-black text-center text-white bg-white/20 rounded-lg py-4 px-6">
-          여기, 인터넷사은품 말고는 없습니다.
+          여기, AI인터넷 말고는 없습니다.
         </p>
       </div>
 
@@ -323,7 +323,7 @@ function WhyUsContent() {
 
 const TIP_CONTENTS: Record<string, { title: string; subtitle: string; views: number; date: string }> = {
   'why-us': {
-    title: '인터넷가입은 인터넷사은품에서!!',
+    title: '인터넷가입은 AI인터넷에서!!',
     subtitle: '10년 차 통신비 절약 해결사가 알려드리는 실패 없는 인터넷 가입 이유',
     views: 1129,
     date: '2025-11-07',

@@ -22,7 +22,7 @@ const FEATURED_TIPS = [
     id: 1,
     slug: 'why-us',
     thumbnail: `${TIP_BASE}20240321104125_%ED%98%84%EA%B8%88%EB%8B%B9%EC%9D%BC%EC%A7%80%EA%B8%89.png`,
-    title: '인터넷가입은 인터넷사은품에서!!',
+    title: '인터넷가입은 AI인터넷에서!!',
     views: 1129,
     date: '2025-11-07',
   },
