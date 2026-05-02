@@ -57,30 +57,30 @@ const PROVIDERS: Record<string, Provider> = {
   kt: {
     key: 'kt',
     name: 'KT 올레',
-    color: '#000000',
+    color: '#E30000',
     plans: [
       {
-        name: '기가인터넷 + 지니 TV 베이직',
+        name: '인터넷 베이직 + 지니TV모든G',
         internet: '500MB',
-        monthlyFee: 44000,
+        monthlyFee: 45100,
         gift: 450000,
-        features: ['500MB 기가 인터넷', '지니 TV 베이직 (100여개 채널)', '기가 WiFi 제공', '설치비 무료'],
+        features: ['500MB 기가 인터넷', '지니TV모든G (255채널)', '기가 WiFi 제공', '설치비 무료'],
         badge: '인기',
       },
       {
-        name: '기가프리미엄 + 지니 TV 프리미엄',
+        name: '인터넷 에센스 + 지니TV모든G',
         internet: '1GB',
-        monthlyFee: 60000,
+        monthlyFee: 50600,
         gift: 560000,
-        features: ['1GB 기가 인터넷', '지니 TV 프리미엄 (230여개 채널)', '기가 WiFi 6 제공', '설치비 무료'],
+        features: ['1GB 기가 인터넷', '지니TV모든G (255채널)', '기가 WiFi 6 제공', '설치비 무료'],
         badge: 'HOT',
       },
       {
-        name: '슬림인터넷 단독',
+        name: '인터넷 슬림 + 지니TV슬림',
         internet: '100MB',
-        monthlyFee: 27500,
-        gift: 250000,
-        features: ['100MB 인터넷', 'TV 미포함', 'WiFi 제공', '설치비 무료'],
+        monthlyFee: 34100,
+        gift: 280000,
+        features: ['100MB 인터넷', '지니TV슬림 (217채널)', 'WiFi 제공', '설치비 무료'],
       },
     ],
   },
@@ -659,6 +659,164 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
                     ].map((item, idx) => (
                       <li key={idx} className="flex items-start gap-2 text-xs text-gray-600">
                         <span className="text-primary mt-0.5 shrink-0">·</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="bg-orange-50 border border-orange-200 rounded-2xl p-6">
+                  <h3 className="text-sm font-black text-orange-800 mb-3">사은품 반환 조건 사항</h3>
+                  <ul className="space-y-2">
+                    {[
+                      '동일 명의나 동일 청구 계정 등 동일한 정보로 사용 중이던 다른 지역 같은 통신사 상품을 6개월 이내 해지하실 경우',
+                      '동일 명의, 동일 장소로 사용 중이던 같은 통신사 상품을 3개월 안에 해지했을 경우',
+                      '인터넷 설치 후 1년 내에 개인에서 사업자명으로 변경하는 경우',
+                      '인터넷 사용기간 중 이용정지를 90일 초과할 경우',
+                      '인터넷 설치 후 1년 이내 해지 또는 요금 미납, 직권해지, 사용중지되는 경우',
+                      '개통 후 1년 이내 다른 상품으로 변경할 경우',
+                      '자동이체를 가입 후 1년 이내 지로청구로 변경하는 경우',
+                    ].map((item, idx) => (
+                      <li key={idx} className="flex items-start gap-2 text-xs text-orange-700">
+                        <span className="text-orange-500 mt-0.5 shrink-0">·</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* KT 결합 할인표 + 안내 */}
+          {provider.key === 'kt' && (
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="space-y-10"
+            >
+              {/* KT 총액 결합할인 */}
+              <div>
+                <div className="flex items-center gap-3 mb-1">
+                  <span className="w-1 h-6 rounded-full bg-[#E30000] inline-block" />
+                  <h2 className="text-xl font-black text-gray-900">KT 총액 결합할인</h2>
+                </div>
+                <p className="text-xs text-gray-500 mb-5 ml-4">유무선결합 할인</p>
+
+                <div className="w-full overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+                  <table className="w-full text-sm border-collapse">
+                    <thead>
+                      <tr className="bg-gray-800 text-white">
+                        <th className="px-3 py-3 text-center font-bold border-r border-gray-700" rowSpan={2}>인터넷 종류</th>
+                        <th className="px-3 py-3 text-center font-bold border-r border-gray-700" rowSpan={2}>할인상품</th>
+                        <th className="px-3 py-3 text-center font-bold" colSpan={6}>모바일 요금 총액에 따른 할인</th>
+                      </tr>
+                      <tr className="bg-gray-700 text-white text-xs">
+                        <th className="px-2 py-2 text-center font-semibold border-r border-l border-gray-600">22,000원 미만</th>
+                        <th className="px-2 py-2 text-center font-semibold border-r border-gray-600">22,000원 이상</th>
+                        <th className="px-2 py-2 text-center font-semibold border-r border-gray-600">64,900원 이상</th>
+                        <th className="px-2 py-2 text-center font-semibold border-r border-gray-600">108,900원 이상</th>
+                        <th className="px-2 py-2 text-center font-semibold border-r border-gray-600">141,900원 이상</th>
+                        <th className="px-2 py-2 text-center font-semibold">174,900원 이상</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {/* 기가 1G/콤팩트 500M */}
+                      <tr className="bg-white border-t border-gray-100">
+                        <td className="px-3 py-2.5 text-center font-semibold text-gray-800 border-r border-gray-100" rowSpan={3}>기가 1G<br/>콤팩트 500M</td>
+                        <td className="px-3 py-2.5 text-center text-gray-600 border-r border-gray-100">인터넷 할인</td>
+                        <td className="px-3 py-2.5 text-center font-bold text-[#E30000] border-r border-gray-100">2,200원</td>
+                        <td className="px-3 py-2.5 text-center font-bold text-[#E30000] border-r border-gray-100">5,500원</td>
+                        <td className="px-3 py-2.5 text-center font-bold text-[#E30000] border-r border-gray-100">5,500원</td>
+                        <td className="px-3 py-2.5 text-center font-bold text-[#E30000] border-r border-gray-100">5,500원</td>
+                        <td className="px-3 py-2.5 text-center font-bold text-[#E30000] border-r border-gray-100">5,500원</td>
+                        <td className="px-3 py-2.5 text-center font-bold text-[#E30000]">5,500원</td>
+                      </tr>
+                      <tr className="bg-gray-50 border-t border-gray-100">
+                        <td className="px-3 py-2.5 text-center text-gray-600 border-r border-gray-100">모바일 할인</td>
+                        <td className="px-3 py-2.5 text-center text-gray-400 border-r border-gray-100">0</td>
+                        <td className="px-3 py-2.5 text-center text-gray-400 border-r border-gray-100">0</td>
+                        <td className="px-3 py-2.5 text-center font-bold text-blue-600 border-r border-gray-100">5,500원</td>
+                        <td className="px-3 py-2.5 text-center font-bold text-blue-600 border-r border-gray-100">16,610원</td>
+                        <td className="px-3 py-2.5 text-center font-bold text-blue-600 border-r border-gray-100">22,110원</td>
+                        <td className="px-3 py-2.5 text-center font-bold text-blue-600">27,610원</td>
+                      </tr>
+                      <tr className="bg-white border-t border-gray-100">
+                        <td className="px-3 py-2.5 text-center font-bold text-gray-800 border-r border-gray-100 bg-gray-100">총 할인금액</td>
+                        <td className="px-3 py-2.5 text-center font-black text-gray-900 bg-gray-100 border-r border-gray-100">2,200원</td>
+                        <td className="px-3 py-2.5 text-center font-black text-gray-900 bg-gray-100 border-r border-gray-100">5,500원</td>
+                        <td className="px-3 py-2.5 text-center font-black text-gray-900 bg-gray-100 border-r border-gray-100">11,000원</td>
+                        <td className="px-3 py-2.5 text-center font-black text-gray-900 bg-gray-100 border-r border-gray-100">22,110원</td>
+                        <td className="px-3 py-2.5 text-center font-black text-gray-900 bg-gray-100 border-r border-gray-100">27,610원</td>
+                        <td className="px-3 py-2.5 text-center font-black text-gray-900 bg-gray-100">33,110원</td>
+                      </tr>
+                      {/* 슬림 100M */}
+                      <tr className="bg-white border-t-2 border-gray-300">
+                        <td className="px-3 py-2.5 text-center font-semibold text-gray-800 border-r border-gray-100" rowSpan={3}>슬림 (100M)</td>
+                        <td className="px-3 py-2.5 text-center text-gray-600 border-r border-gray-100">인터넷 할인</td>
+                        <td className="px-3 py-2.5 text-center font-bold text-[#E30000] border-r border-gray-100">2,200원</td>
+                        <td className="px-3 py-2.5 text-center font-bold text-[#E30000] border-r border-gray-100">3,300원</td>
+                        <td className="px-3 py-2.5 text-center font-bold text-[#E30000] border-r border-gray-100">5,500원</td>
+                        <td className="px-3 py-2.5 text-center font-bold text-[#E30000] border-r border-gray-100">5,500원</td>
+                        <td className="px-3 py-2.5 text-center font-bold text-[#E30000] border-r border-gray-100">5,500원</td>
+                        <td className="px-3 py-2.5 text-center font-bold text-[#E30000]">5,500원</td>
+                      </tr>
+                      <tr className="bg-gray-50 border-t border-gray-100">
+                        <td className="px-3 py-2.5 text-center text-gray-600 border-r border-gray-100">모바일 할인</td>
+                        <td className="px-3 py-2.5 text-center text-gray-400 border-r border-gray-100">0</td>
+                        <td className="px-3 py-2.5 text-center text-gray-400 border-r border-gray-100">0</td>
+                        <td className="px-3 py-2.5 text-center font-bold text-blue-600 border-r border-gray-100">5,500원</td>
+                        <td className="px-3 py-2.5 text-center font-bold text-blue-600 border-r border-gray-100">16,610원</td>
+                        <td className="px-3 py-2.5 text-center font-bold text-blue-600 border-r border-gray-100">22,110원</td>
+                        <td className="px-3 py-2.5 text-center font-bold text-blue-600">27,610원</td>
+                      </tr>
+                      <tr className="bg-white border-t border-gray-100">
+                        <td className="px-3 py-2.5 text-center font-bold text-gray-800 border-r border-gray-100 bg-gray-100">총 할인금액</td>
+                        <td className="px-3 py-2.5 text-center font-black text-gray-900 bg-gray-100 border-r border-gray-100">2,200원</td>
+                        <td className="px-3 py-2.5 text-center font-black text-gray-900 bg-gray-100 border-r border-gray-100">5,500원</td>
+                        <td className="px-3 py-2.5 text-center font-black text-gray-900 bg-gray-100 border-r border-gray-100">11,000원</td>
+                        <td className="px-3 py-2.5 text-center font-black text-gray-900 bg-gray-100 border-r border-gray-100">22,110원</td>
+                        <td className="px-3 py-2.5 text-center font-black text-gray-900 bg-gray-100 border-r border-gray-100">27,610원</td>
+                        <td className="px-3 py-2.5 text-center font-black text-gray-900 bg-gray-100">33,110원</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="mt-4 space-y-1.5">
+                  {[
+                    'LTE/3G 구분 없이 휴대폰 최대 5대 결합 가능',
+                    '상기 할인액은 부가세(VAT)가 포함된 금액이며, 모바일 총액 산정 시에도 VAT 포함 금액으로 산정됩니다.',
+                    '가구에서 이용하는 모바일의 월 정액을 모두 합하여 총액을 구해 구간별로 할인됩니다.',
+                  ].map((note, idx) => (
+                    <p key={idx} className="text-xs text-gray-400 flex items-start gap-1">
+                      <span className="shrink-0">·</span><span>{note}</span>
+                    </p>
+                  ))}
+                </div>
+              </div>
+
+              {/* KT 안내 */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <span className="w-1 h-6 rounded-full bg-[#E30000] inline-block" />
+                  <h2 className="text-xl font-black text-gray-900">안내</h2>
+                </div>
+
+                <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6">
+                  <h3 className="text-sm font-black text-gray-800 mb-3">KT 인터넷 가입 시 유의사항</h3>
+                  <ul className="space-y-2">
+                    {[
+                      '동일 장소 3개월 이내 해지접수 건이 있을 경우 사은품 전액 환수됩니다.',
+                      '1년 이내 해지(위임해지, 직권 해지 포함) 및 정지 시 현금 사은품은 전액 영업점으로 반납됩니다.',
+                      '동일 명의 / 동일 통신사를 이용 중인 상품은 신규 가입 후 4개월(120일) 이내 명의변경, 일시정지, 해지할 경우 사은품은 전액 반환됩니다.',
+                      '휴대폰 결합은 본사에서만 결합이 가능하오니 인터넷 설치 후 30일 이내에 본사 고객센터로 결합신청하시면 됩니다.',
+                      '명의변경은 개통 후 6개월(180일) 내로 명의변경이 불가하며, 명의변경 시 사은품은 전액 반환됩니다.',
+                      '기존에 사용하시던 인터넷은 설치 받으신 후 직접 해지해 주셔야 합니다.',
+                    ].map((item, idx) => (
+                      <li key={idx} className="flex items-start gap-2 text-xs text-gray-600">
+                        <span className="text-[#E30000] mt-0.5 shrink-0">·</span>
                         <span>{item}</span>
                       </li>
                     ))}
