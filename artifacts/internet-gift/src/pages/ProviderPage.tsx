@@ -9,9 +9,9 @@ import { useToast } from '@/hooks/use-toast';
 
 type FilterOptions = {
   internet: string[];
-  wifi: string[];
+  wifi?: string[];
   iptv: string[];
-  box: string[];
+  box?: string[];
   phone: string[];
 };
 
@@ -39,7 +39,7 @@ const PROVIDERS: Record<string, Provider> = {
     color: '#E60000',
     filterOptions: {
       internet: ['100MB', '500MB', '1G'],
-      wifi: ['미포함'],
+      wifi: ['미포함', '기본와이파이', '기가와이파이', '윙즈(와이파이증폭기)'],
       iptv: ['미결합', '이코노미(183채널)', '스탠다드(234채널)', 'ALL(257채널)', 'ALL(플러스)'],
       box: ['미포함', '스마트3셋탑', '애플TV셋탑', 'AI4 셋탑', 'AI 스피커형셋탑', 'AI Sound Max 셋탑'],
       phone: ['미결합', '결합'],
@@ -76,7 +76,7 @@ const PROVIDERS: Record<string, Provider> = {
     color: '#E30000',
     filterOptions: {
       internet: ['100MB', '500MB', '1G'],
-      wifi: ['미포함', '기본와이파이', 'KT WiFi 6D', '버디(와이파이증폭기)', '기가WIFI프리미엄'],
+      wifi: ['미포함', '기본와이파이', 'KT WiFi 6D', '버디(와이파이증폭기)'],
       iptv: ['미결합', '베이직(233채널)', '라이트(237채널)', '에센스(263채널)', '모든G(256채널)', '모든G 플러스(256채널)'],
       box: ['미포함', '기가지니3 셋탑', '기가지니A 셋탑', '기가지니3A 셋탑', '지니TV사운드바 셋탑'],
       phone: ['미결합', '결합', '100M (휴대폰요금제 65,000원미만)결합', '100M (휴대폰요금제 65,000원이상)결합'],
@@ -151,10 +151,10 @@ const PROVIDERS: Record<string, Provider> = {
     color: '#16A34A',
     filterOptions: {
       internet: ['100MB', '200MB', '500MB', '1G'],
-      wifi: ['미포함', '기가WIFI프리미엄'],
+      wifi: ['미포함', '기본와이파이'],
       iptv: ['미결합', 'SKY ALL(238채널)'],
       box: ['미포함', '기본셋탑포함'],
-      phone: ['미결합'],
+      phone: ['미결합', '결합'],
     },
     plans: [
       {
@@ -188,10 +188,8 @@ const PROVIDERS: Record<string, Provider> = {
     color: '#E5005A',
     filterOptions: {
       internet: ['광랜 100M', '광랜 160M', '기가라이트 500M', '플래티넘기가 1G'],
-      wifi: ['미포함', '기본와이파이', '기가와이파이', '윙즈(와이파이증폭기)'],
       iptv: ['미결합', '이코노미(109채널)', '뉴베이직(245채널)', '뉴프리미엄(245채널)'],
-      box: ['미포함', '스마트3셋탑', '애플TV셋탑', 'AI4 셋탑', 'AI 스피커형셋탑', 'AI Sound Max 셋탑'],
-      phone: ['미결합'],
+      phone: ['미결합', '결합'],
     },
     plans: [
       {
@@ -322,13 +320,15 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
   useEffect(() => {
     const fo = provider.filterOptions;
     setFilters({
-      internet: fo?.internet[0] ?? '100MB',
-      wifi: fo?.wifi[0] ?? '미포함',
-      iptv: fo?.iptv[0] ?? '미결합',
-      box: fo?.box[0] ?? '미포함',
-      phone: fo?.phone[0] ?? '미결합',
+      internet: fo?.internet?.[0] ?? '100MB',
+      wifi: fo?.wifi?.[0] ?? '미포함',
+      iptv: fo?.iptv?.[0] ?? '미결합',
+      box: fo?.box?.[0] ?? '미포함',
+      phone: fo?.phone?.[0] ?? '미결합',
     });
   }, [providerKey]);
+
+  const isHellovision = providerKey === 'hellovision';
 
   const opts = {
     internet: provider.filterOptions?.internet ?? INTERNET_OPTIONS,
@@ -361,9 +361,9 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
     '포함(UHD셋탑)': 5500,
   };
   const wifiPriceMap: Record<string, number> = {
-    '기본와이파이': 3300, 'KT WiFi 6D': 4400, '버디(와이파이증폭기)': 2200, '기가WIFI프리미엄': 5500,
-    'WiFi6': 3300, 'WiFi6+WiFi6': 5500, 'WiFi6+스마트홈스피커': 4400,
-    '기가와이파이': 3300, '윙즈(와이파이증폭기)': 2200,
+    '기본와이파이': 1100, 'KT WiFi 6D': 3300, '버디(와이파이증폭기)': 2750, '기가WIFI프리미엄': 3300,
+    'WiFi6': 0, 'WiFi6+WiFi6': 4400, 'WiFi6+스마트홈스피커': 5500,
+    '기가와이파이': 3300, '윙즈(와이파이증폭기)': 2750,
   };
 
   const BASE_PRICE = internetPriceMap[filters.internet] ?? 22000;
@@ -407,13 +407,23 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
                 options={opts.internet}
                 onChange={(v) => setFilters({ ...filters, internet: v })}
               />
-              <DropdownFilter
-                icon={<Wifi className="w-4 h-4" />}
-                label="와이파이"
-                value={filters.wifi}
-                options={opts.wifi}
-                onChange={(v) => setFilters({ ...filters, wifi: v })}
-              />
+              {isHellovision ? (
+                <div className="relative flex-1">
+                  <div className="w-full flex flex-col items-center gap-1 border border-gray-200 rounded-lg px-3 py-3 bg-white">
+                    <div className="text-gray-400"><Wifi className="w-4 h-4" /></div>
+                    <span className="text-xs text-gray-500">와이파이</span>
+                    <span className="font-bold text-sm">포함</span>
+                  </div>
+                </div>
+              ) : (
+                <DropdownFilter
+                  icon={<Wifi className="w-4 h-4" />}
+                  label="와이파이"
+                  value={filters.wifi}
+                  options={opts.wifi}
+                  onChange={(v) => setFilters({ ...filters, wifi: v })}
+                />
+              )}
               <DropdownFilter
                 icon={<Tv className="w-5 h-5" />}
                 label="IPTV"
@@ -421,13 +431,23 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
                 options={opts.iptv}
                 onChange={(v) => setFilters({ ...filters, iptv: v })}
               />
-              <DropdownFilter
-                icon={<Box className="w-5 h-5" />}
-                label="셋톱박스"
-                value={filters.box}
-                options={opts.box}
-                onChange={(v) => setFilters({ ...filters, box: v })}
-              />
+              {isHellovision ? (
+                <div className="relative flex-1">
+                  <div className="w-full flex flex-col items-center gap-1 border border-gray-200 rounded-lg px-3 py-3 bg-white">
+                    <div className="text-gray-400"><Box className="w-5 h-5" /></div>
+                    <span className="text-xs text-gray-500">셋톱박스</span>
+                    <span className="font-bold text-sm">포함(UHD셋탑)</span>
+                  </div>
+                </div>
+              ) : (
+                <DropdownFilter
+                  icon={<Box className="w-5 h-5" />}
+                  label="셋톱박스"
+                  value={filters.box}
+                  options={opts.box}
+                  onChange={(v) => setFilters({ ...filters, box: v })}
+                />
+              )}
               <DropdownFilter
                 icon={<Smartphone className="w-5 h-5" />}
                 label="휴대폰"
