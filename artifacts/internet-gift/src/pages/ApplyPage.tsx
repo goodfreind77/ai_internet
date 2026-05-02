@@ -52,6 +52,13 @@ const INTERNET_OPTIONS = ['100M', '500M', '1G'];
 const TV_OPTIONS = ['이코노미(183채널)', '스탠다드(234채널)', 'All(257채널)', '선택안함'];
 const CUSTOMER_TYPES = ['개인', '개인사업자', '법인', '미성년자', '외국인'];
 const PHONE_CARRIERS = ['KT', 'SKT', 'LG U+', '알뜰폰'];
+const PAYMENT_METHODS = ['자동이체', '카드자동이체', '신용카드', '지로'];
+const BANKS = [
+  '은행선택', 'KB국민은행', '신한은행', '우리은행', 'NH농협은행', '하나은행',
+  'IBK기업은행', 'SC제일은행', '씨티은행', '카카오뱅크', '케이뱅크', '토스뱅크',
+  '새마을금고', '신협', '우체국', '대구은행', '부산은행', '경남은행', '광주은행',
+  '전북은행', '제주은행', '수협은행', '산업은행',
+];
 
 export default function ApplyPage() {
   const [, setLocation] = useLocation();
@@ -62,6 +69,10 @@ export default function ApplyPage() {
   const [internet, setInternet] = useState('');
   const [tv, setTv] = useState('');
   const [customerType, setCustomerType] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [giftBank, setGiftBank] = useState('은행선택');
+  const [giftAccount, setGiftAccount] = useState('');
+  const [giftAccountHolder, setGiftAccountHolder] = useState('');
   const [name, setName] = useState('');
   const [phoneCarrier, setPhoneCarrier] = useState('KT');
   const [phone, setPhone] = useState('');
@@ -105,6 +116,14 @@ export default function ApplyPage() {
     }
     if (!address.trim()) {
       toast({ variant: 'destructive', title: '설치주소를 입력해주세요.' });
+      return;
+    }
+    if (!paymentMethod) {
+      toast({ variant: 'destructive', title: '요금 납부방법을 선택해주세요.' });
+      return;
+    }
+    if (giftBank === '은행선택' || !giftAccount.trim() || !giftAccountHolder.trim()) {
+      toast({ variant: 'destructive', title: '사은품 입금 계좌 정보를 모두 입력해주세요.' });
       return;
     }
 
@@ -289,6 +308,59 @@ export default function ApplyPage() {
                 data-testid="input-address"
                 className="min-h-[44px]"
               />
+            </div>
+
+            {/* 요금 납부방법 */}
+            <div>
+              <FieldLabel required>요금 납부방법</FieldLabel>
+              <div className="flex flex-wrap gap-2" data-testid="group-payment-method">
+                {PAYMENT_METHODS.map((m) => (
+                  <ToggleBtn
+                    key={m}
+                    label={m}
+                    selected={paymentMethod === m}
+                    onClick={() => setPaymentMethod(m)}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* 사은품 입금 계좌번호 */}
+            <div className="space-y-3">
+              <FieldLabel required>사은품 입금 계좌번호</FieldLabel>
+              <p className="text-sm text-gray-500 -mt-2">사은품(현금)을 받으실 계좌 정보를 입력해주세요.</p>
+              <div className="grid md:grid-cols-[180px_1fr] gap-3">
+                <select
+                  value={giftBank}
+                  onChange={(e) => setGiftBank(e.target.value)}
+                  className="border border-input rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
+                  data-testid="select-gift-bank"
+                >
+                  {BANKS.map((b) => (
+                    <option key={b} value={b}>{b}</option>
+                  ))}
+                </select>
+                <Input
+                  value={giftAccount}
+                  onChange={(e) => setGiftAccount(e.target.value)}
+                  placeholder="계좌번호 (숫자만 입력)"
+                  data-testid="input-gift-account"
+                  className="min-h-[44px]"
+                  type="text"
+                  inputMode="numeric"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="gift-account-holder" className="text-sm text-gray-600">예금주</Label>
+                <Input
+                  id="gift-account-holder"
+                  value={giftAccountHolder}
+                  onChange={(e) => setGiftAccountHolder(e.target.value)}
+                  placeholder="예금주 이름을 입력해주세요"
+                  data-testid="input-gift-account-holder"
+                  className="min-h-[44px]"
+                />
+              </div>
             </div>
 
             {/* 메모 */}
