@@ -6,7 +6,7 @@ export function Footer() {
       <div className="max-w-6xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div>
-            <h4 className="text-white font-bold text-lg mb-4">인터넷 사은품</h4>
+            <h4 className="text-white font-bold text-lg mb-4">AI인터넷</h4>
             <p className="text-sm leading-relaxed mb-4">
               고객님의 통신비 절감을 위해 최선을 다하겠습니다.<br/>
               업계 최대 현금 사은품 당일 지급 원칙!
@@ -29,7 +29,7 @@ export function Footer() {
             본 사이트는 방통위 사전승낙서를 취득한 공식 대리점입니다. 
             사은품 지급 금액은 관련 법령(경품고시제)을 준수합니다.
           </p>
-          <p>© {new Date().getFullYear()} 인터넷 사은품. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} AI인터넷. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -14,7 +14,7 @@ export function Header() {
         data-testid="logo-home"
       >
         <Gift className="w-7 h-7 text-primary" />
-        <span>인터넷 사은품</span>
+        <span>AI인터넷</span>
       </button>
       
       <div className="flex items-center gap-3">
