@@ -13,6 +13,7 @@ import TipDetailPage from "@/pages/TipDetailPage";
 import ReviewPage from "@/pages/ReviewPage";
 import ReviewDetailPage from "@/pages/ReviewDetailPage";
 import ReviewWritePage from "@/pages/ReviewWritePage";
+import ApplyPage from "@/pages/ApplyPage";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,9 @@ function Router() {
       </Route>
       <Route path="/review">
         {() => <ReviewPage />}
+      </Route>
+      <Route path="/apply">
+        {() => <ApplyPage />}
       </Route>
       <Route path="/review/write">
         {() => <ReviewWritePage />}

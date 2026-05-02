@@ -18,7 +18,9 @@ export function Header() {
       </button>
       
       <div className="flex items-center gap-3">
-        <Button className="bg-[#2ecc71] hover:bg-[#27ae60] text-white font-bold rounded-full px-5 border-none shadow-none">신청서 작성</Button>
+        <Link href="/apply">
+          <Button className="bg-[#2ecc71] hover:bg-[#27ae60] text-white font-bold rounded-full px-5 border-none shadow-none">신청서 작성</Button>
+        </Link>
         <Link href="/event">
           <Button className="bg-[#fab1a0] hover:bg-[#f19066] text-white font-bold rounded-full px-5 shadow-none border-none">이벤트</Button>
         </Link>
