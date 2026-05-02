@@ -90,27 +90,28 @@ const PROVIDERS: Record<string, Provider> = {
     color: '#E5005A',
     plans: [
       {
-        name: '기가인터넷 + U+tv 프리미엄',
+        name: '와이파이기본 500M + TV 실속형',
         internet: '500MB',
-        monthlyFee: 44000,
+        monthlyFee: 35200,
         gift: 470000,
-        features: ['500MB 기가 인터넷', 'U+tv 프리미엄 (200여개 채널)', '기가 WiFi 6 제공', '설치비 무료'],
+        features: ['500MB 기가 인터넷', 'U+tv 실속형 (217채널)', '기가 WiFi 6 제공', '설치비 무료'],
         badge: 'HOT',
       },
       {
-        name: '10기가 인터넷 + U+tv 프리미엄',
-        internet: '10GB',
-        monthlyFee: 77000,
-        gift: 650000,
-        features: ['10GB 초고속 인터넷', 'U+tv 프리미엄', '기가 WiFi 6E 제공', '설치비 무료'],
-        badge: '신상품',
+        name: '프리미엄안심 500M + TV 프리미엄',
+        internet: '500MB',
+        monthlyFee: 42900,
+        gift: 520000,
+        features: ['500MB 기가 인터넷', 'U+tv 프리미엄 (252채널)', '기가 WiFi 6 제공', '설치비 무료'],
+        badge: '인기',
       },
       {
-        name: '광랜인터넷 단독',
-        internet: '100MB',
-        monthlyFee: 22000,
-        gift: 220000,
-        features: ['100MB 인터넷', 'TV 미포함', 'WiFi 제공', '설치비 무료'],
+        name: '와이파이기본 1G + TV 프리미엄',
+        internet: '1GB',
+        monthlyFee: 40700,
+        gift: 560000,
+        features: ['1G 기가 인터넷', 'U+tv 프리미엄 (252채널)', '기가 WiFi 6E 제공', '설치비 무료'],
+        badge: '추천',
       },
     ],
   },
@@ -817,6 +818,125 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
                     ].map((item, idx) => (
                       <li key={idx} className="flex items-start gap-2 text-xs text-gray-600">
                         <span className="text-[#E30000] mt-0.5 shrink-0">·</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="bg-orange-50 border border-orange-200 rounded-2xl p-6">
+                  <h3 className="text-sm font-black text-orange-800 mb-3">사은품 반환 조건 사항</h3>
+                  <ul className="space-y-2">
+                    {[
+                      '동일 명의나 동일 청구 계정 등 동일한 정보로 사용 중이던 다른 지역 같은 통신사 상품을 6개월 이내 해지하실 경우',
+                      '동일 명의, 동일 장소로 사용 중이던 같은 통신사 상품을 3개월 안에 해지했을 경우',
+                      '인터넷 설치 후 1년 내에 개인에서 사업자명으로 변경하는 경우',
+                      '인터넷 사용기간 중 이용정지를 90일 초과할 경우',
+                      '인터넷 설치 후 1년 이내 해지 또는 요금 미납, 직권해지, 사용중지되는 경우',
+                      '개통 후 1년 이내 다른 상품으로 변경할 경우',
+                      '자동이체를 가입 후 1년 이내 지로청구로 변경하는 경우',
+                    ].map((item, idx) => (
+                      <li key={idx} className="flex items-start gap-2 text-xs text-orange-700">
+                        <span className="text-orange-500 mt-0.5 shrink-0">·</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* LG유플러스 결합 할인표 + 안내 */}
+          {provider.key === 'lg' && (
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="space-y-10"
+            >
+              {/* 참 쉬운 가족결합 */}
+              <div>
+                <div className="flex items-center gap-3 mb-1">
+                  <span className="w-1 h-6 rounded-full bg-[#E5005A] inline-block" />
+                  <h2 className="text-xl font-black text-gray-900">참 쉬운 가족결합</h2>
+                </div>
+                <p className="text-xs text-gray-500 mb-5 ml-4">유무선/무선간 결합 할인</p>
+
+                <div className="w-full overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+                  <table className="w-full text-sm border-collapse">
+                    <thead>
+                      <tr className="bg-gray-800 text-white">
+                        <th className="px-3 py-3 text-center font-bold border-r border-gray-700" rowSpan={2}>모바일<br/>결합 회선수</th>
+                        <th className="px-3 py-3 text-center font-bold border-r border-gray-700" colSpan={3}>모바일 요금에 따른 모바일 요금할인<br/><span className="font-normal text-xs text-gray-400">(최대 10회선)</span></th>
+                        <th className="px-3 py-3 text-center font-bold border-r border-gray-700" rowSpan={2}>가족 데이터</th>
+                        <th className="px-3 py-3 text-center font-bold" colSpan={3}>인터넷 속도에 따른 월 인터넷 요금 할인<br/><span className="font-normal text-xs text-gray-400">(최대 3회선)</span></th>
+                      </tr>
+                      <tr className="bg-gray-700 text-white text-xs">
+                        <th className="px-2 py-2 text-center font-semibold border-r border-l border-gray-600">69,000원 미만</th>
+                        <th className="px-2 py-2 text-center font-semibold border-r border-gray-600">69,000원 이상</th>
+                        <th className="px-2 py-2 text-center font-semibold border-r border-gray-600">88,000원 이상</th>
+                        <th className="px-2 py-2 text-center font-semibold border-r border-gray-600">100M</th>
+                        <th className="px-2 py-2 text-center font-semibold border-r border-gray-600">500M</th>
+                        <th className="px-2 py-2 text-center font-semibold">1Giga</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        { lines: '1명', m69l: '0', m69h: '0', m88: '0', data: '결합 1명당 1,000MB', i100: '5,500원', i500: '9,900원', i1g: '13,200원' },
+                        { lines: '2명', m69l: '2,200원', m69h: '3,300원', m88: '4,400원', data: '', i100: '', i500: '', i1g: '' },
+                        { lines: '3명', m69l: '3,300원', m69h: '5,500원', m88: '6,600원', data: '', i100: '', i500: '', i1g: '' },
+                        { lines: '4명', m69l: '4,400원', m69h: '6,600원', m88: '8,800원', data: '', i100: '', i500: '', i1g: '' },
+                      ].map((row, idx) => (
+                        <tr key={idx} className={`border-t border-gray-100 ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                          <td className="px-3 py-3 text-center font-bold text-gray-800 border-r border-gray-100">{row.lines}</td>
+                          <td className={`px-3 py-3 text-center border-r border-gray-100 font-bold ${row.m69l === '0' ? 'text-gray-400' : 'text-[#E5005A]'}`}>{row.m69l}</td>
+                          <td className={`px-3 py-3 text-center border-r border-gray-100 font-bold ${row.m69h === '0' ? 'text-gray-400' : 'text-[#E5005A]'}`}>{row.m69h}</td>
+                          <td className={`px-3 py-3 text-center border-r border-gray-100 font-bold ${row.m88 === '0' ? 'text-gray-400' : 'text-[#E5005A]'}`}>{row.m88}</td>
+                          <td className="px-3 py-3 text-center border-r border-gray-100 text-blue-600 font-semibold text-xs">{row.data || '-'}</td>
+                          <td className={`px-3 py-3 text-center border-r border-gray-100 font-bold ${row.i100 ? 'text-[#E5005A]' : 'text-gray-300'}`}>{row.i100 || '↑'}</td>
+                          <td className={`px-3 py-3 text-center border-r border-gray-100 font-bold ${row.i500 ? 'text-[#E5005A]' : 'text-gray-300'}`}>{row.i500 || '↑'}</td>
+                          <td className={`px-3 py-3 text-center font-bold ${row.i1g ? 'text-[#E5005A]' : 'text-gray-300'}`}>{row.i1g || '↑'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="mt-4 space-y-1.5">
+                  {[
+                    '유무선 결합: 모바일+인터넷 (인터넷끼리만은 결합할 수 없습니다.)',
+                    '모바일 월 정액 22,000원 이상의 LTE 요금제를 사용하는 휴대폰만 결합하여 할인받을 수 있습니다.',
+                    '결합할인, 제공 할인 등 할인 혜택 적용 후 최종 요금을 기준으로 가족결합 구간이 결정됩니다.',
+                    '가족 데이터는 매월 1일 가족 대표자에게 제공되며, 제공받은 달에만 이용 가능하고 다음 달로 이월되지 않습니다.',
+                  ].map((note, idx) => (
+                    <p key={idx} className="text-xs text-gray-400 flex items-start gap-1">
+                      <span className="shrink-0">·</span><span>{note}</span>
+                    </p>
+                  ))}
+                </div>
+              </div>
+
+              {/* LG 안내 */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <span className="w-1 h-6 rounded-full bg-[#E5005A] inline-block" />
+                  <h2 className="text-xl font-black text-gray-900">안내</h2>
+                </div>
+
+                <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6">
+                  <h3 className="text-sm font-black text-gray-800 mb-3">LG유플러스 인터넷 가입 시 유의사항</h3>
+                  <ul className="space-y-2">
+                    {[
+                      '동일 장소 3개월 이내 해지접수 건이 있을 경우 사은품 전액 환수됩니다.',
+                      '1년 이내 해지(위임해지, 직권 해지 포함) 및 정지 시 현금 사은품은 전액 영업점으로 반납됩니다.',
+                      '동일 명의 / 동일 통신사를 이용 중인 상품은 신규 가입 후 4개월(120일) 이내 명의변경, 일시정지, 해지할 경우 사은품은 전액 반환됩니다.',
+                      '휴대폰 결합은 본사에서만 결합이 가능하오니 인터넷 설치 후 30일 이내에 본사 고객센터로 결합신청하시면 됩니다.',
+                      '명의변경은 개통 후 6개월(180일) 내로 명의변경이 불가하며, 명의변경 시 사은품은 전액 반환됩니다.',
+                      '기존에 사용하시던 인터넷은 설치 받으신 후 직접 해지해 주셔야 합니다.',
+                    ].map((item, idx) => (
+                      <li key={idx} className="flex items-start gap-2 text-xs text-gray-600">
+                        <span className="text-[#E5005A] mt-0.5 shrink-0">·</span>
                         <span>{item}</span>
                       </li>
                     ))}
