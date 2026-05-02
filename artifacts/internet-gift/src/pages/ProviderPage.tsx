@@ -39,9 +39,9 @@ const PROVIDERS: Record<string, Provider> = {
     color: '#E60000',
     filterOptions: {
       internet: ['100MB', '500MB', '1G'],
-      wifi: ['미포함', '포함'],
-      iptv: ['미결합', 'B tv 스탠다드', 'B tv ALL'],
-      box: ['미포함', '포함(UHD셋탑)'],
+      wifi: ['미포함'],
+      iptv: ['미결합', '이코노미(183채널)', '스탠다드(234채널)', 'ALL(257채널)', 'ALL(플러스)'],
+      box: ['미포함', '스마트3셋탑', '애플TV셋탑', 'AI4 셋탑', 'AI 스피커형셋탑', 'AI Sound Max 셋탑'],
       phone: ['미결합', '결합'],
     },
     plans: [
@@ -74,6 +74,13 @@ const PROVIDERS: Record<string, Provider> = {
     key: 'kt',
     name: 'KT 올레',
     color: '#E30000',
+    filterOptions: {
+      internet: ['100MB', '500MB', '1G'],
+      wifi: ['미포함', '기본와이파이', 'KT WiFi 6D', '버디(와이파이증폭기)', '기가WIFI프리미엄'],
+      iptv: ['미결합', '베이직(233채널)', '라이트(237채널)', '에센스(263채널)', '모든G(256채널)', '모든G 플러스(256채널)'],
+      box: ['미포함', '기가지니3 셋탑', '기가지니A 셋탑', '기가지니3A 셋탑', '지니TV사운드바 셋탑'],
+      phone: ['미결합', '결합', '100M (휴대폰요금제 65,000원미만)결합', '100M (휴대폰요금제 65,000원이상)결합'],
+    },
     plans: [
       {
         name: '인터넷 베이직 + 지니TV모든G',
@@ -104,6 +111,13 @@ const PROVIDERS: Record<string, Provider> = {
     key: 'lg',
     name: 'LG유플러스',
     color: '#E5005A',
+    filterOptions: {
+      internet: ['와이파이기본광랜(100M)', '와이파이기본기가슬림(500M)', '와이파이기본기가(1G)', '프리미엄안심100M', '프리미엄안심500M', '프리미엄안심1G', '프리미엄안심보상 100M', '프리미엄안심보상 500M', '프리미엄안심보상 1G'],
+      wifi: ['미포함', 'WiFi6', 'WiFi6+WiFi6', 'WiFi6+스마트홈스피커'],
+      iptv: ['미결합', '실속형(217채널)', '기본형(223채널)', '프리미엄(252채널)'],
+      box: ['미포함', '4K UHD4셋탑', '고급형 셋탑', 'U+tv 사운드바 셋탑'],
+      phone: ['미결합', '결합'],
+    },
     plans: [
       {
         name: '와이파이기본 500M + TV 실속형',
@@ -135,6 +149,13 @@ const PROVIDERS: Record<string, Provider> = {
     key: 'skylife',
     name: 'KT스카이라이프',
     color: '#16A34A',
+    filterOptions: {
+      internet: ['100MB', '200MB', '500MB', '1G'],
+      wifi: ['미포함', '기가WIFI프리미엄'],
+      iptv: ['미결합', 'SKY ALL(238채널)'],
+      box: ['미포함', '기본셋탑포함'],
+      phone: ['미결합'],
+    },
     plans: [
       {
         name: '인터넷 100M + IPTV플러스',
@@ -165,6 +186,13 @@ const PROVIDERS: Record<string, Provider> = {
     key: 'hellovision',
     name: 'LG헬로비전',
     color: '#E5005A',
+    filterOptions: {
+      internet: ['광랜 100M', '광랜 160M', '기가라이트 500M', '플래티넘기가 1G'],
+      wifi: ['미포함', '기본와이파이', '기가와이파이', '윙즈(와이파이증폭기)'],
+      iptv: ['미결합', '이코노미(109채널)', '뉴베이직(245채널)', '뉴프리미엄(245채널)'],
+      box: ['미포함', '스마트3셋탑', '애플TV셋탑', 'AI4 셋탑', 'AI 스피커형셋탑', 'AI Sound Max 셋탑'],
+      phone: ['미결합'],
+    },
     plans: [
       {
         name: '광랜라이트 + TV 이코노미',
@@ -310,14 +338,39 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
     phone: provider.filterOptions?.phone ?? PHONE_OPTIONS,
   };
 
-  const internetIdx = opts.internet.indexOf(filters.internet);
-  const iptvIdx = opts.iptv.indexOf(filters.iptv);
+  const internetPriceMap: Record<string, number> = {
+    '100MB': 22000, '200MB': 27500, '500MB': 33000, '1G': 38500, '1GB': 38500,
+    '광랜 100M': 20790, '광랜 160M': 25410, '기가라이트 500M': 29260, '플래티넘기가 1G': 30800,
+    '와이파이기본광랜(100M)': 22000, '와이파이기본기가슬림(500M)': 33000, '와이파이기본기가(1G)': 38500,
+    '프리미엄안심100M': 25300, '프리미엄안심500M': 37400, '프리미엄안심1G': 42900,
+    '프리미엄안심보상 100M': 27500, '프리미엄안심보상 500M': 39600, '프리미엄안심보상 1G': 45100,
+  };
+  const iptvPriceMap: Record<string, number> = {
+    '이코노미(183채널)': 12100, '스탠다드(234채널)': 15400, 'ALL(257채널)': 18700, 'ALL(플러스)': 24200,
+    '베이직(233채널)': 14740, '라이트(237채널)': 15840, '에센스(263채널)': 20240,
+    '모든G(256채널)': 21340, '모든G 플러스(256채널)': 23640,
+    '실속형(217채널)': 15400, '기본형(223채널)': 16500, '프리미엄(252채널)': 18700,
+    '이코노미(109채널)': 11000, '뉴베이직(245채널)': 13200, '뉴프리미엄(245채널)': 15400,
+    'SKY ALL(238채널)': 7000,
+  };
+  const boxFeeMap: Record<string, number> = {
+    '스마트3셋탑': 4400, '애플TV셋탑': 4400, 'AI4 셋탑': 8800, 'AI 스피커형셋탑': 6600, 'AI Sound Max 셋탑': 8800,
+    '기가지니3 셋탑': 4400, '기가지니A 셋탑': 5500, '기가지니3A 셋탑': 6600, '지니TV사운드바 셋탑': 7700,
+    '4K UHD4셋탑': 4400, '고급형 셋탑': 3300, 'U+tv 사운드바 셋탑': 6600,
+    '기본셋탑포함': 0,
+    '포함(UHD셋탑)': 5500,
+  };
+  const wifiPriceMap: Record<string, number> = {
+    '기본와이파이': 3300, 'KT WiFi 6D': 4400, '버디(와이파이증폭기)': 2200, '기가WIFI프리미엄': 5500,
+    'WiFi6': 3300, 'WiFi6+WiFi6': 5500, 'WiFi6+스마트홈스피커': 4400,
+    '기가와이파이': 3300, '윙즈(와이파이증폭기)': 2200,
+  };
 
-  const BASE_PRICE = 22000;
-  const wifiAdd = filters.wifi === opts.wifi[1] ? 5500 : 0;
-  const iptvAdd = iptvIdx === 1 ? 8800 : iptvIdx === 2 ? 14300 : 0;
-  const internetAdd = internetIdx === 1 ? 22000 : internetIdx === 2 ? 33000 : 0;
-  const totalFee = BASE_PRICE + internetAdd + wifiAdd + iptvAdd;
+  const BASE_PRICE = internetPriceMap[filters.internet] ?? 22000;
+  const wifiAdd = wifiPriceMap[filters.wifi] ?? 0;
+  const iptvAdd = iptvPriceMap[filters.iptv] ?? 0;
+  const boxAdd = boxFeeMap[filters.box] ?? 0;
+  const totalFee = BASE_PRICE + wifiAdd + iptvAdd + boxAdd;
 
   const handleConsult = () => {
     toast({
@@ -386,9 +439,10 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
 
             <div className="flex justify-between items-center mt-4 border-t border-gray-100 pt-4">
               <div className="flex gap-4 text-sm text-gray-500">
-                <span>인터넷 {totalFee.toLocaleString()}원</span>
+                <span>인터넷 {BASE_PRICE.toLocaleString()}원</span>
                 {wifiAdd > 0 && <span>+ 와이파이 {wifiAdd.toLocaleString()}원</span>}
                 {iptvAdd > 0 && <span>+ IPTV {iptvAdd.toLocaleString()}원</span>}
+                {boxAdd > 0 && <span>+ 셋톱박스 {boxAdd.toLocaleString()}원</span>}
               </div>
               <span className="text-xs text-gray-400">▶ 합계</span>
             </div>
