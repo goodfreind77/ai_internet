@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import ProviderPage from "@/pages/ProviderPage";
+import CardPage from "@/pages/CardPage";
 
 const queryClient = new QueryClient();
 
@@ -14,6 +15,12 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/provider/:key">
         {(params) => <ProviderPage providerKey={params.key} />}
+      </Route>
+      <Route path="/cards">
+        {() => <CardPage providerKey="all" />}
+      </Route>
+      <Route path="/cards/:key">
+        {(params) => <CardPage providerKey={params.key} />}
       </Route>
       <Route component={NotFound} />
     </Switch>

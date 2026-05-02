@@ -7,7 +7,7 @@ const TABS = [
   { label: 'LG유플러스', path: '/provider/lg' },
   { label: 'KT스카이라이프', path: '/provider/skylife' },
   { label: 'LG헬로비전', path: '/provider/hellovision' },
-  { label: '제휴카드', path: '/provider/card' },
+  { label: '제휴카드', path: '/cards' },
 ];
 
 export function ISPNav() {
