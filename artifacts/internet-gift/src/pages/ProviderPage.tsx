@@ -491,7 +491,7 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
               빠른 견적
             </button>
             <button
-              onClick={handleConsult}
+              onClick={() => setLocation('/apply')}
               data-testid="button-apply"
               className="flex items-center gap-2 px-8 py-4 bg-gray-800 text-white font-bold rounded-full text-lg hover:bg-gray-700 transition-colors shadow-md"
             >
