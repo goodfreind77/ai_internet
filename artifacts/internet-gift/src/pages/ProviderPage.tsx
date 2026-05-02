@@ -373,14 +373,12 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
   const totalFee = BASE_PRICE + wifiAdd + iptvAdd + boxAdd;
 
   const handleConsult = () => {
-    toast({
-      title: '상담 신청 완료',
-      description: '빠른 시간 내에 연락드리겠습니다.',
-    });
+    setModalOpen(true);
   };
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
+      <ConsultationModal open={modalOpen} onClose={() => setModalOpen(false)} />
       <Header />
       <ISPNav />
 
