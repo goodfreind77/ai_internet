@@ -9,6 +9,7 @@ import CardPage from "@/pages/CardPage";
 import EventPage from "@/pages/EventPage";
 import EventDetailPage from "@/pages/EventDetailPage";
 import TipPage from "@/pages/TipPage";
+import TipDetailPage from "@/pages/TipDetailPage";
 import ReviewPage from "@/pages/ReviewPage";
 import ReviewDetailPage from "@/pages/ReviewDetailPage";
 import ReviewWritePage from "@/pages/ReviewWritePage";
@@ -38,7 +39,7 @@ function Router() {
         {() => <TipPage />}
       </Route>
       <Route path="/tip/:slug">
-        {() => <TipPage />}
+        {(params) => <TipDetailPage slug={params.slug} />}
       </Route>
       <Route path="/review">
         {() => <ReviewPage />}
