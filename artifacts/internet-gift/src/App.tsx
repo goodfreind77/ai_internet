@@ -6,6 +6,8 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import ProviderPage from "@/pages/ProviderPage";
 import CardPage from "@/pages/CardPage";
+import EventPage from "@/pages/EventPage";
+import EventDetailPage from "@/pages/EventDetailPage";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +23,12 @@ function Router() {
       </Route>
       <Route path="/cards/:key">
         {(params) => <CardPage providerKey={params.key} />}
+      </Route>
+      <Route path="/event">
+        {() => <EventPage />}
+      </Route>
+      <Route path="/event/:id">
+        {(params) => <EventDetailPage eventId={params.id} />}
       </Route>
       <Route component={NotFound} />
     </Switch>

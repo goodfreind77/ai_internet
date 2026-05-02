@@ -2,6 +2,7 @@ import React from 'react';
 import { Gift } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLocation } from 'wouter';
+import { Link } from 'wouter';
 
 export function Header() {
   const [, setLocation] = useLocation();
@@ -18,7 +19,9 @@ export function Header() {
       
       <div className="flex items-center gap-3">
         <Button className="bg-[#2ecc71] hover:bg-[#27ae60] text-white font-bold rounded-full px-5">신청서 시작</Button>
-        <Button className="bg-[#fab1a0] hover:bg-[#f19066] text-white font-bold rounded-full px-5 shadow-none border-none">이벤트</Button>
+        <Link href="/event">
+          <Button className="bg-[#fab1a0] hover:bg-[#f19066] text-white font-bold rounded-full px-5 shadow-none border-none">이벤트</Button>
+        </Link>
         <Button className="bg-[#f39c12] hover:bg-[#e67e22] text-white font-bold rounded-full px-5">꿀TIP</Button>
         <Button className="bg-[#55efc4] hover:bg-[#00b894] text-white font-bold rounded-full px-5">후기</Button>
         
