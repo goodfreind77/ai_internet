@@ -1,6 +1,5 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import { X } from 'lucide-react';
 import { ConsultationForm } from './ConsultationForm';
 
 interface ConsultationModalProps {
@@ -9,14 +8,24 @@ interface ConsultationModalProps {
 }
 
 export function ConsultationModal({ open, onClose }: ConsultationModalProps) {
+  if (!open) return null;
+
   return (
-    <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
-      <DialogContent className="max-w-md w-full p-0 overflow-hidden rounded-2xl">
-        <VisuallyHidden>
-          <DialogTitle>빠른 견적 문의</DialogTitle>
-        </VisuallyHidden>
-        <ConsultationForm />
-      </DialogContent>
-    </Dialog>
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+      <div
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        onClick={onClose}
+      />
+      <div className="relative z-10 w-full max-w-md">
+        <button
+          onClick={onClose}
+          className="absolute -top-3 -right-3 z-20 bg-white rounded-full p-1.5 shadow-md hover:bg-gray-100 transition-colors"
+          aria-label="닫기"
+        >
+          <X className="w-4 h-4 text-gray-600" />
+        </button>
+        <ConsultationForm onSuccess={onClose} />
+      </div>
+    </div>
   );
 }

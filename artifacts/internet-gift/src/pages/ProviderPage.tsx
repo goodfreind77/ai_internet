@@ -3,9 +3,9 @@ import { useLocation } from 'wouter';
 import { Header } from '@/components/Header';
 import { ISPNav } from '@/components/ISPNav';
 import { Footer } from '@/components/Footer';
+import { ConsultationModal } from '@/components/ConsultationModal';
 import { motion } from 'framer-motion';
 import { ChevronDown, Wifi, Tv, Box, Smartphone, PhoneCall, FileText } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
 
 type FilterOptions = {
   internet: string[];
@@ -306,7 +306,7 @@ interface ProviderPageProps {
 
 export default function ProviderPage({ providerKey }: ProviderPageProps) {
   const [, setLocation] = useLocation();
-  const { toast } = useToast();
+  const [modalOpen, setModalOpen] = useState(false);
   const provider = PROVIDERS[providerKey] || PROVIDERS['sk'];
 
   const [filters, setFilters] = useState<FilterState>({
@@ -373,14 +373,12 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
   const totalFee = BASE_PRICE + wifiAdd + iptvAdd + boxAdd;
 
   const handleConsult = () => {
-    toast({
-      title: '상담 신청 완료',
-      description: '빠른 시간 내에 연락드리겠습니다.',
-    });
+    setModalOpen(true);
   };
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
+      <ConsultationModal open={modalOpen} onClose={() => setModalOpen(false)} />
       <Header />
       <ISPNav />
 

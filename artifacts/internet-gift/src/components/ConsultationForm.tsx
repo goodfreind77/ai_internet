@@ -14,7 +14,11 @@ const formSchema = z.object({
   agree: z.boolean().refine(val => val === true, '개인정보 수집 및 이용에 동의해주세요.'),
 });
 
-export function ConsultationForm() {
+interface ConsultationFormProps {
+  onSuccess?: () => void;
+}
+
+export function ConsultationForm({ onSuccess }: ConsultationFormProps = {}) {
   const { toast } = useToast();
   
   const form = useForm<z.infer<typeof formSchema>>({
@@ -40,6 +44,7 @@ export function ConsultationForm() {
         variant: "default",
       });
       form.reset();
+      onSuccess?.();
     } catch {
       toast({
         title: "오류 발생",
