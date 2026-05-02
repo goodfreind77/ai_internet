@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
+import ProviderPage from "@/pages/ProviderPage";
 
 const queryClient = new QueryClient();
 
@@ -11,6 +12,9 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/provider/:key">
+        {(params) => <ProviderPage providerKey={params.key} />}
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );

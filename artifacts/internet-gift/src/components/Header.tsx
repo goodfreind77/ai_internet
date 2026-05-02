@@ -1,14 +1,20 @@
 import React from 'react';
 import { Gift } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLocation } from 'wouter';
 
 export function Header() {
+  const [, setLocation] = useLocation();
   return (
     <header className="w-full bg-white border-b border-gray-100 py-3 px-6 flex items-center justify-between sticky top-0 z-50 shadow-sm">
-      <div className="flex items-center gap-2 text-primary font-bold text-2xl tracking-tight">
+      <button
+        onClick={() => setLocation('/')}
+        className="flex items-center gap-2 text-primary font-bold text-2xl tracking-tight hover:opacity-80 transition-opacity cursor-pointer"
+        data-testid="logo-home"
+      >
         <Gift className="w-7 h-7 text-primary" />
         <span>인터넷 사은품</span>
-      </div>
+      </button>
       
       <div className="flex items-center gap-3">
         <Button className="bg-[#2ecc71] hover:bg-[#27ae60] text-white font-bold rounded-full px-5">신청서 시작</Button>
