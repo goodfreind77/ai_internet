@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Header } from '@/components/Header';
 import { ISPNav } from '@/components/ISPNav';
@@ -7,11 +7,20 @@ import { motion } from 'framer-motion';
 import { ChevronDown, Wifi, Tv, Box, Smartphone, PhoneCall, FileText } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
+type FilterOptions = {
+  internet: string[];
+  wifi: string[];
+  iptv: string[];
+  box: string[];
+  phone: string[];
+};
+
 type Provider = {
   key: string;
   name: string;
   color: string;
   plans: Plan[];
+  filterOptions?: FilterOptions;
 };
 
 type Plan = {
@@ -28,6 +37,13 @@ const PROVIDERS: Record<string, Provider> = {
     key: 'sk',
     name: 'SK브로드밴드',
     color: '#E60000',
+    filterOptions: {
+      internet: ['100MB', '500MB', '1G'],
+      wifi: ['미포함', '포함'],
+      iptv: ['미결합', 'B tv 스탠다드', 'B tv ALL'],
+      box: ['미포함', '포함(UHD셋탑)'],
+      phone: ['미결합', '결합'],
+    },
     plans: [
       {
         name: '기가라이트인터넷 + B TV ALL',
@@ -275,12 +291,32 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
     phone: '미결합',
   });
 
+  useEffect(() => {
+    const fo = provider.filterOptions;
+    setFilters({
+      internet: fo?.internet[0] ?? '100MB',
+      wifi: fo?.wifi[0] ?? '미포함',
+      iptv: fo?.iptv[0] ?? '미결합',
+      box: fo?.box[0] ?? '미포함',
+      phone: fo?.phone[0] ?? '미결합',
+    });
+  }, [providerKey]);
+
+  const opts = {
+    internet: provider.filterOptions?.internet ?? INTERNET_OPTIONS,
+    wifi: provider.filterOptions?.wifi ?? WIFI_OPTIONS,
+    iptv: provider.filterOptions?.iptv ?? IPTV_OPTIONS,
+    box: provider.filterOptions?.box ?? BOX_OPTIONS,
+    phone: provider.filterOptions?.phone ?? PHONE_OPTIONS,
+  };
+
+  const internetIdx = opts.internet.indexOf(filters.internet);
+  const iptvIdx = opts.iptv.indexOf(filters.iptv);
+
   const BASE_PRICE = 22000;
-  const wifiAdd = filters.wifi === '포함' ? 5500 : 0;
-  const iptvAdd = filters.iptv === '기본' ? 8800 : filters.iptv === '프리미엄' ? 14300 : 0;
-  const internetAdd =
-    filters.internet === '500MB' ? 22000 :
-    filters.internet === '1GB' ? 33000 : 0;
+  const wifiAdd = filters.wifi === opts.wifi[1] ? 5500 : 0;
+  const iptvAdd = iptvIdx === 1 ? 8800 : iptvIdx === 2 ? 14300 : 0;
+  const internetAdd = internetIdx === 1 ? 22000 : internetIdx === 2 ? 33000 : 0;
   const totalFee = BASE_PRICE + internetAdd + wifiAdd + iptvAdd;
 
   const handleConsult = () => {
@@ -315,35 +351,35 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
                 icon={<Wifi className="w-5 h-5" />}
                 label="인터넷"
                 value={filters.internet}
-                options={INTERNET_OPTIONS}
+                options={opts.internet}
                 onChange={(v) => setFilters({ ...filters, internet: v })}
               />
               <DropdownFilter
                 icon={<Wifi className="w-4 h-4" />}
                 label="와이파이"
                 value={filters.wifi}
-                options={WIFI_OPTIONS}
+                options={opts.wifi}
                 onChange={(v) => setFilters({ ...filters, wifi: v })}
               />
               <DropdownFilter
                 icon={<Tv className="w-5 h-5" />}
                 label="IPTV"
                 value={filters.iptv}
-                options={IPTV_OPTIONS}
+                options={opts.iptv}
                 onChange={(v) => setFilters({ ...filters, iptv: v })}
               />
               <DropdownFilter
                 icon={<Box className="w-5 h-5" />}
                 label="셋톱박스"
                 value={filters.box}
-                options={BOX_OPTIONS}
+                options={opts.box}
                 onChange={(v) => setFilters({ ...filters, box: v })}
               />
               <DropdownFilter
                 icon={<Smartphone className="w-5 h-5" />}
                 label="휴대폰"
                 value={filters.phone}
-                options={PHONE_OPTIONS}
+                options={opts.phone}
                 onChange={(v) => setFilters({ ...filters, phone: v })}
               />
             </div>
