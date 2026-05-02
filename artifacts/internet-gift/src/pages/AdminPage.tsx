@@ -2,10 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 
+type Status = '처리중' | '접수완료' | '취소';
+const STATUSES: Status[] = ['처리중', '접수완료', '취소'];
+
 type ConsultationRequest = {
   id: number;
   name: string;
   phone: string;
+  status: Status;
   createdAt: string;
 };
 
@@ -32,6 +36,7 @@ type Application = {
   address: string | null;
   memo: string | null;
   phoneCarrier: string | null;
+  status: Status;
   createdAt: string;
 };
 
@@ -40,26 +45,45 @@ function formatDate(iso: string) {
   return d.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
 }
 
+const STATUS_STYLES: Record<Status, string> = {
+  '처리중':  'bg-yellow-100 text-yellow-700 border-yellow-200',
+  '접수완료': 'bg-green-100 text-green-700 border-green-200',
+  '취소':    'bg-red-100 text-red-600 border-red-200',
+};
+
+function StatusSelect({
+  value,
+  onChange,
+  loading,
+}: {
+  value: Status;
+  onChange: (s: Status) => void;
+  loading: boolean;
+}) {
+  return (
+    <select
+      value={value}
+      disabled={loading}
+      onChange={e => onChange(e.target.value as Status)}
+      className={`text-xs font-semibold px-2 py-1 rounded-full border cursor-pointer transition-colors disabled:opacity-60 ${STATUS_STYLES[value]}`}
+    >
+      {STATUSES.map(s => (
+        <option key={s} value={s}>{s}</option>
+      ))}
+    </select>
+  );
+}
+
 const TOKEN_KEY = 'adminToken';
 
 function getStoredToken(): string | null {
-  try {
-    return localStorage.getItem(TOKEN_KEY);
-  } catch {
-    return null;
-  }
+  try { return localStorage.getItem(TOKEN_KEY); } catch { return null; }
 }
-
 function setStoredToken(token: string) {
-  try {
-    localStorage.setItem(TOKEN_KEY, token);
-  } catch {}
+  try { localStorage.setItem(TOKEN_KEY, token); } catch {}
 }
-
 function clearStoredToken() {
-  try {
-    localStorage.removeItem(TOKEN_KEY);
-  } catch {}
+  try { localStorage.removeItem(TOKEN_KEY); } catch {}
 }
 
 function AdminLoginForm({ onLogin }: { onLogin: (token: string) => void }) {
@@ -78,10 +102,7 @@ function AdminLoginForm({ onLogin }: { onLogin: (token: string) => void }) {
         body: JSON.stringify({ password }),
       });
       const data = await res.json();
-      if (!res.ok) {
-        setError(data.error ?? '로그인에 실패했습니다.');
-        return;
-      }
+      if (!res.ok) { setError(data.error ?? '로그인에 실패했습니다.'); return; }
       onLogin(data.token);
     } catch {
       setError('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
@@ -102,9 +123,7 @@ function AdminLoginForm({ onLogin }: { onLogin: (token: string) => void }) {
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                비밀번호
-              </label>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">비밀번호</label>
               <input
                 type="password"
                 value={password}
@@ -115,9 +134,7 @@ function AdminLoginForm({ onLogin }: { onLogin: (token: string) => void }) {
                 required
               />
             </div>
-            {error && (
-              <p className="text-red-500 text-sm text-center">{error}</p>
-            )}
+            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
             <button
               type="submit"
               disabled={loading}
@@ -172,14 +189,43 @@ export default function AdminPage() {
     load();
   }, [token]);
 
-  if (!token) {
-    return <AdminLoginForm onLogin={handleLogin} />;
-  }
+  const updateConsultationStatus = async (id: number, status: Status) => {
+    if (!token) return;
+    setConsultations(prev => prev.map(c => c.id === id ? { ...c, _updating: true } as any : c));
+    try {
+      const res = await fetch(`/api/consultations/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ status }),
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        setConsultations(prev => prev.map(c => c.id === id ? updated : c));
+      }
+    } catch {}
+  };
+
+  const updateApplicationStatus = async (id: number, status: Status) => {
+    if (!token) return;
+    setApplications(prev => prev.map(a => a.id === id ? { ...a, _updating: true } as any : a));
+    try {
+      const res = await fetch(`/api/applications/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ status }),
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        setApplications(prev => prev.map(a => a.id === id ? updated : a));
+      }
+    } catch {}
+  };
+
+  if (!token) return <AdminLoginForm onLogin={handleLogin} />;
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
-
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-10">
         <div className="flex items-center justify-between mb-2">
           <h1 className="text-3xl font-black text-gray-900">어드민 페이지</h1>
@@ -218,18 +264,31 @@ export default function AdminPage() {
         {loading ? (
           <div className="text-center py-20 text-gray-400">불러오는 중...</div>
         ) : tab === 'consultations' ? (
-          <ConsultationsTable data={consultations} />
+          <ConsultationsTable data={consultations} onStatusChange={updateConsultationStatus} />
         ) : (
-          <ApplicationsTable data={applications} />
+          <ApplicationsTable data={applications} onStatusChange={updateApplicationStatus} />
         )}
       </main>
-
       <Footer />
     </div>
   );
 }
 
-function ConsultationsTable({ data }: { data: ConsultationRequest[] }) {
+function ConsultationsTable({
+  data,
+  onStatusChange,
+}: {
+  data: ConsultationRequest[];
+  onStatusChange: (id: number, status: Status) => void;
+}) {
+  const [updating, setUpdating] = useState<number | null>(null);
+
+  const handleChange = async (id: number, status: Status) => {
+    setUpdating(id);
+    await onStatusChange(id, status);
+    setUpdating(null);
+  };
+
   if (data.length === 0) {
     return (
       <div className="bg-white rounded-2xl border border-gray-200 p-16 text-center text-gray-400">
@@ -245,6 +304,7 @@ function ConsultationsTable({ data }: { data: ConsultationRequest[] }) {
             <th className="px-4 py-3 text-left font-bold text-gray-600 w-12">번호</th>
             <th className="px-4 py-3 text-left font-bold text-gray-600">이름</th>
             <th className="px-4 py-3 text-left font-bold text-gray-600">연락처</th>
+            <th className="px-4 py-3 text-left font-bold text-gray-600">상태</th>
             <th className="px-4 py-3 text-left font-bold text-gray-600">접수일시</th>
           </tr>
         </thead>
@@ -254,6 +314,13 @@ function ConsultationsTable({ data }: { data: ConsultationRequest[] }) {
               <td className="px-4 py-3 text-gray-400">{row.id}</td>
               <td className="px-4 py-3 font-semibold text-gray-900">{row.name}</td>
               <td className="px-4 py-3 text-gray-700">{row.phone}</td>
+              <td className="px-4 py-3">
+                <StatusSelect
+                  value={row.status ?? '처리중'}
+                  onChange={s => handleChange(row.id, s)}
+                  loading={updating === row.id}
+                />
+              </td>
               <td className="px-4 py-3 text-gray-500">{formatDate(row.createdAt)}</td>
             </tr>
           ))}
@@ -263,8 +330,21 @@ function ConsultationsTable({ data }: { data: ConsultationRequest[] }) {
   );
 }
 
-function ApplicationsTable({ data }: { data: Application[] }) {
+function ApplicationsTable({
+  data,
+  onStatusChange,
+}: {
+  data: Application[];
+  onStatusChange: (id: number, status: Status) => void;
+}) {
   const [expanded, setExpanded] = useState<number | null>(null);
+  const [updating, setUpdating] = useState<number | null>(null);
+
+  const handleChange = async (id: number, status: Status) => {
+    setUpdating(id);
+    await onStatusChange(id, status);
+    setUpdating(null);
+  };
 
   if (data.length === 0) {
     return (
@@ -278,22 +358,32 @@ function ApplicationsTable({ data }: { data: Application[] }) {
     <div className="space-y-3">
       {data.map((row) => (
         <div key={row.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-          <button
-            className="w-full flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors"
-            onClick={() => setExpanded(expanded === row.id ? null : row.id)}
-          >
-            <div className="flex items-center gap-6 text-left">
+          <div className="w-full flex items-center justify-between px-6 py-4">
+            <button
+              className="flex-1 flex items-center gap-6 text-left hover:opacity-80 transition-opacity"
+              onClick={() => setExpanded(expanded === row.id ? null : row.id)}
+            >
               <span className="text-gray-400 text-xs w-6">#{row.id}</span>
               <span className="font-bold text-gray-900">{row.name ?? '-'}</span>
               <span className="text-gray-600">{row.phone ?? '-'}</span>
               <span className="text-gray-500 text-sm">{row.applyProvider ?? '-'}</span>
               <span className="text-gray-400 text-xs">{row.internet ?? '-'}</span>
-            </div>
-            <div className="flex items-center gap-4">
+            </button>
+            <div className="flex items-center gap-4 flex-shrink-0">
+              <StatusSelect
+                value={row.status ?? '처리중'}
+                onChange={s => handleChange(row.id, s)}
+                loading={updating === row.id}
+              />
               <span className="text-gray-400 text-xs">{formatDate(row.createdAt)}</span>
-              <span className="text-gray-400">{expanded === row.id ? '▲' : '▼'}</span>
+              <button
+                onClick={() => setExpanded(expanded === row.id ? null : row.id)}
+                className="text-gray-400"
+              >
+                {expanded === row.id ? '▲' : '▼'}
+              </button>
             </div>
-          </button>
+          </div>
 
           {expanded === row.id && (
             <div className="border-t border-gray-100 px-6 py-5 grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">

@@ -6,6 +6,7 @@ export const consultationRequestsTable = pgTable("consultation_requests", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 100 }).notNull(),
   phone: varchar("phone", { length: 20 }).notNull(),
+  status: varchar("status", { length: 20 }).default("처리중").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -38,6 +39,7 @@ export const applicationsTable = pgTable("applications", {
   email: varchar("email", { length: 200 }),
   address: text("address"),
   memo: text("memo"),
+  status: varchar("status", { length: 20 }).default("처리중").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
