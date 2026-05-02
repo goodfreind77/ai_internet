@@ -14,6 +14,7 @@ import ReviewPage from "@/pages/ReviewPage";
 import ReviewDetailPage from "@/pages/ReviewDetailPage";
 import ReviewWritePage from "@/pages/ReviewWritePage";
 import ApplyPage from "@/pages/ApplyPage";
+import AdminPage from "@/pages/AdminPage";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +54,9 @@ function Router() {
       </Route>
       <Route path="/review/:id">
         {(params) => <ReviewDetailPage reviewId={params.id} />}
+      </Route>
+      <Route path="/admin">
+        {() => <AdminPage />}
       </Route>
       <Route component={NotFound} />
     </Switch>

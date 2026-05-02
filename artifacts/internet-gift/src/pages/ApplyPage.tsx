@@ -93,7 +93,7 @@ export default function ApplyPage() {
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!currentProvider) {
@@ -150,12 +150,43 @@ export default function ApplyPage() {
     }
 
     setSubmitting(true);
-    setTimeout(() => {
+    try {
+      const res = await fetch('/api/applications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          currentProvider,
+          applyProvider,
+          internet,
+          tv,
+          customerType,
+          paymentMethod,
+          payBank: paymentMethod === '자동이체' ? payBank : null,
+          payAccount: paymentMethod === '자동이체' ? payAccount : null,
+          payAccountHolder: paymentMethod === '자동이체' ? payAccountHolder : null,
+          cardCompany: paymentMethod === '카드자동이체' ? cardCompany : null,
+          cardNumber: paymentMethod === '카드자동이체' ? cardNumber : null,
+          cardExpiry: paymentMethod === '카드자동이체' ? cardExpiry : null,
+          giftBank,
+          giftAccount,
+          giftAccountHolder,
+          name,
+          phoneCarrier,
+          phone,
+          email,
+          address,
+          memo,
+        }),
+      });
+      if (!res.ok) throw new Error('서버 오류');
       toast({ title: '신청이 완료되었습니다!', description: '빠른 시일 내에 연락 드리겠습니다.' });
-      setSubmitting(false);
       setLocation('/');
       window.scrollTo(0, 0);
-    }, 800);
+    } catch {
+      toast({ variant: 'destructive', title: '오류가 발생했습니다.', description: '잠시 후 다시 시도해주세요.' });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (

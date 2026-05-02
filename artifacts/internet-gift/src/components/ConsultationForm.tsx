@@ -26,13 +26,27 @@ export function ConsultationForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    toast({
-      title: "폼 제출 완료",
-      description: "최대 지원금을 확인 중입니다. 곧 연락드리겠습니다.",
-      variant: "default",
-    });
-    form.reset();
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const res = await fetch('/api/consultations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: values.name, phone: values.phone }),
+      });
+      if (!res.ok) throw new Error('서버 오류');
+      toast({
+        title: "폼 제출 완료",
+        description: "최대 지원금을 확인 중입니다. 곧 연락드리겠습니다.",
+        variant: "default",
+      });
+      form.reset();
+    } catch {
+      toast({
+        title: "오류 발생",
+        description: "잠시 후 다시 시도해주세요.",
+        variant: "destructive",
+      });
+    }
   }
 
   return (
