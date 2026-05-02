@@ -23,19 +23,7 @@ type Plan = {
   badge?: string;
 };
 
-type TableRow = {
-  name: string;
-  speed: string;
-  tv: string;
-  contract: string;
-  monthlyFee: number;
-  gift: number;
-  secretGift: string;
-};
-
-type ProviderWithTable = Provider & { tableRows: TableRow[] };
-
-const PROVIDERS: Record<string, ProviderWithTable> = {
+const PROVIDERS: Record<string, Provider> = {
   sk: {
     key: 'sk',
     name: 'SK브로드밴드',
@@ -64,14 +52,6 @@ const PROVIDERS: Record<string, ProviderWithTable> = {
         gift: 300000,
         features: ['100MB 광랜 인터넷', 'B tv 스탠다드', 'WiFi 공유기 제공', '설치비 무료'],
       },
-    ],
-    tableRows: [
-      { name: '기가라이트인터넷 + B TV ALL', speed: '500Mbps', tv: 'B TV ALL (200채널)', contract: '3년', monthlyFee: 44000, gift: 470000, secretGift: '별도 문의' },
-      { name: '기가인터넷 + B TV All', speed: '1Gbps', tv: 'B TV All (250채널)', contract: '3년', monthlyFee: 55000, gift: 520000, secretGift: '별도 문의' },
-      { name: '광랜인터넷 + B tv 스탠다드', speed: '100Mbps', tv: 'B tv 스탠다드', contract: '3년', monthlyFee: 33000, gift: 300000, secretGift: '별도 문의' },
-      { name: '기가인터넷 단독', speed: '1Gbps', tv: '미포함', contract: '3년', monthlyFee: 38500, gift: 350000, secretGift: '별도 문의' },
-      { name: '광랜인터넷 단독', speed: '100Mbps', tv: '미포함', contract: '2년', monthlyFee: 22000, gift: 200000, secretGift: '별도 문의' },
-      { name: '10기가인터넷 + B TV 프리미엄', speed: '10Gbps', tv: 'B TV 프리미엄', contract: '3년', monthlyFee: 77000, gift: 650000, secretGift: '별도 문의' },
     ],
   },
   kt: {
@@ -103,13 +83,6 @@ const PROVIDERS: Record<string, ProviderWithTable> = {
         features: ['100MB 인터넷', 'TV 미포함', 'WiFi 제공', '설치비 무료'],
       },
     ],
-    tableRows: [
-      { name: '기가인터넷 + 지니 TV 베이직', speed: '500Mbps', tv: '지니 TV 베이직 (100채널)', contract: '3년', monthlyFee: 44000, gift: 450000, secretGift: '별도 문의' },
-      { name: '기가프리미엄 + 지니 TV 프리미엄', speed: '1Gbps', tv: '지니 TV 프리미엄 (230채널)', contract: '3년', monthlyFee: 60000, gift: 560000, secretGift: '별도 문의' },
-      { name: '슬림인터넷 단독', speed: '100Mbps', tv: '미포함', contract: '2년', monthlyFee: 27500, gift: 250000, secretGift: '별도 문의' },
-      { name: '기가인터넷 단독', speed: '1Gbps', tv: '미포함', contract: '3년', monthlyFee: 38500, gift: 370000, secretGift: '별도 문의' },
-      { name: '10기가 인터넷 + 지니 TV', speed: '10Gbps', tv: '지니 TV 프리미엄', contract: '3년', monthlyFee: 77000, gift: 620000, secretGift: '별도 문의' },
-    ],
   },
   lg: {
     key: 'lg',
@@ -140,13 +113,6 @@ const PROVIDERS: Record<string, ProviderWithTable> = {
         features: ['100MB 인터넷', 'TV 미포함', 'WiFi 제공', '설치비 무료'],
       },
     ],
-    tableRows: [
-      { name: '기가인터넷 + U+tv 프리미엄', speed: '500Mbps', tv: 'U+tv 프리미엄 (200채널)', contract: '3년', monthlyFee: 44000, gift: 470000, secretGift: '별도 문의' },
-      { name: '10기가 인터넷 + U+tv 프리미엄', speed: '10Gbps', tv: 'U+tv 프리미엄', contract: '3년', monthlyFee: 77000, gift: 650000, secretGift: '별도 문의' },
-      { name: '광랜인터넷 단독', speed: '100Mbps', tv: '미포함', contract: '2년', monthlyFee: 22000, gift: 220000, secretGift: '별도 문의' },
-      { name: '기가인터넷 단독', speed: '1Gbps', tv: '미포함', contract: '3년', monthlyFee: 33000, gift: 330000, secretGift: '별도 문의' },
-      { name: '기가인터넷 + U+tv 베이직', speed: '500Mbps', tv: 'U+tv 베이직 (100채널)', contract: '3년', monthlyFee: 36300, gift: 380000, secretGift: '별도 문의' },
-    ],
   },
   skylife: {
     key: 'skylife',
@@ -169,11 +135,6 @@ const PROVIDERS: Record<string, ProviderWithTable> = {
         features: ['500MB 기가 인터넷', 'UHD방송 150여개 채널', '위성방송 수신', '설치비 무료'],
         badge: 'HOT',
       },
-    ],
-    tableRows: [
-      { name: '스카이라이프 기가인터넷 + HD방송', speed: '500Mbps', tv: 'HD방송 (100채널)', contract: '3년', monthlyFee: 44000, gift: 380000, secretGift: '별도 문의' },
-      { name: '스카이라이프 UHD방송 프리미엄', speed: '500Mbps', tv: 'UHD방송 (150채널)', contract: '3년', monthlyFee: 55000, gift: 440000, secretGift: '별도 문의' },
-      { name: '스카이라이프 인터넷 단독', speed: '500Mbps', tv: '미포함', contract: '2년', monthlyFee: 33000, gift: 280000, secretGift: '별도 문의' },
     ],
   },
   hellovision: {
@@ -198,11 +159,6 @@ const PROVIDERS: Record<string, ProviderWithTable> = {
         badge: 'HOT',
       },
     ],
-    tableRows: [
-      { name: '헬로 기가인터넷 + 케이블TV', speed: '500Mbps', tv: '케이블TV (80채널)', contract: '3년', monthlyFee: 38500, gift: 350000, secretGift: '별도 문의' },
-      { name: '헬로 기가프리미엄 + VOD무제한', speed: '1Gbps', tv: 'VOD 무제한', contract: '3년', monthlyFee: 49500, gift: 430000, secretGift: '별도 문의' },
-      { name: '헬로 광랜인터넷 단독', speed: '100Mbps', tv: '미포함', contract: '2년', monthlyFee: 22000, gift: 200000, secretGift: '별도 문의' },
-    ],
   },
   card: {
     key: 'card',
@@ -225,10 +181,6 @@ const PROVIDERS: Record<string, ProviderWithTable> = {
         features: ['인터넷 요금 자동납부 할인', '포인트 2배 적립', '결합 상품 추가 혜택', '연회비 면제 조건 있음'],
         badge: '인기',
       },
-    ],
-    tableRows: [
-      { name: '현대카드 통신특화 M포인트', speed: '-', tv: '-', contract: '1년', monthlyFee: 0, gift: 300000, secretGift: '별도 문의' },
-      { name: '삼성카드 인터넷 결합 특화', speed: '-', tv: '-', contract: '1년', monthlyFee: 0, gift: 250000, secretGift: '별도 문의' },
     ],
   },
 };
@@ -499,72 +451,195 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
             ))}
           </div>
 
-          {/* 상품 비교 표 */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <div className="flex items-center gap-3 mb-5">
-              <span className="w-1 h-6 rounded-full bg-primary inline-block" />
-              <h2 className="text-xl font-black text-gray-900">{provider.name} 전체 상품 요금 비교표</h2>
-            </div>
+          {/* SK 결합 할인표 */}
+          {provider.key === 'sk' && (
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="space-y-10"
+            >
+              <div>
+                <div className="flex items-center gap-3 mb-1">
+                  <span className="w-1 h-6 rounded-full bg-primary inline-block" />
+                  <h2 className="text-xl font-black text-gray-900">요금가족결합</h2>
+                </div>
+                <p className="text-xs text-gray-500 mb-5 ml-4">SKB인터넷 + SKT이동전화 결합 3년 약정시</p>
 
-            <div className="w-full overflow-x-auto rounded-2xl border border-gray-200 shadow-sm">
-              <table className="w-full text-sm border-collapse">
-                <thead>
-                  <tr className="bg-gray-800 text-white">
-                    <th className="px-4 py-3 text-left font-bold border-r border-gray-700 min-w-[200px]">상품명</th>
-                    <th className="px-4 py-3 text-center font-bold border-r border-gray-700">인터넷 속도</th>
-                    <th className="px-4 py-3 text-center font-bold border-r border-gray-700">TV 서비스</th>
-                    <th className="px-4 py-3 text-center font-bold border-r border-gray-700">약정기간</th>
-                    <th className="px-4 py-3 text-center font-bold border-r border-gray-700">월 요금</th>
-                    <th className="px-4 py-3 text-center font-bold border-r border-gray-700 text-orange-300">기본 사은품</th>
-                    <th className="px-4 py-3 text-center font-bold text-yellow-300">비밀 지원금</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {provider.tableRows.map((row, idx) => (
-                    <tr
-                      key={row.name}
-                      data-testid={`table-row-${idx}`}
-                      className={`border-t border-gray-100 hover:bg-orange-50 transition-colors ${
-                        idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'
-                      }`}
-                    >
-                      <td className="px-4 py-3.5 font-semibold text-gray-900 border-r border-gray-100">
-                        {idx === 0 && (
-                          <span className="inline-block bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full mr-2 align-middle">HOT</span>
-                        )}
-                        {row.name}
-                      </td>
-                      <td className="px-4 py-3.5 text-center text-gray-700 border-r border-gray-100 font-medium">{row.speed}</td>
-                      <td className="px-4 py-3.5 text-center text-gray-700 border-r border-gray-100">{row.tv}</td>
-                      <td className="px-4 py-3.5 text-center text-gray-600 border-r border-gray-100">{row.contract}</td>
-                      <td className="px-4 py-3.5 text-center font-bold text-gray-900 border-r border-gray-100">
-                        {row.monthlyFee > 0 ? `${row.monthlyFee.toLocaleString()}원` : '무료'}
-                      </td>
-                      <td className="px-4 py-3.5 text-center font-black text-primary border-r border-gray-100">
-                        {row.gift.toLocaleString()}원
-                      </td>
-                      <td className="px-4 py-3.5 text-center">
-                        <button
-                          onClick={handleConsult}
-                          className="text-xs bg-gray-900 text-white font-bold px-3 py-1.5 rounded-full hover:bg-primary transition-colors"
-                        >
-                          {row.secretGift}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                <h3 className="text-sm font-bold text-gray-700 mb-2">광랜 계열 인터넷 결합</h3>
+                <div className="w-full overflow-x-auto rounded-xl border border-gray-200 shadow-sm mb-5">
+                  <table className="w-full text-sm border-collapse">
+                    <thead>
+                      <tr className="bg-gray-800 text-white">
+                        <th className="px-4 py-3 text-center font-bold border-r border-gray-700">이동전화 회선수</th>
+                        <th className="px-4 py-3 text-center font-bold border-r border-gray-700">이동전화 할인</th>
+                        <th className="px-4 py-3 text-center font-bold">광랜계열 인터넷 할인</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        { lines: '1회선', mobile: '3,500원 (회선당 3,500원)', internet: '-' },
+                        { lines: '2회선', mobile: '7,000원 (회선당 3,500원)', internet: '4,400원' },
+                        { lines: '3회선', mobile: '18,000원 (회선당 6,000원)', internet: '-' },
+                      ].map((row, idx) => (
+                        <tr key={idx} className={`border-t border-gray-100 ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                          <td className="px-4 py-3 text-center font-semibold text-gray-800 border-r border-gray-100">{row.lines}</td>
+                          <td className="px-4 py-3 text-center text-gray-700 border-r border-gray-100">{row.mobile}</td>
+                          <td className={`px-4 py-3 text-center font-bold ${row.internet !== '-' ? 'text-primary' : 'text-gray-400'}`}>{row.internet}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
 
-            <p className="text-xs text-gray-400 mt-3 text-center">
-              ※ 상기 요금은 부가세(VAT) 포함 금액이며, 설치 환경 및 약정 조건에 따라 달라질 수 있습니다.
-            </p>
-          </motion.div>
+                <h3 className="text-sm font-bold text-gray-700 mb-2">기가 계열 인터넷 결합</h3>
+                <div className="w-full overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+                  <table className="w-full text-sm border-collapse">
+                    <thead>
+                      <tr className="bg-gray-800 text-white">
+                        <th className="px-4 py-3 text-center font-bold border-r border-gray-700">이동전화 회선수</th>
+                        <th className="px-4 py-3 text-center font-bold border-r border-gray-700">이동전화 할인</th>
+                        <th className="px-4 py-3 text-center font-bold border-r border-gray-700">500M</th>
+                        <th className="px-4 py-3 text-center font-bold">1G</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        { lines: '1회선', mobile: '3,500원 (회선당 3,500원)', m500: '-', m1g: '-' },
+                        { lines: '2회선', mobile: '7,000원 (회선당 3,500원)', m500: '-', m1g: '-' },
+                        { lines: '3회선', mobile: '18,000원 (회선당 6,000원)', m500: '11,100원', m1g: '13,200원' },
+                        { lines: '4회선', mobile: '24,000원 (회선당 6,000원)', m500: '-', m1g: '-' },
+                      ].map((row, idx) => (
+                        <tr key={idx} className={`border-t border-gray-100 ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                          <td className="px-4 py-3 text-center font-semibold text-gray-800 border-r border-gray-100">{row.lines}</td>
+                          <td className="px-4 py-3 text-center text-gray-700 border-r border-gray-100">{row.mobile}</td>
+                          <td className={`px-4 py-3 text-center font-bold border-r border-gray-100 ${row.m500 !== '-' ? 'text-primary' : 'text-gray-400'}`}>{row.m500}</td>
+                          <td className={`px-4 py-3 text-center font-bold ${row.m1g !== '-' ? 'text-primary' : 'text-gray-400'}`}>{row.m1g}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-3 mb-1">
+                  <span className="w-1 h-6 rounded-full bg-primary inline-block" />
+                  <h2 className="text-xl font-black text-gray-900">요금가족결합 IPTV 추가혜택</h2>
+                </div>
+                <p className="text-xs text-gray-500 mb-5 ml-4">이동전화 + 인터넷 + IPTV 결합 시</p>
+                <div className="w-full overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+                  <table className="w-full text-sm border-collapse">
+                    <thead>
+                      <tr className="bg-gray-800 text-white">
+                        <th className="px-4 py-3 text-center font-bold border-r border-gray-700">항목</th>
+                        <th className="px-4 py-3 text-center font-bold border-r border-gray-700">TV 할인</th>
+                        <th className="px-4 py-3 text-center font-bold border-r border-gray-700">이동전화</th>
+                        <th className="px-4 py-3 text-center font-bold">혜택</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="bg-white border-t border-gray-100">
+                        <td className="px-4 py-3.5 text-center font-semibold text-gray-800 border-r border-gray-100">요금가족결합 + IPTV</td>
+                        <td className="px-4 py-3.5 text-center font-bold text-primary border-r border-gray-100">-1,150원</td>
+                        <td className="px-4 py-3.5 text-center text-gray-700 border-r border-gray-100">이동전화 결합 시</td>
+                        <td className="px-4 py-3.5 text-center text-blue-600 font-semibold">모바일 BTV 데이터팩 무료<br/><span className="text-gray-500 font-normal text-xs">(5,500원 할인)</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-3 mb-5">
+                  <span className="w-1 h-6 rounded-full bg-primary inline-block" />
+                  <h2 className="text-xl font-black text-gray-900">New TV 플러스</h2>
+                </div>
+                <div className="w-full overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+                  <table className="w-full text-sm border-collapse">
+                    <thead>
+                      <tr className="bg-gray-800 text-white">
+                        <th className="px-4 py-3 text-center font-bold border-r border-gray-700">항목</th>
+                        <th className="px-4 py-3 text-center font-bold">할인 금액</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="bg-white border-t border-gray-100">
+                        <td className="px-4 py-3.5 text-center font-semibold text-gray-800 border-r border-gray-100">TV</td>
+                        <td className="px-4 py-3.5 text-center font-bold text-primary">-1,100원</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-3 mb-5">
+                  <span className="w-1 h-6 rounded-full bg-primary inline-block" />
+                  <h2 className="text-xl font-black text-gray-900">요금우리집 결합할인</h2>
+                </div>
+                <div className="w-full overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+                  <table className="w-full text-sm border-collapse">
+                    <thead>
+                      <tr className="bg-gray-800 text-white">
+                        <th className="px-4 py-3 text-center font-bold border-r border-gray-700" rowSpan={2}>구분</th>
+                        <th className="px-4 py-3 text-center font-bold border-r border-gray-700" colSpan={2}>인터넷</th>
+                        <th className="px-4 py-3 text-center font-bold border-r border-gray-700" rowSpan={2}>TV</th>
+                        <th className="px-4 py-3 text-center font-bold" rowSpan={2}>전화</th>
+                      </tr>
+                      <tr className="bg-gray-700 text-white">
+                        <th className="px-4 py-2 text-center font-semibold border-r border-gray-600 text-xs">기가/라이트</th>
+                        <th className="px-4 py-2 text-center font-semibold border-r border-gray-600 text-xs">다이렉트</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        { label: '인터넷 + 전화', giga: '-1,100원', direct: '-2,200원', tv: '-', phone: '-1,100원 (기본요금제)' },
+                        { label: '인터넷 + TV + 전화', giga: '-2,200원', direct: '-5,500원', tv: '-2,200원 (베이직 이상)', phone: '-1,100원 (기본요금제)' },
+                      ].map((row, idx) => (
+                        <tr key={idx} className={`border-t border-gray-100 ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                          <td className="px-4 py-3 text-center font-semibold text-gray-800 border-r border-gray-100">{row.label}</td>
+                          <td className="px-4 py-3 text-center font-bold text-primary border-r border-gray-100">{row.giga}</td>
+                          <td className="px-4 py-3 text-center font-bold text-primary border-r border-gray-100">{row.direct}</td>
+                          <td className={`px-4 py-3 text-center border-r border-gray-100 ${row.tv !== '-' ? 'font-bold text-primary' : 'text-gray-400'}`}>{row.tv}</td>
+                          <td className={`px-4 py-3 text-center ${row.phone !== '-' ? 'text-gray-700' : 'text-gray-400'}`}>{row.phone}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-3 mb-1">
+                  <span className="w-1 h-6 rounded-full bg-primary inline-block" />
+                  <h2 className="text-xl font-black text-gray-900">요금우리집결합 IPTV 추가혜택</h2>
+                </div>
+                <p className="text-xs text-gray-500 mb-5 ml-4">인터넷 결합 시</p>
+                <div className="w-full overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+                  <table className="w-full text-sm border-collapse">
+                    <thead>
+                      <tr className="bg-gray-800 text-white">
+                        <th className="px-4 py-3 text-center font-bold border-r border-gray-700">항목</th>
+                        <th className="px-4 py-3 text-center font-bold">혜택</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="bg-white border-t border-gray-100">
+                        <td className="px-4 py-3.5 text-center font-semibold text-gray-800 border-r border-gray-100">TV</td>
+                        <td className="px-4 py-3.5 text-center text-blue-600 font-semibold">VOD 쿠폰 3,300원/월<br/><span className="text-gray-500 font-normal text-xs">(3개월권)</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <p className="text-xs text-gray-400 mt-5 leading-relaxed">
+                  ※ 영업점에서는 SK 인터넷 결합 신청 시 할인을 1회선만 결합이 가능하며, 추가 휴대폰 결합 신청은 고객센터로 가능합니다.<br/>
+                  ※ 추가 결합 및 약정에 관련 사항은 고객센터를 통하여 신청하시면 됩니다.
+                </p>
+              </div>
+            </motion.div>
+          )}
         </motion.div>
       </main>
 
