@@ -200,7 +200,7 @@ const PROVIDERS: Record<string, Provider> = {
   },
 };
 
-const INTERNET_OPTIONS = ['100MB', '500MB', '1GB', '10GB'];
+const INTERNET_OPTIONS = ['100MB', '500MB', '1GB'];
 const WIFI_OPTIONS = ['미포함', '포함'];
 const IPTV_OPTIONS = ['미결합', '기본', '프리미엄'];
 const BOX_OPTIONS = ['미포함', '포함'];
@@ -280,8 +280,7 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
   const iptvAdd = filters.iptv === '기본' ? 8800 : filters.iptv === '프리미엄' ? 14300 : 0;
   const internetAdd =
     filters.internet === '500MB' ? 22000 :
-    filters.internet === '1GB' ? 33000 :
-    filters.internet === '10GB' ? 55000 : 0;
+    filters.internet === '1GB' ? 33000 : 0;
   const totalFee = BASE_PRICE + internetAdd + wifiAdd + iptvAdd;
 
   const handleConsult = () => {
