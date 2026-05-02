@@ -203,8 +203,8 @@ export default function ApplyPage() {
               신청서 작성 페이지
             </h1>
             <p className="text-base text-gray-600">
-              <a href="tel:010-8475-7854" className="text-primary font-semibold hover:underline">
-                010-8475-7854
+              <a href="tel:1666-3233" className="text-primary font-semibold hover:underline">
+                1666-3233
               </a>
               {' '}으로 전화하시거나{' '}
               <span className="text-primary font-semibold">신청서를 작성</span>해 남겨주시면

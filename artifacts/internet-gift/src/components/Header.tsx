@@ -33,7 +33,7 @@ export function Header() {
         
         <div className="ml-4 pl-4 border-l border-gray-200">
           <span className="text-xs text-gray-500 block mb-1 font-medium">가입상담 (연중무휴)</span>
-          <span className="text-2xl font-black text-primary">010-8475-7854</span>
+          <span className="text-2xl font-black text-primary">1666-3233</span>
         </div>
       </div>
     </header>

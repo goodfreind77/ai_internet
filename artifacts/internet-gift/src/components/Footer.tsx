@@ -11,7 +11,7 @@ export function Footer() {
               고객님의 통신비 절감을 위해 최선을 다하겠습니다.<br/>
               업계 최대 현금 사은품 당일 지급 원칙!
             </p>
-            <p className="font-bold text-xl text-primary">010-8475-7854</p>
+            <p className="font-bold text-xl text-primary">1666-3233</p>
           </div>
           
           <div className="col-span-2">

@@ -262,7 +262,7 @@ function WhyUsContent() {
 
       <div className="text-center py-6 border-t border-border">
         <p className="text-lg font-bold mb-2 text-primary">📞 지금 바로 상담 받으세요!</p>
-        <p className="text-3xl font-black text-primary">010-8475-7854</p>
+        <p className="text-3xl font-black text-primary">1666-3233</p>
         <p className="text-sm text-muted-foreground mt-2">연중무휴 상담 가능</p>
       </div>
     </div>
@@ -363,7 +363,7 @@ function LgDiscountContent() {
           더 자세한 상담이 필요하시다면 AI인터넷으로 언제든 문의해주세요. 감사합니다.
         </p>
         <p className="text-2xl font-black text-center bg-white/20 rounded-lg py-3 px-6">
-          📞 010-8475-7854
+          📞 1666-3233
         </p>
       </div>
     </div>
@@ -573,7 +573,7 @@ function KtDiscountContent() {
 
       <div className="bg-primary/10 border-2 border-primary rounded-xl p-6 text-center">
         <h3 className="text-lg font-bold mb-3">더 자세한 상담이 필요하신가요?</h3>
-        <a href="tel:010-8475-7854" className="text-3xl font-black text-primary hover:underline block mb-2">010-8475-7854</a>
+        <a href="tel:1666-3233" className="text-3xl font-black text-primary hover:underline block mb-2">1666-3233</a>
         <p className="text-sm text-muted-foreground">연중무휴 상담 가능 · AI인터넷</p>
       </div>
     </div>
@@ -930,7 +930,7 @@ function SkDiscountContent() {
 
       <div className="bg-primary/10 border-2 border-primary rounded-xl p-6 text-center">
         <h3 className="text-lg font-bold mb-3">더 자세한 상담이 필요하신가요?</h3>
-        <a href="tel:010-8475-7854" className="text-3xl font-black text-primary hover:underline block mb-2">010-8475-7854</a>
+        <a href="tel:1666-3233" className="text-3xl font-black text-primary hover:underline block mb-2">1666-3233</a>
         <p className="text-sm text-muted-foreground">연중무휴 상담 가능 · AI인터넷</p>
       </div>
     </div>
@@ -1017,7 +1017,7 @@ function NewVsRenewalContent() {
       <div className="bg-primary/10 border-2 border-primary rounded-xl p-6">
         <h3 className="text-lg font-bold mb-3 text-primary">결론: 대부분의 경우 신규가 유리합니다!</h3>
         <p className="text-base mb-4">현금 사은품을 최대한 받고, 최신 요금제와 장비를 사용하려면 신규 가입이 훨씬 유리합니다. 특히 AI인터넷을 통해 신규 가입하시면 법적 최대 사은품 + 당일 입금 서비스를 받으실 수 있습니다.</p>
-        <a href="tel:010-8475-7854" className="text-2xl font-black text-primary hover:underline block text-center">📞 010-8475-7854</a>
+        <a href="tel:1666-3233" className="text-2xl font-black text-primary hover:underline block text-center">📞 1666-3233</a>
         <p className="text-sm text-muted-foreground text-center mt-1">연중무휴 무료 상담</p>
       </div>
     </div>
@@ -1074,7 +1074,7 @@ function Kt84Content() {
       <div className="bg-gradient-to-r from-primary to-primary/80 text-white rounded-xl p-8 text-center">
         <h2 className="text-2xl font-bold mb-4">지금 바로 KT 천만 프로모션 혜택 받으세요!</h2>
         <p className="text-base mb-6">AI인터넷을 통해 KT 가입 시 당일 입금 + 법적 최대 사은품을 받으실 수 있습니다.</p>
-        <a href="tel:010-8475-7854" className="text-3xl font-black text-white block mb-2">📞 010-8475-7854</a>
+        <a href="tel:1666-3233" className="text-3xl font-black text-white block mb-2">📞 1666-3233</a>
         <p className="text-sm opacity-80">연중무휴 상담 가능</p>
       </div>
     </div>
