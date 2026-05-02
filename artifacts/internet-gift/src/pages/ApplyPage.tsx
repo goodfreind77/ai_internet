@@ -52,12 +52,16 @@ const INTERNET_OPTIONS = ['100M', '500M', '1G'];
 const TV_OPTIONS = ['이코노미(183채널)', '스탠다드(234채널)', 'All(257채널)', '선택안함'];
 const CUSTOMER_TYPES = ['개인', '개인사업자', '법인', '미성년자', '외국인'];
 const PHONE_CARRIERS = ['KT', 'SKT', 'LG U+', '알뜰폰'];
-const PAYMENT_METHODS = ['자동이체', '카드자동이체', '신용카드', '지로'];
+const PAYMENT_METHODS = ['자동이체', '카드자동이체'];
 const BANKS = [
   '은행선택', 'KB국민은행', '신한은행', '우리은행', 'NH농협은행', '하나은행',
   'IBK기업은행', 'SC제일은행', '씨티은행', '카카오뱅크', '케이뱅크', '토스뱅크',
   '새마을금고', '신협', '우체국', '대구은행', '부산은행', '경남은행', '광주은행',
   '전북은행', '제주은행', '수협은행', '산업은행',
+];
+const CARD_COMPANIES = [
+  '카드사 선택', '삼성카드', '현대카드', 'KB국민카드', '신한카드', '롯데카드',
+  '우리카드', '하나카드', 'NH농협카드', 'BC카드', '씨티카드',
 ];
 
 export default function ApplyPage() {
@@ -70,6 +74,12 @@ export default function ApplyPage() {
   const [tv, setTv] = useState('');
   const [customerType, setCustomerType] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
+  const [payBank, setPayBank] = useState('은행선택');
+  const [payAccount, setPayAccount] = useState('');
+  const [payAccountHolder, setPayAccountHolder] = useState('');
+  const [cardCompany, setCardCompany] = useState('카드사 선택');
+  const [cardNumber, setCardNumber] = useState('');
+  const [cardExpiry, setCardExpiry] = useState('');
   const [giftBank, setGiftBank] = useState('은행선택');
   const [giftAccount, setGiftAccount] = useState('');
   const [giftAccountHolder, setGiftAccountHolder] = useState('');
@@ -121,6 +131,18 @@ export default function ApplyPage() {
     if (!paymentMethod) {
       toast({ variant: 'destructive', title: '요금 납부방법을 선택해주세요.' });
       return;
+    }
+    if (paymentMethod === '자동이체') {
+      if (payBank === '은행선택' || !payAccount.trim() || !payAccountHolder.trim()) {
+        toast({ variant: 'destructive', title: '자동이체 은행 정보를 모두 입력해주세요.' });
+        return;
+      }
+    }
+    if (paymentMethod === '카드자동이체') {
+      if (cardCompany === '카드사 선택' || !cardNumber.trim() || !cardExpiry.trim()) {
+        toast({ variant: 'destructive', title: '카드자동이체 정보를 모두 입력해주세요.' });
+        return;
+      }
     }
     if (giftBank === '은행선택' || !giftAccount.trim() || !giftAccountHolder.trim()) {
       toast({ variant: 'destructive', title: '사은품 입금 계좌 정보를 모두 입력해주세요.' });
@@ -311,18 +333,98 @@ export default function ApplyPage() {
             </div>
 
             {/* 요금 납부방법 */}
-            <div>
-              <FieldLabel required>요금 납부방법</FieldLabel>
-              <div className="flex flex-wrap gap-2" data-testid="group-payment-method">
-                {PAYMENT_METHODS.map((m) => (
-                  <ToggleBtn
-                    key={m}
-                    label={m}
-                    selected={paymentMethod === m}
-                    onClick={() => setPaymentMethod(m)}
-                  />
-                ))}
+            <div className="space-y-4">
+              <div>
+                <FieldLabel required>요금 납부방법</FieldLabel>
+                <div className="flex flex-wrap gap-2" data-testid="group-payment-method">
+                  {PAYMENT_METHODS.map((m) => (
+                    <ToggleBtn
+                      key={m}
+                      label={m}
+                      selected={paymentMethod === m}
+                      onClick={() => setPaymentMethod(m)}
+                    />
+                  ))}
+                </div>
               </div>
+
+              {/* 자동이체 상세 */}
+              {paymentMethod === '자동이체' && (
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
+                  <p className="text-sm font-semibold text-gray-700">자동이체 정보 입력</p>
+                  <div className="grid md:grid-cols-[180px_1fr] gap-3">
+                    <select
+                      value={payBank}
+                      onChange={(e) => setPayBank(e.target.value)}
+                      className="border border-input rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
+                      data-testid="select-pay-bank"
+                    >
+                      {BANKS.map((b) => (
+                        <option key={b} value={b}>{b}</option>
+                      ))}
+                    </select>
+                    <Input
+                      value={payAccount}
+                      onChange={(e) => setPayAccount(e.target.value)}
+                      placeholder="계좌번호 (숫자만 입력)"
+                      data-testid="input-pay-account"
+                      className="min-h-[44px]"
+                      inputMode="numeric"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-sm text-gray-600">예금주</Label>
+                    <Input
+                      value={payAccountHolder}
+                      onChange={(e) => setPayAccountHolder(e.target.value)}
+                      placeholder="예금주 이름을 입력해주세요"
+                      data-testid="input-pay-account-holder"
+                      className="min-h-[44px]"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* 카드자동이체 상세 */}
+              {paymentMethod === '카드자동이체' && (
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
+                  <p className="text-sm font-semibold text-gray-700">카드자동이체 정보 입력</p>
+                  <select
+                    value={cardCompany}
+                    onChange={(e) => setCardCompany(e.target.value)}
+                    className="w-full border border-input rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
+                    data-testid="select-card-company"
+                  >
+                    {CARD_COMPANIES.map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                  <Input
+                    value={cardNumber}
+                    onChange={(e) => setCardNumber(e.target.value)}
+                    placeholder="카드번호 (숫자만 입력)"
+                    data-testid="input-card-number"
+                    className="min-h-[44px]"
+                    inputMode="numeric"
+                    maxLength={16}
+                  />
+                  <div className="space-y-1">
+                    <Label className="text-sm text-gray-600">유효기간</Label>
+                    <Input
+                      value={cardExpiry}
+                      onChange={(e) => {
+                        let v = e.target.value.replace(/[^0-9]/g, '');
+                        if (v.length >= 3) v = v.slice(0, 2) + '/' + v.slice(2, 4);
+                        setCardExpiry(v);
+                      }}
+                      placeholder="MM/YY"
+                      data-testid="input-card-expiry"
+                      className="min-h-[44px]"
+                      maxLength={5}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* 사은품 입금 계좌번호 */}
