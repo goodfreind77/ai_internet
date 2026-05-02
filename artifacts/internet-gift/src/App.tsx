@@ -9,6 +9,9 @@ import CardPage from "@/pages/CardPage";
 import EventPage from "@/pages/EventPage";
 import EventDetailPage from "@/pages/EventDetailPage";
 import TipPage from "@/pages/TipPage";
+import ReviewPage from "@/pages/ReviewPage";
+import ReviewDetailPage from "@/pages/ReviewDetailPage";
+import ReviewWritePage from "@/pages/ReviewWritePage";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +39,15 @@ function Router() {
       </Route>
       <Route path="/tip/:slug">
         {() => <TipPage />}
+      </Route>
+      <Route path="/review">
+        {() => <ReviewPage />}
+      </Route>
+      <Route path="/review/write">
+        {() => <ReviewWritePage />}
+      </Route>
+      <Route path="/review/:id">
+        {(params) => <ReviewDetailPage reviewId={params.id} />}
       </Route>
       <Route component={NotFound} />
     </Switch>

@@ -25,7 +25,9 @@ export function Header() {
         <Link href="/tip">
           <Button className="bg-[#f39c12] hover:bg-[#e67e22] text-white font-bold rounded-full px-5 border-none shadow-none">꿀TIP</Button>
         </Link>
-        <Button className="bg-[#55efc4] hover:bg-[#00b894] text-white font-bold rounded-full px-5 border-none shadow-none">후기</Button>
+        <Link href="/review">
+          <Button className="bg-[#55efc4] hover:bg-[#00b894] text-white font-bold rounded-full px-5 border-none shadow-none">후기</Button>
+        </Link>
         
         <div className="ml-4 pl-4 border-l border-gray-200">
           <span className="text-xs text-gray-500 block mb-1 font-medium">가입상담 (연중무휴)</span>
