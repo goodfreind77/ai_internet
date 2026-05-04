@@ -262,7 +262,7 @@ function WhyUsContent() {
 
       <div className="text-center py-6 border-t border-border">
         <p className="text-lg font-bold mb-2 text-primary">📞 지금 바로 상담 받으세요!</p>
-        <p className="text-3xl font-black text-primary">1666-3233</p>
+        <a href="tel:1666-3233" className="text-3xl font-black text-primary hover:underline">1666-3233</a>
         <p className="text-sm text-muted-foreground mt-2">연중무휴 상담 가능</p>
       </div>
     </div>
@@ -362,9 +362,9 @@ function LgDiscountContent() {
         <p className="text-base leading-relaxed mb-4">
           더 자세한 상담이 필요하시다면 AI인터넷으로 언제든 문의해주세요. 감사합니다.
         </p>
-        <p className="text-2xl font-black text-center bg-white/20 rounded-lg py-3 px-6">
+        <a href="tel:1666-3233" className="text-2xl font-black text-center bg-white/20 rounded-lg py-3 px-6 block hover:opacity-80 transition-opacity">
           📞 1666-3233
-        </p>
+        </a>
       </div>
     </div>
   );

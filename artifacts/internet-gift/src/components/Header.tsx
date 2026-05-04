@@ -39,10 +39,10 @@ export function Header() {
           </Button>
         </Link>
 
-        <div className="hidden md:block ml-2 pl-4 border-l border-gray-200 flex-shrink-0">
+        <a href="tel:1666-3233" className="hidden md:block ml-2 pl-4 border-l border-gray-200 flex-shrink-0 hover:opacity-80 transition-opacity">
           <span className="text-xs text-gray-500 block mb-0.5 font-medium">가입상담 (연중무휴)</span>
           <span className="text-xl font-black text-primary whitespace-nowrap">1666-3233</span>
-        </div>
+        </a>
 
         <a href="tel:1666-3233" className="md:hidden flex-shrink-0">
           <Button className="bg-primary text-white font-bold rounded-full px-3 border-none shadow-none text-xs h-8 flex items-center gap-1">
