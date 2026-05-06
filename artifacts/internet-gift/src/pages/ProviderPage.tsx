@@ -42,7 +42,7 @@ const PROVIDERS: Record<string, Provider> = {
       wifi: ['미포함', '기본와이파이', '기가와이파이', '윙즈(와이파이증폭기)'],
       iptv: ['미결합', '이코노미(183채널)', '스탠다드(234채널)', 'ALL(257채널)', 'ALL(플러스)'],
       box: ['미포함', '스마트3셋탑', '애플TV셋탑', 'AI4 셋탑', 'AI 스피커형셋탑', 'AI Sound Max 셋탑'],
-      phone: ['미결합', '결합'],
+      phone: ['미결합', 'SKT 1회선', 'SKT 2회선 (광랜)', 'SKT 3회선 (기가 500M)', 'SKT 3회선 (기가 1G)', 'SKT 4회선'],
     },
     plans: [
       {
@@ -79,7 +79,7 @@ const PROVIDERS: Record<string, Provider> = {
       wifi: ['미포함', '기본와이파이', 'KT WiFi 6D', '버디(와이파이증폭기)'],
       iptv: ['미결합', '베이직(233채널)', '라이트(237채널)', '에센스(263채널)', '모든G(256채널)', '모든G 플러스(256채널)'],
       box: ['미포함', '기가지니3 셋탑', '기가지니A 셋탑', '기가지니3A 셋탑', '지니TV사운드바 셋탑'],
-      phone: ['미결합', '결합', '100M (휴대폰요금제 65,000원미만)결합', '100M (휴대폰요금제 65,000원이상)결합'],
+      phone: ['미결합', 'KT결합 (22,000원미만)', 'KT결합 (22,000원이상)', 'KT결합 (64,900원이상)'],
     },
     plans: [
       {
@@ -116,7 +116,7 @@ const PROVIDERS: Record<string, Provider> = {
       wifi: ['미포함', 'WiFi6', 'WiFi6+WiFi6', 'WiFi6+스마트홈스피커'],
       iptv: ['미결합', '실속형(217채널)', '기본형(223채널)', '프리미엄(252채널)'],
       box: ['미포함', '4K UHD4셋탑', '고급형 셋탑', 'U+tv 사운드바 셋탑'],
-      phone: ['미결합', '결합'],
+      phone: ['미결합', 'LGU+ 결합'],
     },
     plans: [
       {
@@ -366,11 +366,46 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
     '기가와이파이': 3300, '윙즈(와이파이증폭기)': 2750,
   };
 
+  const phonePriceMap: Record<string, number> = {
+    '미결합': 0,
+    // SK (SKT 결합)
+    'SKT 1회선': 0,
+    'SKT 2회선 (광랜)': -4400,
+    'SKT 3회선 (기가 500M)': -11100,
+    'SKT 3회선 (기가 1G)': -13200,
+    'SKT 4회선': 0,
+    // KT 총액 결합할인 (인터넷 할인 기준)
+    'KT결합 (22,000원미만)': -2200,
+    'KT결합 (22,000원이상)': -5500,
+    'KT결합 (64,900원이상)': -5500,
+    // generic
+    '결합': -5500,
+  };
+
+  // LG유플러스: 인터넷 속도별 할인 (참 쉬운 가족결합)
+  const lgPhoneDiscountBySpeed: Record<string, number> = {
+    '와이파이기본광랜(100M)': -5500,
+    '와이파이기본기가슬림(500M)': -9900,
+    '와이파이기본기가(1G)': -13200,
+    '프리미엄안심100M': -5500,
+    '프리미엄안심500M': -9900,
+    '프리미엄안심1G': -13200,
+    '프리미엄안심보상 100M': -5500,
+    '프리미엄안심보상 500M': -9900,
+    '프리미엄안심보상 1G': -13200,
+  };
+
   const BASE_PRICE = internetPriceMap[filters.internet] ?? 22000;
   const wifiAdd = wifiPriceMap[filters.wifi] ?? 0;
   const iptvAdd = iptvPriceMap[filters.iptv] ?? 0;
   const boxAdd = boxFeeMap[filters.box] ?? 0;
-  const totalFee = BASE_PRICE + wifiAdd + iptvAdd + boxAdd;
+
+  let phoneDiscount = phonePriceMap[filters.phone] ?? 0;
+  if (providerKey === 'lg' && filters.phone === 'LGU+ 결합') {
+    phoneDiscount = lgPhoneDiscountBySpeed[filters.internet] ?? -9900;
+  }
+
+  const totalFee = BASE_PRICE + wifiAdd + iptvAdd + boxAdd + phoneDiscount;
 
   const handleConsult = () => {
     setModalOpen(true);
@@ -460,7 +495,8 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
                 <span>인터넷 {BASE_PRICE.toLocaleString()}원</span>
                 {wifiAdd > 0 && <span>+ 와이파이 {wifiAdd.toLocaleString()}원</span>}
                 {iptvAdd > 0 && <span>+ IPTV {iptvAdd.toLocaleString()}원</span>}
-                {boxAdd > 0 && <span>+ 셋톱박스 {boxAdd.toLocaleString()}원</span>}
+                {boxAdd > 0 && <span>+ 셋탑박스 {boxAdd.toLocaleString()}원</span>}
+                {phoneDiscount < 0 && <span className="text-green-600 font-semibold">- 휴대폰결합 {Math.abs(phoneDiscount).toLocaleString()}원 할인</span>}
               </div>
               <span className="text-xs text-gray-400">▶ 합계</span>
             </div>
