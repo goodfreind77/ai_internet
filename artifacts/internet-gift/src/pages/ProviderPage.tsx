@@ -256,17 +256,21 @@ type FilterState = {
   phone: string;
 };
 
+type OptionGroup = { label: string; items: string[] };
+
 function DropdownFilter({
   icon,
   label,
   value,
   options,
+  groups,
   onChange,
 }: {
   icon: React.ReactNode;
   label: string;
   value: string;
   options: string[];
+  groups?: OptionGroup[];
   onChange: (v: string) => void;
 }) {
   const [open, setOpen] = useState(false);
@@ -284,20 +288,48 @@ function DropdownFilter({
         </div>
       </button>
       {open && (
-        <div className="absolute top-full left-0 bg-white border border-gray-200 rounded-lg shadow-lg z-20 mt-1 min-w-[160px] w-max max-w-[240px]">
-          {options.map((opt) => (
-            <button
-              key={opt}
-              onClick={() => { onChange(opt); setOpen(false); }}
-              className={`w-full px-4 py-2 text-sm text-left hover:bg-gray-50 whitespace-nowrap ${value === opt ? 'text-primary font-bold' : 'text-gray-700'}`}
-            >
-              {opt}
-            </button>
-          ))}
+        <div className="absolute top-full left-0 bg-white border border-gray-200 rounded-lg shadow-lg z-20 mt-1 min-w-[180px] w-max max-w-[260px]">
+          {groups ? (
+            groups.map((group, gi) => (
+              <div key={gi}>
+                <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-400 bg-gray-50 border-b border-gray-100 sticky top-0">
+                  {group.label}
+                </div>
+                {group.items.map((opt) => (
+                  <button
+                    key={opt}
+                    onClick={() => { onChange(opt); setOpen(false); }}
+                    className={`w-full px-4 py-2 text-sm text-left hover:bg-gray-50 whitespace-nowrap ${value === opt ? 'text-primary font-bold' : 'text-gray-700'}`}
+                  >
+                    {opt}
+                  </button>
+                ))}
+              </div>
+            ))
+          ) : (
+            options.map((opt) => (
+              <button
+                key={opt}
+                onClick={() => { onChange(opt); setOpen(false); }}
+                className={`w-full px-4 py-2 text-sm text-left hover:bg-gray-50 whitespace-nowrap ${value === opt ? 'text-primary font-bold' : 'text-gray-700'}`}
+              >
+                {opt}
+              </button>
+            ))
+          )}
         </div>
       )}
     </div>
   );
+}
+
+function buildPhoneGroups(options: string[]): OptionGroup[] {
+  const noBundle = options.filter(o => o === '미결합');
+  const bundle = options.filter(o => o !== '미결합');
+  return [
+    { label: '미결합', items: noBundle },
+    ...(bundle.length > 0 ? [{ label: '결합', items: bundle }] : []),
+  ];
 }
 
 interface ProviderPageProps {
@@ -486,6 +518,7 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
                 label="휴대폰"
                 value={filters.phone}
                 options={opts.phone}
+                groups={buildPhoneGroups(opts.phone)}
                 onChange={(v) => setFilters({ ...filters, phone: v })}
               />
             </div>
