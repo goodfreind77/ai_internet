@@ -13,7 +13,7 @@ export function Header() {
         className="flex items-center hover:opacity-80 transition-opacity cursor-pointer flex-shrink-0"
         data-testid="logo-home"
       >
-        <img src="/logo.png" alt="AI인터넷" className="h-16 sm:h-20 w-auto object-contain" />
+        <img src="/logo-trim.png" alt="AI인터넷" className="h-16 sm:h-20 w-auto object-contain" />
       </button>
 
       <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
