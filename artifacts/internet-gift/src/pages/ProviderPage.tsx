@@ -50,7 +50,7 @@ const PROVIDERS: Record<string, Provider> = {
         internet: '500MB',
         monthlyFee: 44000,
         gift: 470000,
-        features: ['500MB 기가 인터넷', 'B TV ALL (200여개 채널)', 'WiFi 공유기 무료 제공'],
+        features: ['500MB 기가 인터넷', 'B TV ALL (200여개 채널)', 'WiFi 공유기 포함'],
         badge: 'HOT',
       },
       {
@@ -58,7 +58,7 @@ const PROVIDERS: Record<string, Provider> = {
         internet: '1GB',
         monthlyFee: 55000,
         gift: 520000,
-        features: ['1GB 기가 인터넷', 'B TV All (250여개 채널)', '기가 WiFi 공유기 무료 제공'],
+        features: ['1GB 기가 인터넷', 'B TV All (250여개 채널)', 'WiFi 공유기 포함'],
         badge: '인기',
       },
       {
@@ -66,7 +66,7 @@ const PROVIDERS: Record<string, Provider> = {
         internet: '100MB',
         monthlyFee: 33000,
         gift: 300000,
-        features: ['100MB 광랜 인터넷', 'B tv 스탠다드', 'WiFi 공유기 제공'],
+        features: ['100MB 광랜 인터넷', 'B tv 스탠다드', 'WiFi 공유기 포함'],
       },
     ],
   },
