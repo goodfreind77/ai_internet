@@ -1,5 +1,5 @@
 import React from 'react';
-import { Gift, Phone } from 'lucide-react';
+import { Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLocation } from 'wouter';
 import { Link } from 'wouter';
@@ -10,11 +10,10 @@ export function Header() {
     <header className="w-full bg-white border-b border-gray-100 py-3 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-50 shadow-sm">
       <button
         onClick={() => setLocation('/')}
-        className="flex items-center gap-2 text-primary font-bold text-xl sm:text-2xl tracking-tight hover:opacity-80 transition-opacity cursor-pointer flex-shrink-0"
+        className="flex items-center hover:opacity-80 transition-opacity cursor-pointer flex-shrink-0"
         data-testid="logo-home"
       >
-        <Gift className="w-6 h-6 sm:w-7 sm:h-7 text-primary flex-shrink-0" />
-        <span className="whitespace-nowrap">AI인터넷</span>
+        <img src="/logo.png" alt="AI인터넷" className="h-9 sm:h-11 w-auto object-contain" />
       </button>
 
       <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
