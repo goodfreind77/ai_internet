@@ -423,11 +423,11 @@ export default function CardPage({ providerKey = 'all' }: CardPageProps) {
                 <X className="w-4 h-4 text-gray-600" />
               </button>
 
-              <div className="bg-white p-6 flex items-center justify-center min-h-[180px] border-b border-gray-100">
+              <div className="bg-white p-6 flex items-center justify-center min-h-[360px] border-b border-gray-100">
                 <img
                   src={selectedCard.image}
                   alt={selectedCard.name}
-                  className="max-h-[150px] w-auto object-contain"
+                  className="max-h-[300px] w-auto object-contain"
                 />
               </div>
 
