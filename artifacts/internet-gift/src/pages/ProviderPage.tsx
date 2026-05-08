@@ -42,7 +42,7 @@ const PROVIDERS: Record<string, Provider> = {
       wifi: ['미포함', '기본와이파이', '기가와이파이', '윙즈(와이파이증폭기)'],
       iptv: ['미결합', '이코노미(183채널)', '스탠다드(234채널)', 'ALL(257채널)', 'ALL(플러스)'],
       box: ['미포함', '스마트3셋탑', '애플TV셋탑', 'AI4 셋탑', 'AI 스피커형셋탑', 'AI Sound Max 셋탑'],
-      phone: ['미결합', 'SKT 1회선', 'SKT 2회선 (광랜)', 'SKT 3회선 (기가 500M)', 'SKT 3회선 (기가 1G)', 'SKT 4회선'],
+      phone: ['미결합', '결합'],
     },
     plans: [
       {
@@ -79,7 +79,7 @@ const PROVIDERS: Record<string, Provider> = {
       wifi: ['미포함', '기본와이파이', 'KT WiFi 6D', '버디(와이파이증폭기)'],
       iptv: ['미결합', '베이직(233채널)', '라이트(237채널)', '에센스(263채널)', '모든G(256채널)', '모든G 플러스(256채널)'],
       box: ['미포함', '기가지니3 셋탑', '기가지니A 셋탑', '기가지니3A 셋탑', '지니TV사운드바 셋탑'],
-      phone: ['미결합', 'KT결합 (22,000원미만)', 'KT결합 (22,000원이상)', 'KT결합 (64,900원이상)', 'KT결합 (108,900원이상)', 'KT결합 (141,900원이상)', 'KT결합 (174,900원이상)'],
+      phone: ['미결합'],
     },
     plans: [
       {
@@ -189,7 +189,7 @@ const PROVIDERS: Record<string, Provider> = {
     filterOptions: {
       internet: ['광랜 100M', '광랜 160M', '기가라이트 500M', '플래티넘기가 1G'],
       iptv: ['미결합', '이코노미(109채널)', '뉴베이직(245채널)', '뉴프리미엄(245채널)'],
-      phone: ['미결합', 'SKT 1회선', 'SKT 2회선 (광랜)', 'SKT 3회선 (기가 500M)', 'SKT 3회선 (기가 1G)', 'SKT 4회선'],
+      phone: ['미결합', '결합'],
     },
     plans: [
       {
@@ -362,13 +362,26 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
 
   const isHellovision = providerKey === 'hellovision';
 
+  // KT: 인터넷 속도에 따라 휴대폰 결합 옵션이 달라짐
+  const ktPhoneOptions = filters.internet === '100MB'
+    ? ['미결합', '100M (휴대폰요금제 65,000원미만)결합', '100M (휴대폰요금제 65,000원이상)결합']
+    : ['미결합', '결합'];
+
   const opts = {
     internet: provider.filterOptions?.internet ?? INTERNET_OPTIONS,
     wifi: provider.filterOptions?.wifi ?? WIFI_OPTIONS,
     iptv: provider.filterOptions?.iptv ?? IPTV_OPTIONS,
     box: provider.filterOptions?.box ?? BOX_OPTIONS,
-    phone: provider.filterOptions?.phone ?? PHONE_OPTIONS,
+    phone: providerKey === 'kt' ? ktPhoneOptions : (provider.filterOptions?.phone ?? PHONE_OPTIONS),
   };
+
+  // KT: 인터넷 변경 시 해당 속도에 없는 휴대폰 옵션이면 리셋
+  useEffect(() => {
+    if (providerKey === 'kt' && !ktPhoneOptions.includes(filters.phone)) {
+      setFilters(f => ({ ...f, phone: '미결합' }));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters.internet, providerKey]);
 
   const internetPriceMap: Record<string, number> = {
     '100MB': 22000, '200MB': 27500, '500MB': 33000, '1G': 38500, '1GB': 38500,
@@ -398,52 +411,96 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
     '기가와이파이': 3300, '윙즈(와이파이증폭기)': 2750,
   };
 
-  const phonePriceMap: Record<string, number> = {
-    '미결합': 0,
-    // SK브로드밴드 & LG헬로비전 (SKT 요금가족결합 - 인터넷 할인 기준)
-    'SKT 1회선': 0,
-    'SKT 2회선 (광랜)': -4400,
-    'SKT 3회선 (기가 500M)': -11100,
-    'SKT 3회선 (기가 1G)': -13200,
-    'SKT 4회선': 0,
-    // KT 총액 결합할인 (인터넷 할인 기준 - 500M/1G 기준)
-    'KT결합 (22,000원미만)': -2200,
-    'KT결합 (22,000원이상)': -5500,
-    'KT결합 (64,900원이상)': -5500,
-    'KT결합 (108,900원이상)': -5500,
-    'KT결합 (141,900원이상)': -5500,
-    'KT결합 (174,900원이상)': -5500,
-  };
-
-  // LG유플러스: 인터넷 속도별 할인 (참 쉬운 가족결합)
-  const lgPhoneDiscountBySpeed: Record<string, number> = {
-    '와이파이기본광랜(100M)': -5500,
-    '와이파이기본기가슬림(500M)': -9900,
-    '와이파이기본기가(1G)': -13200,
-    '프리미엄안심100M': -5500,
-    '프리미엄안심500M': -9900,
-    '프리미엄안심1G': -13200,
-    '프리미엄안심보상 100M': -5500,
-    '프리미엄안심보상 500M': -9900,
-    '프리미엄안심보상 1G': -13200,
-  };
-
   const BASE_PRICE = internetPriceMap[filters.internet] ?? 22000;
   const wifiAdd = wifiPriceMap[filters.wifi] ?? 0;
   const iptvAdd = iptvPriceMap[filters.iptv] ?? 0;
   const boxAdd = boxFeeMap[filters.box] ?? 0;
 
-  let phoneDiscount = phonePriceMap[filters.phone] ?? 0;
-  // KT 100M(슬림): 22,000원이상 구간은 -3,300원, 64,900원이상부터 -5,500원 (500M/1G는 전 구간 -5,500원)
-  if (providerKey === 'kt' && filters.internet === '100MB') {
-    if (filters.phone === 'KT결합 (22,000원이상)') phoneDiscount = -3300;
-    else if (['KT결합 (64,900원이상)', 'KT결합 (108,900원이상)', 'KT결합 (141,900원이상)', 'KT결합 (174,900원이상)'].includes(filters.phone)) phoneDiscount = -5500;
-  }
-  // LG유플러스: 인터넷 속도에 따라 자동 적용
-  if (providerKey === 'lg' && filters.phone === 'LGU+ 결합') {
-    phoneDiscount = lgPhoneDiscountBySpeed[filters.internet] ?? -9900;
-  }
+  // 통신사별 결합 할인 계산 (참조 사이트 E() 함수 로직과 동일)
+  const getPhoneDiscount = (): number => {
+    const internet = filters.internet;
+    const iptv = filters.iptv;
+    const phone = filters.phone;
+    const hasIptv = iptv !== '미결합';
 
+    if (providerKey === 'sk') {
+      const hasPhone = phone === '결합';
+      if (hasIptv && hasPhone) {
+        if (internet === '100MB') return -7700;
+        if (internet === '500MB') return -14300;
+        if (internet === '1G') return -16500;
+      }
+      if (hasIptv && !hasPhone) {
+        if (internet === '100MB') return -3300;
+        if (internet === '500MB' || internet === '1G') return -7700;
+      }
+      if (!hasIptv && hasPhone) {
+        if (internet === '100MB') return -4400;
+        if (internet === '500MB') return -11000;
+        if (internet === '1G') return -13200;
+      }
+      return 0;
+    }
+
+    if (providerKey === 'kt') {
+      const isPremium = ['에센스(263채널)', '모든G(256채널)', '모든G 플러스(256채널)'].includes(iptv);
+      if (hasIptv && phone === '미결합') {
+        if (internet === '100MB') return isPremium ? -3740 : -2640;
+        if (internet === '500MB' || internet === '1G') return isPremium ? -9240 : -8140;
+      }
+      if (hasIptv && internet === '100MB') {
+        if (phone === '100M (휴대폰요금제 65,000원미만)결합') return isPremium ? -7040 : -5940;
+        if (phone === '100M (휴대폰요금제 65,000원이상)결합') return isPremium ? -9240 : -8140;
+      }
+      if (hasIptv && (internet === '500MB' || internet === '1G') && phone === '결합') {
+        return isPremium ? -14740 : -13640;
+      }
+      if (!hasIptv) {
+        if (internet === '100MB') {
+          if (phone === '100M (휴대폰요금제 65,000원미만)결합') return -3300;
+          if (phone === '100M (휴대폰요금제 65,000원이상)결합') return -5500;
+        }
+        if ((internet === '500MB' || internet === '1G') && phone === '결합') return -9240;
+      }
+      return 0;
+    }
+
+    if (providerKey === 'lg') {
+      const hasPhone = phone === 'LGU+ 결합';
+      const is100M = internet === '와이파이기본광랜(100M)' || internet === '프리미엄안심100M' || internet === '프리미엄안심보상 100M';
+      const is500M = internet === '와이파이기본기가슬림(500M)' || internet === '프리미엄안심500M' || internet === '프리미엄안심보상 500M';
+      const is1G = internet === '와이파이기본기가(1G)' || internet === '프리미엄안심1G' || internet === '프리미엄안심보상 1G';
+      if (hasPhone) {
+        if (hasIptv) {
+          if (is100M) return -7700;
+          if (is500M) return -17600;
+          if (is1G) return -20900;
+        } else {
+          if (is100M) return -5500;
+          if (is500M) return -9900;
+          if (is1G) return -13200;
+        }
+      }
+      if (!hasPhone && hasIptv) {
+        if (is100M) return -2200;
+        if (is500M || is1G) return -7700;
+      }
+      return 0;
+    }
+
+    if (providerKey === 'hellovision') {
+      if (hasIptv && phone === '미결합') {
+        if (internet === '광랜 160M') return -7650;
+        if (internet === '기가라이트 500M') return -8470;
+        if (internet === '플래티넘기가 1G') return -8800;
+      }
+      return 0;
+    }
+
+    return 0;
+  };
+
+  const phoneDiscount = getPhoneDiscount();
   const totalFee = BASE_PRICE + wifiAdd + iptvAdd + boxAdd + phoneDiscount;
 
   const handleConsult = () => {
