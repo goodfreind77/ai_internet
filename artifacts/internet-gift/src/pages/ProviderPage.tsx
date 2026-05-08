@@ -412,9 +412,10 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
   };
 
   const BASE_PRICE = internetPriceMap[filters.internet] ?? 22000;
-  const wifiAdd = wifiPriceMap[filters.wifi] ?? 0;
+  const wifiAdd = isHellovision ? 0 : (wifiPriceMap[filters.wifi] ?? 0);
   const iptvAdd = iptvPriceMap[filters.iptv] ?? 0;
-  const boxAdd = boxFeeMap[filters.box] ?? 0;
+  // 헬로비전은 UHD셋탑 포함 상품이므로 셋탑박스 추가 비용 없음
+  const boxAdd = isHellovision ? 0 : (boxFeeMap[filters.box] ?? 0);
 
   // 통신사별 결합 할인 계산 (참조 사이트 E() 함수 로직과 동일)
   const getPhoneDiscount = (): number => {
