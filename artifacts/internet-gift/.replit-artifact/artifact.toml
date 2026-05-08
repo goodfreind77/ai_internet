@@ -1,6 +1,6 @@
 kind = "web"
 previewPath = "/"
-title = "인터넷 사은품"
+title = "AI인터넷"
 version = "1.0.0"
 id = "artifacts/internet-gift"
 router = "path"
