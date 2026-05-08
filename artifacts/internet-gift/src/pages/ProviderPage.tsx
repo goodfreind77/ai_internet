@@ -42,7 +42,7 @@ const PROVIDERS: Record<string, Provider> = {
       wifi: ['미포함', '기본와이파이', '기가와이파이', '윙즈(와이파이증폭기)'],
       iptv: ['미결합', '이코노미(183채널)', '스탠다드(234채널)', 'ALL(257채널)', 'ALL(플러스)'],
       box: ['미포함', '스마트3셋탑', '애플TV셋탑', 'AI4 셋탑', 'AI 스피커형셋탑', 'AI Sound Max 셋탑'],
-      phone: ['미결합', '결합'],
+      phone: ['미결합', 'SKT 1회선', 'SKT 2회선 (광랜)', 'SKT 3회선 (기가 500M)', 'SKT 3회선 (기가 1G)', 'SKT 4회선'],
     },
     plans: [
       {
@@ -154,7 +154,7 @@ const PROVIDERS: Record<string, Provider> = {
       wifi: ['미포함', '기본와이파이'],
       iptv: ['미결합', 'SKY ALL(238채널)'],
       box: ['미포함', '기본셋탑포함'],
-      phone: ['미결합', '결합'],
+      phone: ['미결합'],
     },
     plans: [
       {
@@ -189,7 +189,7 @@ const PROVIDERS: Record<string, Provider> = {
     filterOptions: {
       internet: ['광랜 100M', '광랜 160M', '기가라이트 500M', '플래티넘기가 1G'],
       iptv: ['미결합', '이코노미(109채널)', '뉴베이직(245채널)', '뉴프리미엄(245채널)'],
-      phone: ['미결합', '결합'],
+      phone: ['미결합', 'SKT 1회선', 'SKT 2회선 (광랜)', 'SKT 3회선 (기가 500M)', 'SKT 3회선 (기가 1G)', 'SKT 4회선'],
     },
     plans: [
       {
@@ -400,17 +400,16 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
 
   const phonePriceMap: Record<string, number> = {
     '미결합': 0,
-    // KT 총액 결합할인 (인터넷 할인 기준)
+    // SK브로드밴드 & LG헬로비전 (SKT 요금가족결합 - 인터넷 할인 기준)
+    'SKT 1회선': 0,
+    'SKT 2회선 (광랜)': -4400,
+    'SKT 3회선 (기가 500M)': -11100,
+    'SKT 3회선 (기가 1G)': -13200,
+    'SKT 4회선': 0,
+    // KT 총액 결합할인 (인터넷 할인 기준 - 500M/1G 기준)
     'KT결합 (22,000원미만)': -2200,
     'KT결합 (22,000원이상)': -5500,
     'KT결합 (64,900원이상)': -5500,
-  };
-
-  // SK브로드밴드: 인터넷 속도별 할인 (SKT 결합)
-  const skPhoneDiscountBySpeed: Record<string, number> = {
-    '100MB': -4400,
-    '500MB': -11000,
-    '1G': -13200,
   };
 
   // LG유플러스: 인터넷 속도별 할인 (참 쉬운 가족결합)
@@ -432,9 +431,12 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
   const boxAdd = boxFeeMap[filters.box] ?? 0;
 
   let phoneDiscount = phonePriceMap[filters.phone] ?? 0;
-  if (providerKey === 'sk' && filters.phone === '결합') {
-    phoneDiscount = skPhoneDiscountBySpeed[filters.internet] ?? -4400;
-  } else if (providerKey === 'lg' && filters.phone === 'LGU+ 결합') {
+  // KT 100M(슬림) 결합시 22,000원이상 구간은 -3,300원 (500M/1G는 -5,500원)
+  if (providerKey === 'kt' && filters.phone === 'KT결합 (22,000원이상)' && filters.internet === '100MB') {
+    phoneDiscount = -3300;
+  }
+  // LG유플러스: 인터넷 속도에 따라 자동 적용
+  if (providerKey === 'lg' && filters.phone === 'LGU+ 결합') {
     phoneDiscount = lgPhoneDiscountBySpeed[filters.internet] ?? -9900;
   }
 
@@ -532,7 +534,7 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
                 {boxAdd > 0 && <span>+ 셋탑박스 {boxAdd.toLocaleString()}원</span>}
                 {phoneDiscount < 0 && <span className="text-green-600 font-semibold">- 휴대폰결합 {Math.abs(phoneDiscount).toLocaleString()}원 할인</span>}
               </div>
-              <span className="text-xs text-gray-400">▶ 합계</span>
+              <span className="text-sm font-bold text-gray-700">▶ 합계 <span className="text-primary">{totalFee.toLocaleString()}원</span></span>
             </div>
           </div>
 
