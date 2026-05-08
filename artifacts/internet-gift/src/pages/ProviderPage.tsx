@@ -79,7 +79,7 @@ const PROVIDERS: Record<string, Provider> = {
       wifi: ['미포함', '기본와이파이', 'KT WiFi 6D', '버디(와이파이증폭기)'],
       iptv: ['미결합', '베이직(233채널)', '라이트(237채널)', '에센스(263채널)', '모든G(256채널)', '모든G 플러스(256채널)'],
       box: ['미포함', '기가지니3 셋탑', '기가지니A 셋탑', '기가지니3A 셋탑', '지니TV사운드바 셋탑'],
-      phone: ['미결합', 'KT결합 (22,000원미만)', 'KT결합 (22,000원이상)', 'KT결합 (64,900원이상)'],
+      phone: ['미결합', 'KT결합 (22,000원미만)', 'KT결합 (22,000원이상)', 'KT결합 (64,900원이상)', 'KT결합 (108,900원이상)', 'KT결합 (141,900원이상)', 'KT결합 (174,900원이상)'],
     },
     plans: [
       {
@@ -410,6 +410,9 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
     'KT결합 (22,000원미만)': -2200,
     'KT결합 (22,000원이상)': -5500,
     'KT결합 (64,900원이상)': -5500,
+    'KT결합 (108,900원이상)': -5500,
+    'KT결합 (141,900원이상)': -5500,
+    'KT결합 (174,900원이상)': -5500,
   };
 
   // LG유플러스: 인터넷 속도별 할인 (참 쉬운 가족결합)
@@ -431,9 +434,10 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
   const boxAdd = boxFeeMap[filters.box] ?? 0;
 
   let phoneDiscount = phonePriceMap[filters.phone] ?? 0;
-  // KT 100M(슬림) 결합시 22,000원이상 구간은 -3,300원 (500M/1G는 -5,500원)
-  if (providerKey === 'kt' && filters.phone === 'KT결합 (22,000원이상)' && filters.internet === '100MB') {
-    phoneDiscount = -3300;
+  // KT 100M(슬림): 22,000원이상 구간은 -3,300원, 64,900원이상부터 -5,500원 (500M/1G는 전 구간 -5,500원)
+  if (providerKey === 'kt' && filters.internet === '100MB') {
+    if (filters.phone === 'KT결합 (22,000원이상)') phoneDiscount = -3300;
+    else if (['KT결합 (64,900원이상)', 'KT결합 (108,900원이상)', 'KT결합 (141,900원이상)', 'KT결합 (174,900원이상)'].includes(filters.phone)) phoneDiscount = -5500;
   }
   // LG유플러스: 인터넷 속도에 따라 자동 적용
   if (providerKey === 'lg' && filters.phone === 'LGU+ 결합') {
