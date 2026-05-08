@@ -35,7 +35,7 @@ export function HeroSection() {
             설치! 입금 하루 안에!
           </h2>
 
-          <p className="text-gray-300 text-base sm:text-lg mb-4 sm:mb-6">전국 최대 사은품 지급하는 인터넷 사은품</p>
+          <p className="text-gray-300 text-base sm:text-lg mb-4 sm:mb-6">전국 최대 사은품 지급하는 AI인터넷</p>
 
           <div className="bg-white/10 backdrop-blur-sm border border-white/20 p-3 sm:p-4 rounded-xl flex items-center gap-3">
             <span className="bg-primary text-white px-3 py-1 text-xs font-bold rounded-full flex-shrink-0">공지</span>

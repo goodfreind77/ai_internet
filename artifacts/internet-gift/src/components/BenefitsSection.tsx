@@ -30,7 +30,7 @@ export function BenefitsSection() {
     <section className="py-20 bg-gray-50">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-black text-gray-900 mb-4">왜 인터넷 사은품을 선택해야 할까요?</h2>
+          <h2 className="text-3xl font-black text-gray-900 mb-4">왜 AI인터넷을 선택해야 할까요?</h2>
           <p className="text-gray-600 text-lg">10년 이상의 노하우로 고객님께 최고의 혜택을 찾아드립니다.</p>
         </div>
         
