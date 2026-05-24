@@ -497,14 +497,14 @@ function ApplicationsTable({
           {hasFilter ? '조회된 신청서가 없습니다.' : '아직 신청서가 없습니다.'}
         </div>
       ) : (
-        <div className="bg-gray-50 rounded-xl border border-gray-200 shadow-sm">
-          <div className="flex items-center justify-between px-6 py-2.5">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="flex items-center justify-between px-6 py-3 bg-gray-50 border-b border-gray-200">
             <div className="flex-1 flex items-center gap-4 text-xs font-bold text-gray-500">
               <span className="w-8 flex-shrink-0">번호</span>
               <span className="w-24 flex-shrink-0">이름</span>
               <span className="w-28 flex-shrink-0">가입 통신사</span>
               <span className="w-24 flex-shrink-0">인터넷</span>
-              <span className="w-16 flex-shrink-0">동의여부</span>
+              <span className="w-20 flex-shrink-0">동의여부</span>
             </div>
             <div className="flex items-center gap-4 flex-shrink-0">
               <span className="text-xs font-bold text-gray-500 w-16 text-center">접수여부</span>
@@ -512,45 +512,43 @@ function ApplicationsTable({
               <span className="w-4"></span>
             </div>
           </div>
-        </div>
-      )}
 
-      {filtered.map((row) => (
-        <div key={row.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="w-full flex items-center justify-between px-6 py-4">
-            <button
-              className="flex-1 flex items-center gap-4 text-left hover:opacity-80 transition-opacity"
-              onClick={() => setExpanded(expanded === row.id ? null : row.id)}
-            >
-              <span className="text-gray-400 text-xs w-8 flex-shrink-0">#{row.id}</span>
-              <span className="font-bold text-gray-900 w-24 flex-shrink-0 truncate">{row.name ?? '-'}</span>
-              <span className="text-gray-500 text-sm w-28 flex-shrink-0 truncate">{row.applyProvider ?? '-'}</span>
-              <span className="text-gray-500 text-sm w-24 flex-shrink-0 truncate">{row.internet ?? '-'}</span>
-              {row.consentedAt ? (
-                <span className="text-xs bg-green-100 text-green-700 border border-green-200 rounded-full px-2 py-0.5 font-semibold w-16 flex-shrink-0 text-center">✓ 동의완료</span>
-              ) : (
-                <span className="text-xs bg-gray-100 text-gray-400 border border-gray-200 rounded-full px-2 py-0.5 w-16 flex-shrink-0 text-center">동의대기</span>
-              )}
-            </button>
-            <div className="flex items-center gap-4 flex-shrink-0">
-              <div className="w-16 flex justify-center">
-                <StatusSelect
-                  value={row.status ?? '처리중'}
-                  onChange={s => handleChange(row.id, s)}
-                  loading={updating === row.id}
-                />
+          {filtered.map((row) => (
+            <div key={row.id} className="border-b border-gray-100 last:border-b-0">
+              <div className="w-full flex items-center justify-between px-6 py-4">
+                <button
+                  className="flex-1 flex items-center gap-4 text-left hover:opacity-80 transition-opacity"
+                  onClick={() => setExpanded(expanded === row.id ? null : row.id)}
+                >
+                  <span className="text-gray-400 text-xs w-8 flex-shrink-0">#{row.id}</span>
+                  <span className="font-bold text-gray-900 w-24 flex-shrink-0 truncate">{row.name ?? '-'}</span>
+                  <span className="text-gray-500 text-sm w-28 flex-shrink-0 truncate">{row.applyProvider ?? '-'}</span>
+                  <span className="text-gray-500 text-sm w-24 flex-shrink-0 truncate">{row.internet ?? '-'}</span>
+                  {row.consentedAt ? (
+                    <span className="text-xs bg-green-100 text-green-700 border border-green-200 rounded-full px-2 py-0.5 font-semibold w-20 flex-shrink-0 text-center whitespace-nowrap">✓ 동의완료</span>
+                  ) : (
+                    <span className="text-xs bg-gray-100 text-gray-400 border border-gray-200 rounded-full px-2 py-0.5 w-20 flex-shrink-0 text-center whitespace-nowrap">동의대기</span>
+                  )}
+                </button>
+                <div className="flex items-center gap-4 flex-shrink-0">
+                  <div className="w-16 flex justify-center">
+                    <StatusSelect
+                      value={row.status ?? '처리중'}
+                      onChange={s => handleChange(row.id, s)}
+                      loading={updating === row.id}
+                    />
+                  </div>
+                  <span className="text-gray-400 text-xs w-36">{formatDate(row.createdAt)}</span>
+                  <button
+                    onClick={() => setExpanded(expanded === row.id ? null : row.id)}
+                    className="text-gray-400"
+                  >
+                    {expanded === row.id ? '▲' : '▼'}
+                  </button>
+                </div>
               </div>
-              <span className="text-gray-400 text-xs w-36">{formatDate(row.createdAt)}</span>
-              <button
-                onClick={() => setExpanded(expanded === row.id ? null : row.id)}
-                className="text-gray-400"
-              >
-                {expanded === row.id ? '▲' : '▼'}
-              </button>
-            </div>
-          </div>
 
-          {expanded === row.id && (
+              {expanded === row.id && (
             <div className="border-t border-gray-100">
               <div className="px-6 py-5 grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                 <Field label="기존 통신사" value={row.currentProvider} />
@@ -607,8 +605,10 @@ function ApplicationsTable({
               </div>
             </div>
           )}
+            </div>
+          ))}
         </div>
-      ))}
+      )}
     </div>
   );
 }
