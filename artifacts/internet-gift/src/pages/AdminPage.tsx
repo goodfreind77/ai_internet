@@ -506,6 +506,9 @@ function ApplicationsTable({
               </div>
 
               <div className="border-t border-gray-100 px-6 py-5 space-y-6">
+                {row.consentedAt && (
+                  <ConsentPdfButton id={row.id} name={row.name} consentedAt={row.consentedAt} />
+                )}
                 <KakaoNotifySection
                   id={row.id}
                   phone={row.phone}
@@ -528,6 +531,40 @@ function ApplicationsTable({
           )}
         </div>
       ))}
+    </div>
+  );
+}
+
+function ConsentPdfButton({
+  id,
+  name,
+  consentedAt,
+}: {
+  id: number;
+  name: string | null;
+  consentedAt: string;
+}) {
+  const handleDownload = () => {
+    const base = window.location.origin + import.meta.env.BASE_URL;
+    const url = `${base}consent/${id}?print=1`.replace(/([^:])\/\//g, '$1/');
+    window.open(url, '_blank');
+  };
+
+  return (
+    <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 flex items-center justify-between">
+      <div>
+        <p className="text-sm font-bold text-green-800">✅ 동의 완료</p>
+        <p className="text-xs text-green-600 mt-0.5">
+          {name ?? '-'} · {formatDate(consentedAt)}
+        </p>
+      </div>
+      <button
+        onClick={handleDownload}
+        className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-green-600 text-white text-xs font-bold hover:bg-green-700 transition-colors"
+      >
+        <span>📄</span>
+        PDF 다운로드
+      </button>
     </div>
   );
 }
