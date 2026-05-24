@@ -113,4 +113,87 @@ router.patch("/applications/:id/status", adminAuthMiddleware, async (req, res) =
   }
 });
 
+router.patch("/applications/:id/memo", adminAuthMiddleware, async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    const { adminMemo } = req.body;
+    const [updated] = await db
+      .update(applicationsTable)
+      .set({ adminMemo: adminMemo ?? null })
+      .where(eq(applicationsTable.id, id))
+      .returning();
+    if (!updated) {
+      res.status(404).json({ error: "항목을 찾을 수 없습니다." });
+      return;
+    }
+    res.json(updated);
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "서버 오류가 발생했습니다." });
+  }
+});
+
+router.post("/applications/:id/history", adminAuthMiddleware, async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    const { note } = req.body;
+    if (!note || !note.trim()) {
+      res.status(400).json({ error: "상담 내용을 입력해주세요." });
+      return;
+    }
+    const [current] = await db
+      .select({ consultationHistory: applicationsTable.consultationHistory })
+      .from(applicationsTable)
+      .where(eq(applicationsTable.id, id));
+    if (!current) {
+      res.status(404).json({ error: "항목을 찾을 수 없습니다." });
+      return;
+    }
+    type HistoryEntry = { date: string; note: string };
+    const existing: HistoryEntry[] = current.consultationHistory
+      ? JSON.parse(current.consultationHistory)
+      : [];
+    const newEntry: HistoryEntry = { date: new Date().toISOString(), note: note.trim() };
+    const updated_history = JSON.stringify([...existing, newEntry]);
+    const [updated] = await db
+      .update(applicationsTable)
+      .set({ consultationHistory: updated_history })
+      .where(eq(applicationsTable.id, id))
+      .returning();
+    res.json(updated);
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "서버 오류가 발생했습니다." });
+  }
+});
+
+router.delete("/applications/:id/history/:index", adminAuthMiddleware, async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    const idx = parseInt(req.params.index, 10);
+    const [current] = await db
+      .select({ consultationHistory: applicationsTable.consultationHistory })
+      .from(applicationsTable)
+      .where(eq(applicationsTable.id, id));
+    if (!current) {
+      res.status(404).json({ error: "항목을 찾을 수 없습니다." });
+      return;
+    }
+    type HistoryEntry = { date: string; note: string };
+    const existing: HistoryEntry[] = current.consultationHistory
+      ? JSON.parse(current.consultationHistory)
+      : [];
+    existing.splice(idx, 1);
+    const [updated] = await db
+      .update(applicationsTable)
+      .set({ consultationHistory: JSON.stringify(existing) })
+      .where(eq(applicationsTable.id, id))
+      .returning();
+    res.json(updated);
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "서버 오류가 발생했습니다." });
+  }
+});
+
 export default router;

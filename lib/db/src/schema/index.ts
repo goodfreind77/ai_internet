@@ -39,6 +39,8 @@ export const applicationsTable = pgTable("applications", {
   email: varchar("email", { length: 200 }),
   address: text("address"),
   memo: text("memo"),
+  adminMemo: text("admin_memo"),
+  consultationHistory: text("consultation_history"),
   status: varchar("status", { length: 20 }).default("처리중").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });

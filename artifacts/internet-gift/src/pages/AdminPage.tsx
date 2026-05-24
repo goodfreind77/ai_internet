@@ -5,6 +5,8 @@ import { Footer } from '@/components/Footer';
 type Status = '처리중' | '접수완료' | '취소';
 const STATUSES: Status[] = ['처리중', '접수완료', '취소'];
 
+type HistoryEntry = { date: string; note: string };
+
 type ConsultationRequest = {
   id: number;
   name: string;
@@ -35,6 +37,8 @@ type Application = {
   giftAccountHolder: string | null;
   address: string | null;
   memo: string | null;
+  adminMemo: string | null;
+  consultationHistory: string | null;
   phoneCarrier: string | null;
   status: Status;
   createdAt: string;
@@ -221,6 +225,52 @@ export default function AdminPage() {
     } catch {}
   };
 
+  const updateApplicationMemo = async (id: number, adminMemo: string) => {
+    if (!token) return;
+    try {
+      const res = await fetch(`/api/applications/${id}/memo`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ adminMemo }),
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        setApplications(prev => prev.map(a => a.id === id ? updated : a));
+      }
+    } catch {}
+  };
+
+  const addConsultationHistory = async (id: number, note: string) => {
+    if (!token) return false;
+    try {
+      const res = await fetch(`/api/applications/${id}/history`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ note }),
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        setApplications(prev => prev.map(a => a.id === id ? updated : a));
+        return true;
+      }
+    } catch {}
+    return false;
+  };
+
+  const deleteConsultationHistory = async (id: number, index: number) => {
+    if (!token) return;
+    try {
+      const res = await fetch(`/api/applications/${id}/history/${index}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        setApplications(prev => prev.map(a => a.id === id ? updated : a));
+      }
+    } catch {}
+  };
+
   if (!token) return <AdminLoginForm onLogin={handleLogin} />;
 
   return (
@@ -266,7 +316,13 @@ export default function AdminPage() {
         ) : tab === 'consultations' ? (
           <ConsultationsTable data={consultations} onStatusChange={updateConsultationStatus} />
         ) : (
-          <ApplicationsTable data={applications} onStatusChange={updateApplicationStatus} />
+          <ApplicationsTable
+            data={applications}
+            onStatusChange={updateApplicationStatus}
+            onMemoSave={updateApplicationMemo}
+            onHistoryAdd={addConsultationHistory}
+            onHistoryDelete={deleteConsultationHistory}
+          />
         )}
       </main>
       <Footer />
@@ -333,9 +389,15 @@ function ConsultationsTable({
 function ApplicationsTable({
   data,
   onStatusChange,
+  onMemoSave,
+  onHistoryAdd,
+  onHistoryDelete,
 }: {
   data: Application[];
   onStatusChange: (id: number, status: Status) => void;
+  onMemoSave: (id: number, memo: string) => Promise<void>;
+  onHistoryAdd: (id: number, note: string) => Promise<boolean>;
+  onHistoryDelete: (id: number, index: number) => Promise<void>;
 }) {
   const [expanded, setExpanded] = useState<number | null>(null);
   const [updating, setUpdating] = useState<number | null>(null);
@@ -386,39 +448,174 @@ function ApplicationsTable({
           </div>
 
           {expanded === row.id && (
-            <div className="border-t border-gray-100 px-6 py-5 grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-              <Field label="기존 통신사" value={row.currentProvider} />
-              <Field label="가입신청 통신사" value={row.applyProvider} />
-              <Field label="인터넷" value={row.internet} />
-              <Field label="TV" value={row.tv} />
-              <Field label="고객유형" value={row.customerType} />
-              <Field label="납부방법" value={row.paymentMethod} />
-              <Field label="이름" value={row.name} />
-              <Field label="휴대폰" value={`${row.phoneCarrier ?? ''} ${row.phone ?? ''}`} />
-              <Field label="이메일" value={row.email} />
-              <Field label="설치주소" value={row.address} span />
-              {row.paymentMethod === '자동이체' && (
-                <>
-                  <Field label="납부은행" value={row.payBank} />
-                  <Field label="계좌번호" value={row.payAccount} />
-                  <Field label="예금주" value={row.payAccountHolder} />
-                </>
-              )}
-              {row.paymentMethod === '카드자동이체' && (
-                <>
-                  <Field label="카드사" value={row.cardCompany} />
-                  <Field label="카드번호" value={row.cardNumber} />
-                  <Field label="유효기간" value={row.cardExpiry} />
-                </>
-              )}
-              <Field label="사은품 은행" value={row.giftBank} />
-              <Field label="사은품 계좌" value={row.giftAccount} />
-              <Field label="사은품 예금주" value={row.giftAccountHolder} />
-              {row.memo && <Field label="메모" value={row.memo} span />}
+            <div className="border-t border-gray-100">
+              <div className="px-6 py-5 grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                <Field label="기존 통신사" value={row.currentProvider} />
+                <Field label="가입신청 통신사" value={row.applyProvider} />
+                <Field label="인터넷" value={row.internet} />
+                <Field label="TV" value={row.tv} />
+                <Field label="고객유형" value={row.customerType} />
+                <Field label="납부방법" value={row.paymentMethod} />
+                <Field label="이름" value={row.name} />
+                <Field label="휴대폰" value={`${row.phoneCarrier ?? ''} ${row.phone ?? ''}`} />
+                <Field label="이메일" value={row.email} />
+                <Field label="설치주소" value={row.address} span />
+                {row.paymentMethod === '자동이체' && (
+                  <>
+                    <Field label="납부은행" value={row.payBank} />
+                    <Field label="계좌번호" value={row.payAccount} />
+                    <Field label="예금주" value={row.payAccountHolder} />
+                  </>
+                )}
+                {row.paymentMethod === '카드자동이체' && (
+                  <>
+                    <Field label="카드사" value={row.cardCompany} />
+                    <Field label="카드번호" value={row.cardNumber} />
+                    <Field label="유효기간" value={row.cardExpiry} />
+                  </>
+                )}
+                <Field label="사은품 은행" value={row.giftBank} />
+                <Field label="사은품 계좌" value={row.giftAccount} />
+                <Field label="사은품 예금주" value={row.giftAccountHolder} />
+                {row.memo && <Field label="신청 메모" value={row.memo} span />}
+              </div>
+
+              <div className="border-t border-gray-100 px-6 py-5 space-y-6">
+                <AdminMemoSection
+                  id={row.id}
+                  initialMemo={row.adminMemo ?? ''}
+                  onSave={onMemoSave}
+                />
+                <ConsultationHistorySection
+                  id={row.id}
+                  history={row.consultationHistory ? JSON.parse(row.consultationHistory) as HistoryEntry[] : []}
+                  onAdd={onHistoryAdd}
+                  onDelete={onHistoryDelete}
+                />
+              </div>
             </div>
           )}
         </div>
       ))}
+    </div>
+  );
+}
+
+function AdminMemoSection({
+  id,
+  initialMemo,
+  onSave,
+}: {
+  id: number;
+  initialMemo: string;
+  onSave: (id: number, memo: string) => Promise<void>;
+}) {
+  const [memo, setMemo] = useState(initialMemo);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => { setMemo(initialMemo); }, [initialMemo]);
+
+  const handleSave = async () => {
+    setSaving(true);
+    await onSave(id, memo);
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="text-sm font-bold text-gray-700">📝 어드민 메모</h3>
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="text-xs px-3 py-1.5 rounded-lg bg-primary text-white font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60"
+        >
+          {saving ? '저장 중...' : saved ? '✓ 저장됨' : '저장'}
+        </button>
+      </div>
+      <textarea
+        value={memo}
+        onChange={e => setMemo(e.target.value)}
+        rows={3}
+        placeholder="관리자 메모를 입력하세요..."
+        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors resize-none"
+      />
+    </div>
+  );
+}
+
+function ConsultationHistorySection({
+  id,
+  history,
+  onAdd,
+  onDelete,
+}: {
+  id: number;
+  history: HistoryEntry[];
+  onAdd: (id: number, note: string) => Promise<boolean>;
+  onDelete: (id: number, index: number) => Promise<void>;
+}) {
+  const [note, setNote] = useState('');
+  const [adding, setAdding] = useState(false);
+
+  const handleAdd = async () => {
+    if (!note.trim()) return;
+    setAdding(true);
+    const ok = await onAdd(id, note);
+    if (ok) setNote('');
+    setAdding(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) handleAdd();
+  };
+
+  return (
+    <div>
+      <h3 className="text-sm font-bold text-gray-700 mb-3">📋 상담 이력</h3>
+
+      {history.length === 0 ? (
+        <p className="text-xs text-gray-400 mb-3">아직 상담 이력이 없습니다.</p>
+      ) : (
+        <div className="space-y-2 mb-3">
+          {history.map((entry, i) => (
+            <div key={i} className="flex items-start gap-3 bg-gray-50 rounded-lg px-3 py-2.5">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-gray-400 mb-0.5">{formatDate(entry.date)}</p>
+                <p className="text-sm text-gray-800 whitespace-pre-wrap">{entry.note}</p>
+              </div>
+              <button
+                onClick={() => onDelete(id, i)}
+                className="text-gray-300 hover:text-red-400 transition-colors text-xs flex-shrink-0 mt-0.5"
+                title="삭제"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="flex gap-2">
+        <textarea
+          value={note}
+          onChange={e => setNote(e.target.value)}
+          onKeyDown={handleKeyDown}
+          rows={2}
+          placeholder="상담 내용을 입력하세요... (Ctrl+Enter로 추가)"
+          className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors resize-none"
+        />
+        <button
+          onClick={handleAdd}
+          disabled={adding || !note.trim()}
+          className="px-4 py-2 rounded-lg bg-gray-800 text-white text-xs font-semibold hover:bg-gray-700 transition-colors disabled:opacity-40 self-end"
+        >
+          {adding ? '추가 중...' : '추가'}
+        </button>
+      </div>
     </div>
   );
 }
