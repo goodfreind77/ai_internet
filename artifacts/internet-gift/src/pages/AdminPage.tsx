@@ -271,6 +271,22 @@ export default function AdminPage() {
     } catch {}
   };
 
+  const sendKakaoNotify = async (id: number, link: string, message: string): Promise<{ success: boolean; mock?: boolean; error?: string }> => {
+    if (!token) return { success: false, error: '인증 오류' };
+    try {
+      const res = await fetch(`/api/applications/${id}/notify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ link, message }),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.error ?? '발송 실패' };
+      return { success: true, mock: data.mock };
+    } catch {
+      return { success: false, error: '네트워크 오류' };
+    }
+  };
+
   if (!token) return <AdminLoginForm onLogin={handleLogin} />;
 
   return (
@@ -322,6 +338,7 @@ export default function AdminPage() {
             onMemoSave={updateApplicationMemo}
             onHistoryAdd={addConsultationHistory}
             onHistoryDelete={deleteConsultationHistory}
+            onNotify={sendKakaoNotify}
           />
         )}
       </main>
@@ -392,12 +409,14 @@ function ApplicationsTable({
   onMemoSave,
   onHistoryAdd,
   onHistoryDelete,
+  onNotify,
 }: {
   data: Application[];
   onStatusChange: (id: number, status: Status) => void;
   onMemoSave: (id: number, memo: string) => Promise<void>;
   onHistoryAdd: (id: number, note: string) => Promise<boolean>;
   onHistoryDelete: (id: number, index: number) => Promise<void>;
+  onNotify: (id: number, link: string, message: string) => Promise<{ success: boolean; mock?: boolean; error?: string }>;
 }) {
   const [expanded, setExpanded] = useState<number | null>(null);
   const [updating, setUpdating] = useState<number | null>(null);
@@ -481,6 +500,11 @@ function ApplicationsTable({
               </div>
 
               <div className="border-t border-gray-100 px-6 py-5 space-y-6">
+                <KakaoNotifySection
+                  id={row.id}
+                  phone={row.phone}
+                  onNotify={onNotify}
+                />
                 <AdminMemoSection
                   id={row.id}
                   initialMemo={row.adminMemo ?? ''}
@@ -497,6 +521,89 @@ function ApplicationsTable({
           )}
         </div>
       ))}
+    </div>
+  );
+}
+
+function KakaoNotifySection({
+  id,
+  phone,
+  onNotify,
+}: {
+  id: number;
+  phone: string | null;
+  onNotify: (id: number, link: string, message: string) => Promise<{ success: boolean; mock?: boolean; error?: string }>;
+}) {
+  const [link, setLink] = useState('');
+  const [message, setMessage] = useState('');
+  const [sending, setSending] = useState(false);
+  const [result, setResult] = useState<{ type: 'success' | 'mock' | 'error'; text: string } | null>(null);
+
+  const handleSend = async () => {
+    setSending(true);
+    setResult(null);
+    const res = await onNotify(id, link, message);
+    setSending(false);
+    if (res.success && res.mock) {
+      setResult({ type: 'mock', text: 'API 키 미설정 — 실제 발송은 생략됐습니다. (테스트 성공)' });
+    } else if (res.success) {
+      setResult({ type: 'success', text: '알림톡이 성공적으로 발송됐습니다.' });
+      setLink('');
+      setMessage('');
+    } else {
+      setResult({ type: 'error', text: res.error ?? '발송에 실패했습니다.' });
+    }
+    setTimeout(() => setResult(null), 5000);
+  };
+
+  return (
+    <div className="rounded-xl border border-yellow-200 bg-yellow-50 px-4 py-4">
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-base">💬</span>
+        <h3 className="text-sm font-bold text-yellow-800">카카오 알림톡 발송</h3>
+        {phone && (
+          <span className="text-xs text-yellow-600 ml-auto">수신: {phone}</span>
+        )}
+      </div>
+
+      {!phone && (
+        <p className="text-xs text-yellow-700 mb-2">휴대폰 번호가 없어 발송할 수 없습니다.</p>
+      )}
+
+      <div className="space-y-2">
+        <input
+          type="text"
+          value={link}
+          onChange={e => setLink(e.target.value)}
+          placeholder="전송할 링크 (예: https://example.com/contract/123)"
+          disabled={!phone}
+          className="w-full px-3 py-2 text-sm border border-yellow-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:border-yellow-400 transition-colors disabled:opacity-50"
+        />
+        <textarea
+          value={message}
+          onChange={e => setMessage(e.target.value)}
+          rows={2}
+          placeholder="추가 메시지 (선택사항)"
+          disabled={!phone}
+          className="w-full px-3 py-2 text-sm border border-yellow-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:border-yellow-400 transition-colors resize-none disabled:opacity-50"
+        />
+        <div className="flex items-center justify-between">
+          <div className="text-xs text-yellow-600">
+            {result && (
+              <span className={result.type === 'error' ? 'text-red-500' : result.type === 'mock' ? 'text-blue-500' : 'text-green-600'}>
+                {result.type === 'error' ? '✗' : '✓'} {result.text}
+              </span>
+            )}
+          </div>
+          <button
+            onClick={handleSend}
+            disabled={sending || !phone}
+            className="px-4 py-1.5 rounded-lg bg-yellow-400 text-yellow-900 text-xs font-bold hover:bg-yellow-500 transition-colors disabled:opacity-40"
+          >
+            {sending ? '발송 중...' : '알림톡 발송'}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
