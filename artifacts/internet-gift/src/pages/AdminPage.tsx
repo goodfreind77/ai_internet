@@ -421,6 +421,8 @@ function ApplicationsTable({
 }) {
   const [expanded, setExpanded] = useState<number | null>(null);
   const [updating, setUpdating] = useState<number | null>(null);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   const handleChange = async (id: number, status: Status) => {
     setUpdating(id);
@@ -428,17 +430,75 @@ function ApplicationsTable({
     setUpdating(null);
   };
 
-  if (data.length === 0) {
-    return (
-      <div className="bg-white rounded-2xl border border-gray-200 p-16 text-center text-gray-400">
-        아직 신청서가 없습니다.
-      </div>
-    );
-  }
+  const filtered = data.filter((row) => {
+    const d = new Date(row.createdAt);
+    if (startDate) {
+      const start = new Date(startDate);
+      start.setHours(0, 0, 0, 0);
+      if (d < start) return false;
+    }
+    if (endDate) {
+      const end = new Date(endDate);
+      end.setHours(23, 59, 59, 999);
+      if (d > end) return false;
+    }
+    return true;
+  });
+
+  const hasFilter = startDate || endDate;
 
   return (
-    <div className="space-y-3">
-      {data.map((row) => (
+    <div className="space-y-4">
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="flex-1">
+            <h2 className="text-lg font-black text-gray-900">신청서 작성 리스트</h2>
+            <p className="text-xs text-gray-400 mt-0.5">
+              전체 {data.length}건
+              {hasFilter && (
+                <span className="ml-1.5 text-primary font-semibold">· 조회 결과 {filtered.length}건</span>
+              )}
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-1.5">
+              <label className="text-xs font-semibold text-gray-500 whitespace-nowrap">시작일</label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={e => setStartDate(e.target.value)}
+                className="text-sm px-3 py-1.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+              />
+            </div>
+            <span className="text-gray-300">~</span>
+            <div className="flex items-center gap-1.5">
+              <label className="text-xs font-semibold text-gray-500 whitespace-nowrap">종료일</label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={e => setEndDate(e.target.value)}
+                className="text-sm px-3 py-1.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+              />
+            </div>
+            {hasFilter && (
+              <button
+                onClick={() => { setStartDate(''); setEndDate(''); }}
+                className="text-xs px-3 py-1.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-red-500 hover:border-red-200 transition-colors"
+              >
+                초기화
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {filtered.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-gray-200 p-16 text-center text-gray-400">
+          {hasFilter ? '조회된 신청서가 없습니다.' : '아직 신청서가 없습니다.'}
+        </div>
+      ) : null}
+
+      {filtered.map((row) => (
         <div key={row.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
           <div className="w-full flex items-center justify-between px-6 py-4">
             <button
