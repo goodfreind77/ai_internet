@@ -196,6 +196,66 @@ router.delete("/applications/:id/history/:index", adminAuthMiddleware, async (re
   }
 });
 
+router.get("/consent/:id", async (req, res) => {
+  try {
+    const id = parseInt(String(req.params.id), 10);
+    const [app] = await db
+      .select({
+        id: applicationsTable.id,
+        name: applicationsTable.name,
+        phone: applicationsTable.phone,
+        consentedAt: applicationsTable.consentedAt,
+      })
+      .from(applicationsTable)
+      .where(eq(applicationsTable.id, id));
+    if (!app) {
+      res.status(404).json({ error: "동의서를 찾을 수 없습니다." });
+      return;
+    }
+    res.json(app);
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "서버 오류가 발생했습니다." });
+  }
+});
+
+router.post("/consent/:id/agree", async (req, res) => {
+  try {
+    const id = parseInt(String(req.params.id), 10);
+    const { confirmation } = req.body;
+    if (confirmation !== "동의합니다.") {
+      res.status(400).json({ error: "'동의합니다.'를 정확히 입력해주세요." });
+      return;
+    }
+    const [current] = await db
+      .select({ consentedAt: applicationsTable.consentedAt })
+      .from(applicationsTable)
+      .where(eq(applicationsTable.id, id));
+    if (!current) {
+      res.status(404).json({ error: "동의서를 찾을 수 없습니다." });
+      return;
+    }
+    if (current.consentedAt) {
+      res.status(409).json({ error: "이미 동의가 완료된 동의서입니다." });
+      return;
+    }
+    const [updated] = await db
+      .update(applicationsTable)
+      .set({ consentedAt: new Date() })
+      .where(eq(applicationsTable.id, id))
+      .returning({
+        id: applicationsTable.id,
+        name: applicationsTable.name,
+        phone: applicationsTable.phone,
+        consentedAt: applicationsTable.consentedAt,
+      });
+    res.json(updated);
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "서버 오류가 발생했습니다." });
+  }
+});
+
 router.post("/applications/:id/notify", adminAuthMiddleware, async (req, res) => {
   try {
     const id = parseInt(String(req.params.id), 10);

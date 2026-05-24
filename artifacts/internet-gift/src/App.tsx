@@ -15,6 +15,7 @@ import ReviewDetailPage from "@/pages/ReviewDetailPage";
 import ReviewWritePage from "@/pages/ReviewWritePage";
 import ApplyPage from "@/pages/ApplyPage";
 import AdminPage from "@/pages/AdminPage";
+import ConsentPage from "@/pages/ConsentPage";
 
 const queryClient = new QueryClient();
 
@@ -57,6 +58,9 @@ function Router() {
       </Route>
       <Route path="/admin">
         {() => <AdminPage />}
+      </Route>
+      <Route path="/consent/:id">
+        {(params) => <ConsentPage id={params.id} />}
       </Route>
       <Route component={NotFound} />
     </Switch>

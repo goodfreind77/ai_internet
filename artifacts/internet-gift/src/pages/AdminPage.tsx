@@ -39,6 +39,7 @@ type Application = {
   memo: string | null;
   adminMemo: string | null;
   consultationHistory: string | null;
+  consentedAt: string | null;
   phoneCarrier: string | null;
   status: Status;
   createdAt: string;
@@ -449,6 +450,11 @@ function ApplicationsTable({
               <span className="text-gray-600">{row.phone ?? '-'}</span>
               <span className="text-gray-500 text-sm">{row.applyProvider ?? '-'}</span>
               <span className="text-gray-400 text-xs">{row.internet ?? '-'}</span>
+              {row.consentedAt ? (
+                <span className="text-xs bg-green-100 text-green-700 border border-green-200 rounded-full px-2 py-0.5 font-semibold">✓ 동의완료</span>
+              ) : (
+                <span className="text-xs bg-gray-100 text-gray-400 border border-gray-200 rounded-full px-2 py-0.5">동의대기</span>
+              )}
             </button>
             <div className="flex items-center gap-4 flex-shrink-0">
               <StatusSelect
@@ -503,6 +509,7 @@ function ApplicationsTable({
                 <KakaoNotifySection
                   id={row.id}
                   phone={row.phone}
+                  consentedAt={row.consentedAt}
                   onNotify={onNotify}
                 />
                 <AdminMemoSection
@@ -528,13 +535,16 @@ function ApplicationsTable({
 function KakaoNotifySection({
   id,
   phone,
+  consentedAt,
   onNotify,
 }: {
   id: number;
   phone: string | null;
+  consentedAt: string | null;
   onNotify: (id: number, link: string, message: string) => Promise<{ success: boolean; mock?: boolean; error?: string }>;
 }) {
-  const [link, setLink] = useState('');
+  const consentUrl = `${window.location.origin}${import.meta.env.BASE_URL}consent/${id}`.replace(/([^:])\/\//g, '$1/');
+  const [link, setLink] = useState(consentUrl);
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
   const [result, setResult] = useState<{ type: 'success' | 'mock' | 'error'; text: string } | null>(null);
@@ -548,7 +558,6 @@ function KakaoNotifySection({
       setResult({ type: 'mock', text: 'API 키 미설정 — 실제 발송은 생략됐습니다. (테스트 성공)' });
     } else if (res.success) {
       setResult({ type: 'success', text: '알림톡이 성공적으로 발송됐습니다.' });
-      setLink('');
       setMessage('');
     } else {
       setResult({ type: 'error', text: res.error ?? '발송에 실패했습니다.' });
@@ -561,9 +570,14 @@ function KakaoNotifySection({
       <div className="flex items-center gap-2 mb-3">
         <span className="text-base">💬</span>
         <h3 className="text-sm font-bold text-yellow-800">카카오 알림톡 발송</h3>
-        {phone && (
-          <span className="text-xs text-yellow-600 ml-auto">수신: {phone}</span>
-        )}
+        <div className="ml-auto flex items-center gap-2">
+          {consentedAt ? (
+            <span className="text-xs bg-green-100 text-green-700 border border-green-200 rounded-full px-2 py-0.5 font-semibold">✓ 동의완료 {formatDate(consentedAt)}</span>
+          ) : (
+            <span className="text-xs bg-gray-100 text-gray-500 border border-gray-200 rounded-full px-2 py-0.5">동의 미완료</span>
+          )}
+          {phone && <span className="text-xs text-yellow-600">수신: {phone}</span>}
+        </div>
       </div>
 
       {!phone && (
@@ -571,14 +585,25 @@ function KakaoNotifySection({
       )}
 
       <div className="space-y-2">
-        <input
-          type="text"
-          value={link}
-          onChange={e => setLink(e.target.value)}
-          placeholder="전송할 링크 (예: https://example.com/contract/123)"
-          disabled={!phone}
-          className="w-full px-3 py-2 text-sm border border-yellow-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:border-yellow-400 transition-colors disabled:opacity-50"
-        />
+        <div>
+          <label className="text-xs text-yellow-700 font-medium mb-1 block">동의서 링크</label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={link}
+              onChange={e => setLink(e.target.value)}
+              disabled={!phone}
+              className="flex-1 px-3 py-2 text-xs border border-yellow-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:border-yellow-400 transition-colors disabled:opacity-50 font-mono"
+            />
+            <button
+              type="button"
+              onClick={() => { navigator.clipboard.writeText(link); }}
+              className="px-3 py-2 text-xs rounded-lg border border-yellow-300 text-yellow-700 hover:bg-yellow-100 transition-colors whitespace-nowrap"
+            >
+              복사
+            </button>
+          </div>
+        </div>
         <textarea
           value={message}
           onChange={e => setMessage(e.target.value)}
@@ -588,7 +613,7 @@ function KakaoNotifySection({
           className="w-full px-3 py-2 text-sm border border-yellow-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:border-yellow-400 transition-colors resize-none disabled:opacity-50"
         />
         <div className="flex items-center justify-between">
-          <div className="text-xs text-yellow-600">
+          <div className="text-xs">
             {result && (
               <span className={result.type === 'error' ? 'text-red-500' : result.type === 'mock' ? 'text-blue-500' : 'text-green-600'}>
                 {result.type === 'error' ? '✗' : '✓'} {result.text}
