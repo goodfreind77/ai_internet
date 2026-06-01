@@ -679,13 +679,6 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
                     <span className="text-sm font-normal text-gray-500 ml-1">원</span>
                   </p>
                 </div>
-                <div className="mb-4">
-                  <span className="text-xs text-gray-500">최대 사은품</span>
-                  <p className="text-xl font-black text-primary">
-                    {plan.gift.toLocaleString()}
-                    <span className="text-sm font-normal text-gray-500 ml-1">원</span>
-                  </p>
-                </div>
                 <ul className="space-y-1 mb-5">
                   {plan.features.map((f) => (
                     <li key={f} className="text-xs text-gray-600 flex items-start gap-1">
