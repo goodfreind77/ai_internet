@@ -27,13 +27,8 @@ export function HeroSection() {
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black leading-tight mb-3 sm:mb-4 tracking-tight">
-            지원금 최대 <br />
-            <span className="text-secondary text-5xl sm:text-6xl md:text-7xl">222만원</span>
-          </h1>
-
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-5 sm:mb-8">
             설치! 입금 하루 안에!
-          </h2>
+          </h1>
 
           <p className="text-gray-300 text-base sm:text-lg mb-4 sm:mb-6">전국 최대 사은품 지급하는 AI인터넷</p>
 
