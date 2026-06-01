@@ -27,7 +27,7 @@ export function HeroSection() {
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black leading-tight mb-3 sm:mb-4 tracking-tight">
-            설치! 입금 하루 안에!
+            인터넷 가입상담
           </h1>
 
           <p className="text-gray-300 text-base sm:text-lg mb-4 sm:mb-6">전국 최대 사은품 지급하는 AI인터넷</p>
