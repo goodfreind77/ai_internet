@@ -198,7 +198,6 @@ const PROVIDERS: Record<string, Provider> = {
         monthlyFee: 29530,
         gift: 350000,
         features: ['100MB 광랜 인터넷', 'TV 이코노미 (108채널)', 'UHD 셋탑 포함'],
-        badge: 'HOT',
       },
       {
         name: '기가라이트 + TV 뉴베이직',
@@ -214,6 +213,7 @@ const PROVIDERS: Record<string, Provider> = {
         monthlyFee: 36460,
         gift: 390000,
         features: ['160MB 광랜 인터넷', 'TV 뉴베이직 (247채널)', 'UHD 셋탑 포함'],
+        badge: 'HOT',
       },
     ],
   },
@@ -710,7 +710,7 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
             ))}
           </div>
 
-          <p className="text-center text-sm text-gray-500 -mt-10 mb-14">※ 3년약정, VAT 포함가-휴대폰1회선결합할인기준 !</p>
+          <p className="text-center text-sm text-gray-500 -mt-10 mb-14">※ 3년약정, VAT 포함가</p>
 
           {/* SK 결합 할인표 */}
           {provider.key === 'sk' && (
