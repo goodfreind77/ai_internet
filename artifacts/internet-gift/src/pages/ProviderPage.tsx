@@ -710,7 +710,7 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
             ))}
           </div>
 
-          <p className="text-center text-sm text-gray-500 -mt-10 mb-14">※ 3년약정, VAT 포함가</p>
+          <p className="text-center text-sm text-gray-500 -mt-10 mb-14">※ 3년약정, VAT 포함가-휴대폰1회선결합할인기준 !</p>
 
           {/* SK 결합 할인표 */}
           {provider.key === 'sk' && (
