@@ -623,6 +623,8 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
             </p>
           </motion.div>
 
+          <p className="text-center text-sm text-gray-500 mb-3">※ 3년약정, VAT 포함가</p>
+
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-14 px-2 sm:px-0">
             <button
               onClick={handleConsult}
