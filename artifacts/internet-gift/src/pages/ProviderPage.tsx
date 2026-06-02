@@ -163,7 +163,6 @@ const PROVIDERS: Record<string, Provider> = {
         monthlyFee: 25300,
         gift: 350000,
         features: ['100MB 인터넷', 'IPTV플러스 (209채널)'],
-        badge: 'HOT',
       },
       {
         name: '인터넷 500M + IPTV플러스',
@@ -179,6 +178,7 @@ const PROVIDERS: Record<string, Provider> = {
         monthlyFee: 36300,
         gift: 390000,
         features: ['200MB 인터넷', 'IPTV플러스 (209채널)'],
+        badge: 'HOT',
       },
     ],
   },
@@ -666,7 +666,7 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
                 transition={{ delay: idx * 0.1 }}
                 data-testid={`card-plan-${idx}`}
                 className={`bg-white rounded-2xl border p-6 shadow-sm hover:shadow-md transition-shadow relative ${
-                  idx === 0 ? 'border-primary' : 'border-gray-200'
+                  plan.badge === 'HOT' ? 'border-primary' : 'border-gray-200'
                 }`}
               >
                 {plan.badge && (
@@ -699,7 +699,7 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
                 <button
                   onClick={handleConsult}
                   className={`w-full py-2.5 font-bold rounded-xl text-sm transition-colors ${
-                    idx === 0
+                    plan.badge === 'HOT'
                       ? 'bg-primary text-white hover:bg-primary/90'
                       : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
                   }`}
@@ -709,6 +709,8 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
               </motion.div>
             ))}
           </div>
+
+          <p className="text-center text-sm text-gray-500 -mt-10 mb-14">※ 3년약정, VAT 포함가</p>
 
           {/* SK 결합 할인표 */}
           {provider.key === 'sk' && (
