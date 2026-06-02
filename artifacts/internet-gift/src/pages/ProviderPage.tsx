@@ -162,23 +162,23 @@ const PROVIDERS: Record<string, Provider> = {
         internet: '100MB',
         monthlyFee: 22000,
         gift: 350000,
-        features: ['100MB 인터넷', 'IPTV플러스 (209채널)', '위성방송 수신'],
+        features: ['100MB 인터넷', 'IPTV플러스 (209채널)'],
         badge: 'HOT',
       },
       {
         name: '인터넷 500M + IPTV플러스',
         internet: '500MB',
-        monthlyFee: 38500,
+        monthlyFee: 37400,
         gift: 440000,
-        features: ['500MB 기가 인터넷', 'IPTV플러스 (209채널)', '위성방송 수신'],
+        features: ['500MB 기가 인터넷', 'IPTV플러스 (209채널)'],
         badge: '인기',
       },
       {
         name: '인터넷 200M + IPTV플러스',
         internet: '200MB',
-        monthlyFee: 33000,
+        monthlyFee: 23100,
         gift: 390000,
-        features: ['200MB 인터넷', 'IPTV플러스 (209채널)', '위성방송 수신'],
+        features: ['200MB 인터넷', 'IPTV플러스 (209채널)'],
       },
     ],
   },
@@ -411,9 +411,19 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
     '기가와이파이': 3300, '윙즈(와이파이증폭기)': 2750,
   };
 
-  const BASE_PRICE = internetPriceMap[filters.internet] ?? 22000;
-  const wifiAdd = isHellovision ? 0 : (wifiPriceMap[filters.wifi] ?? 0);
-  const iptvAdd = iptvPriceMap[filters.iptv] ?? 0;
+  const BASE_PRICE = (() => {
+    if (providerKey === 'skylife') {
+      const hasSkyAll = filters.iptv === 'SKY ALL(238채널)';
+      if (filters.internet === '100MB') return hasSkyAll ? 22000 : 15000;
+      if (filters.internet === '200MB') return hasSkyAll ? 23100 : 16000;
+      if (filters.internet === '500MB') return hasSkyAll ? 37400 : 25000;
+      if (filters.internet === '1G') return hasSkyAll ? 42000 : 30000;
+      return 15000;
+    }
+    return internetPriceMap[filters.internet] ?? 22000;
+  })();
+  const wifiAdd = (isHellovision || providerKey === 'skylife') ? 0 : (wifiPriceMap[filters.wifi] ?? 0);
+  const iptvAdd = providerKey === 'skylife' ? 0 : (iptvPriceMap[filters.iptv] ?? 0);
   // 헬로비전은 UHD셋탑 항상 4400원 추가 (참조 사이트 동일)
   const boxAdd = isHellovision ? 4400 : (boxFeeMap[filters.box] ?? 0);
 
