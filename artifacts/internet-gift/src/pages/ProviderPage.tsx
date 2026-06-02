@@ -160,7 +160,7 @@ const PROVIDERS: Record<string, Provider> = {
       {
         name: '인터넷 100M + IPTV플러스',
         internet: '100MB',
-        monthlyFee: 22000,
+        monthlyFee: 25300,
         gift: 350000,
         features: ['100MB 인터넷', 'IPTV플러스 (209채널)'],
         badge: 'HOT',
@@ -168,7 +168,7 @@ const PROVIDERS: Record<string, Provider> = {
       {
         name: '인터넷 500M + IPTV플러스',
         internet: '500MB',
-        monthlyFee: 37400,
+        monthlyFee: 41800,
         gift: 440000,
         features: ['500MB 기가 인터넷', 'IPTV플러스 (209채널)'],
         badge: '인기',
@@ -176,7 +176,7 @@ const PROVIDERS: Record<string, Provider> = {
       {
         name: '인터넷 200M + IPTV플러스',
         internet: '200MB',
-        monthlyFee: 23100,
+        monthlyFee: 36300,
         gift: 390000,
         features: ['200MB 인터넷', 'IPTV플러스 (209채널)'],
       },
