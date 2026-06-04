@@ -50,7 +50,7 @@ export function Header() {
           </Button>
         </Link>
 
-        <a href="tel:16663233" className="hidden sm:flex flex-col leading-tight ml-2 pl-3 border-l border-gray-200 hover:opacity-80 transition-opacity">
+        <a href="tel:16663233" className="hidden md:flex flex-col leading-tight ml-2 pl-3 border-l border-gray-200 hover:opacity-80 transition-opacity">
           <span className="text-[10px] text-gray-500 font-medium">가입상담 (연중무휴)</span>
           <span className="text-lg font-black text-primary whitespace-nowrap">1666-3233</span>
         </a>
