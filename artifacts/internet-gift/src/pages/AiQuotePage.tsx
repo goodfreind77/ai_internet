@@ -229,7 +229,7 @@ export default function AiQuotePage() {
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 bg-primary/10 text-primary font-bold px-4 py-2 rounded-full text-sm mb-4">
             <Sparkles className="w-4 h-4" />
-            AI 3초 견적
+            AI 추천
           </div>
           <h1 className="text-3xl font-black text-gray-900 mb-2">나에게 맞는 요금제 찾기</h1>
           <p className="text-gray-500">몇 가지 질문에 답하면 AI가 최적의 요금제를 추천해 드려요</p>

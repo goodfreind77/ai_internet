@@ -20,7 +20,7 @@ export function Header() {
         <Link href="/ai-quote">
           <Button className="bg-gradient-to-r from-primary to-orange-400 hover:opacity-90 text-white font-bold rounded-full px-3 sm:px-4 border-none shadow-none text-xs sm:text-sm h-8 sm:h-9 flex items-center gap-1">
             <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
-            AI 3초 견적
+            AI 추천
           </Button>
         </Link>
         <Link href="/apply">
