@@ -52,7 +52,7 @@ export default function Home() {
               <ul className="text-left text-sm text-gray-600 space-y-3 mb-8">
                 <li>• 인터넷 500M + U+tv 프리미엄</li>
                 <li>• 기가 WiFi 6 기본 제공</li>
-                <li className="font-bold text-gray-900">• 월 49,500원 (VAT포함)</li>
+                <li className="font-bold text-gray-900">• 월 48,400원 (VAT포함)</li>
                 <li className="text-xs text-gray-400">휴대폰 결합 전 금액</li>
               </ul>
               <button className="w-full py-3 bg-[#E5005A] hover:bg-[#E5005A]/90 text-white font-bold rounded-lg transition-colors">자세히 보기</button>
