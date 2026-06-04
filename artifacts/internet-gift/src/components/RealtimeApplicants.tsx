@@ -35,6 +35,7 @@ type Row = {
 function giftForStatus(status: string): string {
   if (status === '설치완료') return '입금완료';
   if (status === '접수완료') return '입금대기';
+  if (status === '상담중') return '입금대기';
   return randomItem(GIFTS);
 }
 
