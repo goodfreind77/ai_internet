@@ -23,10 +23,10 @@ export function ISPNav() {
               key={tab.path}
               onClick={() => setLocation(tab.path)}
               data-testid={`nav-${tab.path.split('/').pop()}`}
-              className={`flex-shrink-0 sm:flex-1 py-3.5 px-4 sm:px-2 text-center font-bold text-xs sm:text-base whitespace-nowrap transition-colors hover:bg-gray-100 hover:text-primary ${
+              className={`flex-shrink-0 sm:flex-1 py-3.5 px-4 sm:px-2 text-center font-black text-xs sm:text-lg whitespace-nowrap transition-colors hover:bg-gray-100 hover:text-primary ${
                 isActive
                   ? 'text-white bg-primary border-b-2 border-primary'
-                  : 'text-gray-600'
+                  : 'text-gray-800'
               }`}
             >
               {tab.label}
