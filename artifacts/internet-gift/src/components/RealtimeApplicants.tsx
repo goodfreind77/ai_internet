@@ -90,6 +90,11 @@ export function RealtimeApplicants() {
     <div className="max-w-4xl mx-auto px-4 pb-14">
       <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-md">
 
+        {/* Top ticker */}
+        <div className="px-4 py-2 bg-yellow-50 border-b border-yellow-200 text-center">
+          <span className="text-xs font-black text-yellow-700">🔥 너빼고 다 신청중! 지금 바로 확인하세요</span>
+        </div>
+
         {/* Header bar */}
         <div className="flex items-center justify-between px-5 py-3 bg-red-500 text-white">
           <div className="flex items-center gap-2">
@@ -141,10 +146,6 @@ export function RealtimeApplicants() {
               </AnimatePresence>
             </div>
 
-            {/* Footer ticker */}
-            <div className="px-4 py-2 bg-yellow-50 border-t border-yellow-200 text-center">
-              <span className="text-xs font-black text-yellow-700">🔥 너빼고 다 신청중! 지금 바로 확인하세요</span>
-            </div>
           </div>
 
           {/* Divider */}
