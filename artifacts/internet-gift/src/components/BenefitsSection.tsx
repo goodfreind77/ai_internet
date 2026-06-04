@@ -34,7 +34,8 @@ export function BenefitsSection() {
           <p className="text-gray-600 text-lg">10년 이상의 노하우로 고객님께 최고의 혜택을 찾아드립니다.</p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {/* 모바일: 가로 스크롤 / PC: 4열 그리드 */}
+        <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-5 overflow-x-auto md:overflow-visible pb-2 md:pb-0 -mx-6 px-6 md:mx-0 md:px-0 scrollbar-hide snap-x snap-mandatory">
           {benefits.map((benefit, idx) => (
             <motion.div
               key={idx}
@@ -42,12 +43,12 @@ export function BenefitsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow text-center flex flex-col items-center"
+              className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow text-center flex flex-col items-center flex-shrink-0 w-[72vw] sm:w-[45vw] md:w-auto snap-start"
             >
               <div className="bg-gray-50 p-4 rounded-full mb-4">
                 {benefit.icon}
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">{benefit.title}</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-3">{benefit.title}</h3>
               <p className="text-gray-600 leading-relaxed text-sm">
                 {benefit.desc}
               </p>
