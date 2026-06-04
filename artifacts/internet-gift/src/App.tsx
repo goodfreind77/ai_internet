@@ -17,6 +17,7 @@ import ApplyPage from "@/pages/ApplyPage";
 import AdminPage from "@/pages/AdminPage";
 import ConsentPage from "@/pages/ConsentPage";
 import AiQuotePage from "@/pages/AiQuotePage";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 
 const queryClient = new QueryClient();
 
@@ -77,6 +78,7 @@ function App() {
       <TooltipProvider>
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
           <Router />
+          <MobileBottomNav />
         </WouterRouter>
         <Toaster />
       </TooltipProvider>
