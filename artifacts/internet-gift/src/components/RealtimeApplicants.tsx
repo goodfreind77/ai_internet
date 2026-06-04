@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useLocation } from 'wouter';
-
 const REGIONS = ['서울', '부산', '인천', '대구', '대전', '광주', '수원', '고양', '용인', '성남', '창원', '제주', '울산', '청주', '전주', '포항'];
 const NAMES = ['김*현', '이*준', '박*영', '최*민', '정*수', '강*진', '조*희', '윤*호', '장*아', '임*서', '한*지', '신*빈', '오*라', '서*원', '권*현', '홍*기'];
 const STATUSES = ['접수완료', '설치완료', '접수완료', '설치완료', '설치완료', '상담중', '설치완료', '설치완료', '접수완료', '설치완료'];
@@ -52,7 +50,6 @@ function makeRow(id: number, offsetMin = 0): Row {
 }
 
 export function RealtimeApplicants() {
-  const [, setLocation] = useLocation();
   const [count, setCount] = useState(randomBetween(28, 42));
   const [rows, setRows] = useState<Row[]>(() =>
     Array.from({ length: 8 }, (_, i) => makeRow(i, (8 - i) * 2))
@@ -143,24 +140,6 @@ export function RealtimeApplicants() {
 
           </div>
 
-          {/* Divider */}
-          <div className="hidden sm:block w-px bg-gray-200" />
-
-          {/* Right — 비밀 지원금 */}
-          <div className="sm:w-56 bg-gradient-to-br from-orange-50 to-red-50 flex flex-col items-center justify-center px-5 py-6 gap-3 text-center">
-            <div className="text-xs font-bold text-gray-500 tracking-wide">📢 공식 홈페이지엔 안보임</div>
-            <p className="font-black text-gray-900 text-base leading-snug">
-              오직 여기서만 가능한<br />
-              <span className="text-primary">지원금 이벤트!</span>
-            </p>
-            <p className="text-sm text-gray-600 font-semibold">💰 현금 주는건 비밀~!</p>
-            <button
-              onClick={() => setLocation('/tip')}
-              className="mt-1 w-full bg-primary text-white font-black py-2.5 rounded-xl text-sm hover:bg-primary/90 transition-colors shadow-sm"
-            >
-              🎁 비밀 지원금 확인하기
-            </button>
-          </div>
         </div>
 
       </div>
