@@ -2,9 +2,9 @@ import React from 'react';
 import { useLocation } from 'wouter';
 
 const TABS = [
+  { label: 'LG유플러스', path: '/provider/lg' },
   { label: 'SK브로드밴드', path: '/provider/sk' },
   { label: 'KT', path: '/provider/kt' },
-  { label: 'LG유플러스', path: '/provider/lg' },
   { label: 'KT스카이라이프', path: '/provider/skylife' },
   { label: 'LG헬로비전', path: '/provider/hellovision' },
   { label: '제휴카드', path: '/cards' },
