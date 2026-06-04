@@ -4,7 +4,6 @@ import { Header } from '@/components/Header';
 import { ISPNav } from '@/components/ISPNav';
 import { Footer } from '@/components/Footer';
 import { ConsultationModal } from '@/components/ConsultationModal';
-import { RealtimeApplicants } from '@/components/RealtimeApplicants';
 import { motion } from 'framer-motion';
 import { ChevronDown, Wifi, Tv, Box, Smartphone, PhoneCall, FileText } from 'lucide-react';
 
@@ -716,8 +715,6 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
               ? '※ 3년약정, VAT 포함가 -휴대폰한대 결합 기준 !-'
               : '※ 3년약정, VAT 포함가'}
           </p>
-
-          <RealtimeApplicants />
 
           {/* SK 결합 할인표 */}
           {provider.key === 'sk' && (

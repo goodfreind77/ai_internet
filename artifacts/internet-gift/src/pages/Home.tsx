@@ -6,6 +6,7 @@ import { HeroSection } from '@/components/HeroSection';
 import { BenefitsSection } from '@/components/BenefitsSection';
 import { Footer } from '@/components/Footer';
 import { SiLg } from 'react-icons/si';
+import { RealtimeApplicants } from '@/components/RealtimeApplicants';
 
 export default function Home() {
   const [, setLocation] = useLocation();
@@ -54,6 +55,12 @@ export default function Home() {
               <button className="w-full py-3 bg-[#E5005A] hover:bg-[#E5005A]/90 text-white font-bold rounded-lg transition-colors">자세히 보기</button>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="pb-12 bg-white">
+        <div className="max-w-lg mx-auto px-4">
+          <RealtimeApplicants />
         </div>
       </section>
 
