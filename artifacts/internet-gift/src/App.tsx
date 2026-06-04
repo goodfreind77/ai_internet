@@ -16,6 +16,7 @@ import ReviewWritePage from "@/pages/ReviewWritePage";
 import ApplyPage from "@/pages/ApplyPage";
 import AdminPage from "@/pages/AdminPage";
 import ConsentPage from "@/pages/ConsentPage";
+import AiQuotePage from "@/pages/AiQuotePage";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +56,9 @@ function Router() {
       </Route>
       <Route path="/review/:id">
         {(params) => <ReviewDetailPage reviewId={params.id} />}
+      </Route>
+      <Route path="/ai-quote">
+        {() => <AiQuotePage />}
       </Route>
       <Route path="/admin">
         {() => <AdminPage />}

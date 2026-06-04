@@ -1,5 +1,5 @@
 import React from 'react';
-import { Phone } from 'lucide-react';
+import { Phone, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLocation } from 'wouter';
 import { Link } from 'wouter';
@@ -17,6 +17,12 @@ export function Header() {
       </button>
 
       <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
+        <Link href="/ai-quote">
+          <Button className="bg-gradient-to-r from-primary to-orange-400 hover:opacity-90 text-white font-bold rounded-full px-3 sm:px-4 border-none shadow-none text-xs sm:text-sm h-8 sm:h-9 flex items-center gap-1">
+            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
+            AI 3초 견적
+          </Button>
+        </Link>
         <Link href="/apply">
           <Button className="bg-[#2ecc71] hover:bg-[#27ae60] text-white font-bold rounded-full px-3 sm:px-5 border-none shadow-none text-xs sm:text-sm h-8 sm:h-9">
             신청서 작성
