@@ -46,7 +46,7 @@ export default function Home() {
 
             <div onClick={() => setLocation('/provider/lg')} className="border-2 border-[#E5005A] rounded-2xl p-8 shadow-md relative cursor-pointer md:-translate-y-4">
               <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#E5005A] text-white text-xs font-bold px-4 py-1 rounded-full">가장 인기!</div>
-              <h3 className="text-2xl font-black text-[#E5005A] mb-2 flex items-center justify-center gap-2"><SiLg className="text-[#E5005A] text-3xl" /> 유플러스</h3>
+              <h3 className="text-3xl font-black text-[#E5005A] mb-2 flex items-center justify-center gap-2"><SiLg className="text-[#E5005A] text-5xl" /> 유플러스</h3>
               <ul className="text-left text-sm text-gray-600 space-y-3 mb-8">
                 <li>• 인터넷 500M + U+tv 프리미엄</li>
                 <li>• 기가 WiFi 6 기본 제공</li>
