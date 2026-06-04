@@ -4,7 +4,7 @@ import { useLocation } from 'wouter';
 
 const REGIONS = ['서울', '부산', '인천', '대구', '대전', '광주', '수원', '고양', '용인', '성남', '창원', '제주', '울산', '청주', '전주', '포항'];
 const NAMES = ['김*현', '이*준', '박*영', '최*민', '정*수', '강*진', '조*희', '윤*호', '장*아', '임*서', '한*지', '신*빈', '오*라', '서*원', '권*현', '홍*기'];
-const STATUSES = ['접수완료', '상담중', '설치예약', '접수완료', '접수완료', '상담중'];
+const STATUSES = ['접수완료', '상담중', '설치예약', '접수완료', '접수완료', '상담중', '설치완료', '설치완료'];
 const GIFTS = ['현금 10만원', '현금 15만원', '상품권 5만원', '현금 20만원', '갤럭시탭', '에어팟', '현금 8만원', '현금 12만원'];
 
 function randomBetween(min: number, max: number) {
@@ -32,14 +32,21 @@ type Row = {
   gift: string;
 };
 
+function giftForStatus(status: string): string {
+  if (status === '설치완료') return '입금완료';
+  if (status === '접수완료') return '입금대기';
+  return randomItem(GIFTS);
+}
+
 function makeRow(id: number, offsetMin = 0): Row {
+  const status = randomItem(STATUSES);
   return {
     id,
     date: nowMinutes(offsetMin),
     region: randomItem(REGIONS),
     name: randomItem(NAMES),
-    status: randomItem(STATUSES),
-    gift: randomItem(GIFTS),
+    status,
+    gift: giftForStatus(status),
   };
 }
 
@@ -66,9 +73,16 @@ export function RealtimeApplicants() {
   }, []);
 
   const statusColor = (s: string) => {
-    if (s === '접수완료') return 'text-green-600 font-bold';
+    if (s === '설치완료') return 'text-green-600 font-bold';
+    if (s === '접수완료') return 'text-blue-600 font-bold';
     if (s === '상담중') return 'text-orange-500 font-bold';
-    return 'text-blue-600 font-bold';
+    return 'text-purple-600 font-bold';
+  };
+
+  const giftColor = (gift: string) => {
+    if (gift === '입금완료') return 'text-green-600 font-bold';
+    if (gift === '입금대기') return 'text-gray-500 font-semibold';
+    return 'text-red-600 font-bold';
   };
 
   return (
@@ -120,7 +134,7 @@ export function RealtimeApplicants() {
                     <div className="px-2 py-2.5 text-center font-semibold text-gray-800">{row.region}</div>
                     <div className="px-2 py-2.5 text-center text-gray-700">{row.name}</div>
                     <div className={`px-2 py-2.5 text-center ${statusColor(row.status)}`}>{row.status}</div>
-                    <div className="px-2 py-2.5 text-center text-red-600 font-bold">{row.gift}</div>
+                    <div className={`px-2 py-2.5 text-center ${giftColor(row.gift)}`}>{row.gift}</div>
                   </motion.div>
                 ))}
               </AnimatePresence>
