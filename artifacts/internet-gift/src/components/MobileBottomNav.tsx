@@ -18,6 +18,15 @@ export function MobileBottomNav() {
           <span className="text-[10px] font-bold">AI 추천</span>
         </button>
 
+        {/* 전화상담 */}
+        <a
+          href="tel:16663233"
+          className="flex flex-col items-center justify-center gap-1 text-green-600 active:bg-green-50 transition-colors"
+        >
+          <Phone className="w-5 h-5" />
+          <span className="text-[10px] font-bold">전화상담</span>
+        </a>
+
         {/* 빠른 견적 */}
         <button
           onClick={() => setLocation('/apply')}
@@ -27,7 +36,7 @@ export function MobileBottomNav() {
           <span className="text-[10px] font-bold">빠른견적</span>
         </button>
 
-        {/* 신청서 */}
+        {/* 신청서 작성 */}
         <button
           onClick={() => setLocation('/apply')}
           className="flex flex-col items-center justify-center gap-1 relative"
@@ -35,17 +44,8 @@ export function MobileBottomNav() {
           <div className="absolute -top-5 w-14 h-14 rounded-full bg-primary flex flex-col items-center justify-center shadow-lg">
             <FileText className="w-5 h-5 text-white" />
           </div>
-          <span className="text-[10px] font-bold text-primary mt-6">신청서</span>
+          <span className="text-[10px] font-bold text-primary mt-6">신청서작성</span>
         </button>
-
-        {/* 전화상담 */}
-        <a
-          href="tel:16663233"
-          className="flex flex-col items-center justify-center gap-1 text-green-600 active:bg-green-50 transition-colors"
-        >
-          <Phone className="w-5 h-5" />
-          <span className="text-[10px] font-bold">전화상담</span>
-        </a>
 
       </div>
     </div>
