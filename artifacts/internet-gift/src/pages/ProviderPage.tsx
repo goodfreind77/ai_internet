@@ -534,8 +534,83 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
             <span style={{ color: provider.color }}>{provider.name}</span>
             <span className="text-gray-900">의</span>
           </h1>
-          <p className="text-center text-lg sm:text-3xl font-black text-gray-900 mb-6 sm:mb-10 px-2">
+          <p className="text-center text-lg sm:text-3xl font-black text-gray-900 mb-6 sm:mb-8 px-2">
             상품, 혜택, 요금을 직접 확인하고 비교해보세요!
+          </p>
+
+          {/* HOT 인터넷/IPTV 상품 - 최상단 고정 */}
+          <div className="text-center mb-6">
+            <div className="inline-flex items-center gap-3 mb-4">
+              <span className="bg-yellow-400 text-gray-900 font-black text-sm px-3 py-1 rounded-full">HOT</span>
+              <h2 className="text-2xl font-black text-gray-900">인터넷/IPTV 상품</h2>
+            </div>
+            <div className="flex justify-center">
+              <button
+                onClick={handleConsult}
+                className="px-6 py-2 bg-gray-900 text-white font-bold rounded-full text-sm hover:bg-gray-700 transition-colors"
+              >
+                비밀지원금 확인하기
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
+            {provider.plans.map((plan, idx) => (
+              <motion.div
+                key={plan.name}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                data-testid={`card-plan-${idx}`}
+                className={`bg-white rounded-2xl border p-6 shadow-sm hover:shadow-md transition-shadow relative ${
+                  plan.badge === 'HOT' ? 'border-primary' : 'border-gray-200'
+                }`}
+              >
+                {plan.badge && (
+                  <span
+                    className={`absolute -top-3 left-4 text-white text-xs font-bold px-3 py-1 rounded-full ${
+                      plan.badge === 'HOT' ? 'bg-primary' :
+                      plan.badge === '인기' ? 'bg-green-500' :
+                      plan.badge === '신상품' ? 'bg-blue-500' :
+                      'bg-purple-500'
+                    }`}
+                  >
+                    {plan.badge}
+                  </span>
+                )}
+                <h3 className="font-black text-base text-gray-900 mb-3 leading-tight">{plan.name}</h3>
+                <div className="mb-2">
+                  <span className="text-xs text-gray-500">월 요금</span>
+                  <p className="text-2xl font-black text-gray-900">
+                    {plan.monthlyFee.toLocaleString()}
+                    <span className="text-sm font-normal text-gray-500 ml-1">원</span>
+                  </p>
+                </div>
+                <ul className="space-y-1 mb-5">
+                  {plan.features.map((f) => (
+                    <li key={f} className="text-xs text-gray-600 flex items-start gap-1">
+                      <span className="text-primary mt-0.5">•</span> {f}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={handleConsult}
+                  className={`w-full py-2.5 font-bold rounded-xl text-sm transition-colors ${
+                    plan.badge === 'HOT'
+                      ? 'bg-primary text-white hover:bg-primary/90'
+                      : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                  }`}
+                >
+                  상담 신청
+                </button>
+              </motion.div>
+            ))}
+          </div>
+
+          <p className="text-center text-sm text-gray-500 -mt-6 mb-8">
+            {['sk', 'kt', 'lg'].includes(providerKey)
+              ? '※ 3년약정, VAT 포함가 -휴대폰한대 결합 기준 !-'
+              : '※ 3년약정, VAT 포함가'}
           </p>
 
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-4">
@@ -641,80 +716,6 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
               신청서 작성
             </button>
           </div>
-
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-3 mb-4">
-              <span className="bg-yellow-400 text-gray-900 font-black text-sm px-3 py-1 rounded-full">HOT</span>
-              <h2 className="text-2xl font-black text-gray-900">인터넷/IPTV 상품</h2>
-            </div>
-            <div className="flex justify-center">
-              <button
-                onClick={handleConsult}
-                className="px-6 py-2 bg-gray-900 text-white font-bold rounded-full text-sm hover:bg-gray-700 transition-colors"
-              >
-                비밀지원금 확인하기
-              </button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-16">
-            {provider.plans.map((plan, idx) => (
-              <motion.div
-                key={plan.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                data-testid={`card-plan-${idx}`}
-                className={`bg-white rounded-2xl border p-6 shadow-sm hover:shadow-md transition-shadow relative ${
-                  plan.badge === 'HOT' ? 'border-primary' : 'border-gray-200'
-                }`}
-              >
-                {plan.badge && (
-                  <span
-                    className={`absolute -top-3 left-4 text-white text-xs font-bold px-3 py-1 rounded-full ${
-                      plan.badge === 'HOT' ? 'bg-primary' :
-                      plan.badge === '인기' ? 'bg-green-500' :
-                      plan.badge === '신상품' ? 'bg-blue-500' :
-                      'bg-purple-500'
-                    }`}
-                  >
-                    {plan.badge}
-                  </span>
-                )}
-                <h3 className="font-black text-base text-gray-900 mb-3 leading-tight">{plan.name}</h3>
-                <div className="mb-2">
-                  <span className="text-xs text-gray-500">월 요금</span>
-                  <p className="text-2xl font-black text-gray-900">
-                    {plan.monthlyFee.toLocaleString()}
-                    <span className="text-sm font-normal text-gray-500 ml-1">원</span>
-                  </p>
-                </div>
-                <ul className="space-y-1 mb-5">
-                  {plan.features.map((f) => (
-                    <li key={f} className="text-xs text-gray-600 flex items-start gap-1">
-                      <span className="text-primary mt-0.5">•</span> {f}
-                    </li>
-                  ))}
-                </ul>
-                <button
-                  onClick={handleConsult}
-                  className={`w-full py-2.5 font-bold rounded-xl text-sm transition-colors ${
-                    plan.badge === 'HOT'
-                      ? 'bg-primary text-white hover:bg-primary/90'
-                      : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                  }`}
-                >
-                  상담 신청
-                </button>
-              </motion.div>
-            ))}
-          </div>
-
-          <p className="text-center text-sm text-gray-500 -mt-10 mb-4">
-            {['sk', 'kt', 'lg'].includes(providerKey)
-              ? '※ 3년약정, VAT 포함가 -휴대폰한대 결합 기준 !-'
-              : '※ 3년약정, VAT 포함가'}
-          </p>
 
           {/* SK 결합 할인표 */}
           {provider.key === 'sk' && (
