@@ -524,25 +524,25 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
       <Header />
       <ISPNav />
 
-      <main className="max-w-5xl mx-auto px-4 py-12">
+      <main className="max-w-5xl mx-auto px-4 pt-4 pb-12 sm:py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <h1 className="text-center text-2xl sm:text-4xl font-black mb-3 leading-tight">
+          <h1 className="text-center text-2xl sm:text-4xl font-black mb-1 leading-tight">
             <span style={{ color: provider.color }}>{provider.name}</span>
             <span className="text-gray-900">의</span>
           </h1>
-          <p className="text-center text-lg sm:text-3xl font-black text-gray-900 mb-6 sm:mb-8 px-2">
+          <p className="text-center text-base sm:text-3xl font-black text-gray-900 mb-4 sm:mb-8 px-2">
             상품, 혜택, 요금을 직접 확인하고 비교해보세요!
           </p>
 
           {/* HOT 인터넷/IPTV 상품 - 최상단 고정 */}
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center gap-3 mb-4">
+          <div className="text-center mb-4">
+            <div className="inline-flex items-center gap-3 mb-3">
               <span className="bg-yellow-400 text-gray-900 font-black text-sm px-3 py-1 rounded-full">HOT</span>
-              <h2 className="text-2xl font-black text-gray-900">인터넷/IPTV 상품</h2>
+              <h2 className="text-xl sm:text-2xl font-black text-gray-900">인터넷/IPTV 상품</h2>
             </div>
             <div className="flex justify-center">
               <button
