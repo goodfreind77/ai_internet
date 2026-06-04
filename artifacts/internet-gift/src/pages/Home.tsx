@@ -59,9 +59,7 @@ export default function Home() {
       </section>
 
       <section className="pb-12 bg-white">
-        <div className="max-w-lg mx-auto px-4">
-          <RealtimeApplicants />
-        </div>
+        <RealtimeApplicants />
       </section>
 
       <Footer />
