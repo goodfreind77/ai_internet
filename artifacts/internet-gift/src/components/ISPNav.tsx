@@ -14,7 +14,7 @@ export function ISPNav() {
   const [location, setLocation] = useLocation();
 
   return (
-    <nav className="w-full bg-gray-50 border-b border-gray-200">
+    <nav className="w-full bg-gray-50 border-b border-gray-200 sticky top-[88px] sm:static z-40">
       <div className="max-w-6xl mx-auto flex overflow-x-auto scrollbar-hide">
         {TABS.map((tab) => {
           const isActive = location === tab.path;
