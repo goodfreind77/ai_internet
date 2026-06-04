@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLocation } from 'wouter';
 import { Link } from 'wouter';
@@ -16,9 +16,12 @@ export function Header() {
         >
           <img src="/logo-trim.png" alt="AI인터넷" className="h-16 sm:h-20 w-auto object-contain" />
         </button>
-        <a href="tel:16663233" className="flex flex-col leading-tight hover:opacity-80 transition-opacity">
-          <span className="text-[10px] sm:text-xs text-gray-500 font-medium">가입상담 (연중무휴)</span>
-          <span className="text-base sm:text-xl font-black text-primary whitespace-nowrap">1666-3233</span>
+        <a href="tel:16663233" className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
+          <Phone className="w-4 h-4 text-primary flex-shrink-0" />
+          <div className="flex flex-col leading-tight">
+            <span className="text-[10px] sm:text-xs text-gray-500 font-medium">가입상담 (연중무휴)</span>
+            <span className="text-base sm:text-xl font-black text-primary whitespace-nowrap">1666-3233</span>
+          </div>
         </a>
       </div>
 
