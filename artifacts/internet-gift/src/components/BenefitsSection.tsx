@@ -11,7 +11,7 @@ const benefits = [
   {
     icon: <Coins className="w-10 h-10 text-secondary mb-4" />,
     title: "최대 지원금",
-    desc: "업계 최고 수준의 현금 사은품을 약속드립니다. 설치 당일 100% 지급!"
+    desc: "업계 최고 수준의 현금 사은품을 약속드립니다."
   },
   {
     icon: <ShieldCheck className="w-10 h-10 text-green-500 mb-4" />,
