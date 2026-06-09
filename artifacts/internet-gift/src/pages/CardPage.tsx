@@ -6,7 +6,7 @@ import { Footer } from '@/components/Footer';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ExternalLink } from 'lucide-react';
 
-const BASE = 'https://xn--t60b460am2elgi85b30e.com/assets/';
+const BASE = '/cards/';
 
 type Card = {
   id: string;
