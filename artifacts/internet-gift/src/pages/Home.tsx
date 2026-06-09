@@ -98,11 +98,11 @@ export default function Home() {
       <BenefitsSection />
 
       {/* ISP Best Plans Carousel */}
-      <section className="py-16" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 40%, #6d28d9 100%)' }}>
+      <section className="py-16" style={{ background: 'linear-gradient(160deg, #0f172a 0%, #1e293b 100%)' }}>
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-black text-white mb-3">통신사별 베스트 요금제</h2>
-            <p className="text-blue-200">가장 많이 가입하는 인기 요금제입니다.</p>
+            <p className="text-slate-400">가장 많이 가입하는 인기 요금제입니다.</p>
           </div>
 
           <div className="relative">
@@ -187,11 +187,11 @@ export default function Home() {
             </button>
           </div>
 
-          <p className="mt-6 text-center text-xs text-blue-200 opacity-70">※ 3년약정, 휴대폰 1회선 결합 할인 기준, VAT포함가</p>
+          <p className="mt-6 text-center text-xs text-slate-500">※ 3년약정, 휴대폰 1회선 결합 할인 기준, VAT포함가</p>
         </div>
       </section>
 
-      <section className="pb-12" style={{ background: 'linear-gradient(180deg, #f5f3ff 0%, #fdf4ff 100%)' }}>
+      <section className="pb-12 bg-white">
         <RealtimeApplicants />
       </section>
 
