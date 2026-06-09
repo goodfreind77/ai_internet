@@ -166,7 +166,7 @@ export default function ConsentPage({ id }: { id: string }) {
           </div>
 
           <p style={{ fontSize: '13px', lineHeight: '1.7', color: '#444', marginBottom: '16px' }}>
-            ai인터넷.com(이하 '회사')은 고객님의 통신 서비스 가입을 축하 드리며, 사은품 지급과 관련하여 아래 내용에 대한 동의를 받고자 합니다. 아래 내용을 충분히 읽으신 후 동의해 주시기 바랍니다.
+            주식회사이좋은사람들(ai인터넷.com)은 고객님의 통신 서비스 가입을 축하 드리며, 사은품 지급과 관련하여 아래 내용에 대한 동의를 받고자 합니다. 아래 내용을 충분히 읽으신 후 동의해 주시기 바랍니다.
           </p>
 
           {[
@@ -284,7 +284,7 @@ export default function ConsentPage({ id }: { id: string }) {
 
             <div className="prose prose-sm max-w-none text-gray-700 space-y-4 text-[14px] leading-relaxed">
               <p>
-                ai인터넷.com(이하 '회사')은 고객님의 통신 서비스 가입을 축하 드리며, 사은품 지급과 관련하여 아래 내용에 대한 동의를 받고자 합니다.
+                주식회사이좋은사람들(ai인터넷.com)은 고객님의 통신 서비스 가입을 축하 드리며, 사은품 지급과 관련하여 아래 내용에 대한 동의를 받고자 합니다.
                 아래 내용을 충분히 읽으신 후 동의해 주시기 바랍니다.
               </p>
 
