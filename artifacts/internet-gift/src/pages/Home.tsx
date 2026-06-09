@@ -98,7 +98,7 @@ export default function Home() {
       <BenefitsSection />
 
       {/* ISP Best Plans Carousel */}
-      <section className="py-16" style={{ background: 'linear-gradient(135deg, #1e3a5f 0%, #0f2744 50%, #1a3a5c 100%)' }}>
+      <section className="py-16" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 40%, #6d28d9 100%)' }}>
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-black text-white mb-3">통신사별 베스트 요금제</h2>
@@ -191,7 +191,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="pb-12 bg-white">
+      <section className="pb-12" style={{ background: 'linear-gradient(180deg, #f5f3ff 0%, #fdf4ff 100%)' }}>
         <RealtimeApplicants />
       </section>
 
