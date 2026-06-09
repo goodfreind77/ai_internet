@@ -667,7 +667,7 @@ function KakaoNotifySection({
     setSending(true);
     setResult(null);
     // 기본 변수 + 사용자 입력 추가 변수 병합
-    const variables: Record<string, string> = { '#{링크}': consentUrl };
+    const variables: Record<string, string> = {};
     if (extraVars.trim()) {
       extraVars.split('\n').forEach(line => {
         const [k, ...v] = line.split('=');
@@ -707,17 +707,19 @@ function KakaoNotifySection({
 
       <div className="space-y-2">
         {/* 자동 포함되는 기본 변수 안내 */}
-        <div className="bg-white border border-yellow-200 rounded-lg px-3 py-2 text-xs text-gray-500">
-          <span className="font-semibold text-yellow-700">자동 포함:</span>{' '}
-          <code>{'#{이름}'}</code> (신청자 이름),{' '}
-          <code>{'#{링크}'}</code>{' '}
-          <button
-            type="button"
-            onClick={() => navigator.clipboard.writeText(consentUrl)}
-            className="ml-1 underline text-yellow-600 hover:text-yellow-800"
-          >
-            복사
-          </button>
+        <div className="bg-white border border-yellow-200 rounded-lg px-3 py-2 text-xs text-gray-500 space-y-1">
+          <p><span className="font-semibold text-yellow-700">자동 포함 변수:</span></p>
+          <p><code>{'#{이름}'}</code> → 신청자 이름</p>
+          <p className="flex items-center gap-1">
+            <code>{'#{agreement_api}'}</code> → 동의서 링크
+            <button
+              type="button"
+              onClick={() => navigator.clipboard.writeText(consentUrl)}
+              className="underline text-yellow-600 hover:text-yellow-800 ml-1"
+            >
+              복사
+            </button>
+          </p>
         </div>
 
         {/* 추가 템플릿 변수 입력 */}

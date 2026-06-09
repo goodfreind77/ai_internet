@@ -297,6 +297,10 @@ router.post("/applications/:id/notify", adminAuthMiddleware, async (req, res) =>
 
     const client = new SolapiMessageService(apiKey, apiSecret);
 
+    const consentUrl = `${process.env.REPLIT_DOMAINS?.split(",")[0] ? `https://${process.env.REPLIT_DOMAINS.split(",")[0]}` : ""}${
+      process.env.BASE_PATH ?? ""
+    }/consent/${id}`;
+
     const result = await client.send({
       to: phoneNormalized,
       from,
@@ -305,6 +309,7 @@ router.post("/applications/:id/notify", adminAuthMiddleware, async (req, res) =>
         templateId,
         variables: {
           "#{이름}": app.name ?? "고객",
+          "#{agreement_api}": consentUrl,
           ...variables,
         },
       },
