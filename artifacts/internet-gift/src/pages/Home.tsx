@@ -156,12 +156,22 @@ export default function Home() {
                           {plan.price}
                         </p>
                       </div>
-                      <button
-                        className="mt-4 w-full py-2 text-white text-sm font-bold rounded-lg transition-colors"
-                        style={{ backgroundColor: plan.color }}
-                      >
-                        자세히 보기
-                      </button>
+                      <div className="mt-4 flex gap-2">
+                        <button
+                          className="flex-1 py-2 text-sm font-bold rounded-lg border-2 transition-colors"
+                          style={{ borderColor: plan.color, color: plan.color, backgroundColor: 'white' }}
+                          onClick={(e) => { e.stopPropagation(); setLocation(`/provider/${plan.key}`); }}
+                        >
+                          자세히 보기
+                        </button>
+                        <button
+                          className="flex-1 py-2 text-white text-sm font-bold rounded-lg transition-colors"
+                          style={{ backgroundColor: plan.color }}
+                          onClick={(e) => { e.stopPropagation(); setLocation('/apply'); }}
+                        >
+                          신청서 작성
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
