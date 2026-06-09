@@ -15,7 +15,7 @@ const ISP_PLANS = [
     provider: 'SK브로드밴드',
     logo: '/logos/sk_logo.png',
     logoHeight: 'h-12',
-    color: '#E60000',
+    color: '#F97316',
     name: '기가라이트인터넷 500M + B tv ALL',
     desc: 'Giga 찬 인터넷 속도와 B tv 모든 채널을 한번에!',
     channels: 257,
