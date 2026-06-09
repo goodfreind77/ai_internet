@@ -191,7 +191,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="pb-12 bg-white">
+      <section className="pt-16 pb-12" style={{ background: 'linear-gradient(160deg, #fff7ed 0%, #ffedd5 100%)' }}>
         <RealtimeApplicants />
       </section>
 
