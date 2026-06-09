@@ -98,11 +98,11 @@ export default function Home() {
       <BenefitsSection />
 
       {/* ISP Best Plans Carousel */}
-      <section className="py-16" style={{ background: 'linear-gradient(135deg, #ea580c 0%, #f97316 40%, #fb923c 100%)' }}>
+      <section className="py-16" style={{ background: 'linear-gradient(135deg, #fb923c 0%, #fdba74 50%, #fed7aa 100%)' }}>
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-black text-white mb-3">통신사별 베스트 요금제</h2>
-            <p className="text-orange-100">가장 많이 가입하는 인기 요금제입니다.</p>
+            <h2 className="text-3xl font-black text-orange-900 mb-3">통신사별 베스트 요금제</h2>
+            <p className="text-orange-600">가장 많이 가입하는 인기 요금제입니다.</p>
           </div>
 
           <div className="relative">
@@ -187,7 +187,7 @@ export default function Home() {
             </button>
           </div>
 
-          <p className="mt-6 text-center text-xs text-orange-200">※ 3년약정, 휴대폰 1회선 결합 할인 기준, VAT포함가</p>
+          <p className="mt-6 text-center text-xs text-orange-400">※ 3년약정, 휴대폰 1회선 결합 할인 기준, VAT포함가</p>
         </div>
       </section>
 
