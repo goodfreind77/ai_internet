@@ -709,7 +709,7 @@ function KakaoNotifySection({
         {/* 자동 포함되는 기본 변수 안내 */}
         <div className="bg-white border border-yellow-200 rounded-lg px-3 py-2 text-xs text-gray-500 space-y-1">
           <p><span className="font-semibold text-yellow-700">자동 포함 변수:</span></p>
-          <p><code>{'#{이름}'}</code> → 신청자 이름</p>
+          <p><code>{'#{name}'}</code> → 신청자 이름</p>
           <p className="flex items-center gap-1">
             <code>{'#{agreement_api}'}</code> → 동의서 링크
             <button

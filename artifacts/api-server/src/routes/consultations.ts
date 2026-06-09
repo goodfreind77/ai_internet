@@ -308,7 +308,7 @@ router.post("/applications/:id/notify", adminAuthMiddleware, async (req, res) =>
         pfId,
         templateId,
         variables: {
-          "#{이름}": app.name ?? "고객",
+          "#{name}": app.name ?? "고객",
           "#{agreement_api}": consentUrl,
           ...variables,
         },
