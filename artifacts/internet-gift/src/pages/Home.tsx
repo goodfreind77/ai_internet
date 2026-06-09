@@ -115,7 +115,7 @@ export default function Home() {
             </button>
 
             {/* Carousel viewport */}
-            <div className="overflow-hidden" ref={emblaRef}>
+            <div className="overflow-hidden pt-5" ref={emblaRef}>
               <div className="flex gap-4 pl-1 pr-1">
                 {ISP_PLANS.map((plan) => (
                   <div
@@ -128,8 +128,8 @@ export default function Home() {
                       style={{ border: `2px solid ${plan.popular ? plan.color : plan.color + '55'}` }}
                     >
                       {plan.popular && (
-                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">
-                          가장 인기!
+                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-red-500 text-white text-xs font-black px-3 py-1.5 rounded-full whitespace-nowrap shadow-lg animate-bounce">
+                          🔥 가장 인기!
                         </div>
                       )}
                       <div className="flex items-center gap-2 mb-4" style={{ marginTop: plan.popular ? '8px' : '0' }}>
