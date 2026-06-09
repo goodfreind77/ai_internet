@@ -27,11 +27,11 @@ const benefits = [
 
 export function BenefitsSection() {
   return (
-    <section className="py-20" style={{ background: 'linear-gradient(160deg, #f0fdf4 0%, #dcfce7 100%)' }}>
+    <section className="py-20 bg-white">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-black text-gray-900 mb-4">왜 AI인터넷을 선택해야 할까요?</h2>
-          <p className="text-emerald-500 text-lg">10년 이상의 노하우로 고객님께 최고의 혜택을 찾아드립니다.</p>
+          <p className="text-amber-500 text-lg">10년 이상의 노하우로 고객님께 최고의 혜택을 찾아드립니다.</p>
         </div>
         
         {/* 모바일: 가로 스크롤 / PC: 4열 그리드 */}
@@ -43,9 +43,10 @@ export function BenefitsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className="bg-white p-6 rounded-2xl shadow-sm border border-emerald-100 hover:shadow-md hover:border-emerald-200 transition-all text-center flex flex-col items-center flex-shrink-0 w-[72vw] sm:w-[45vw] md:w-auto snap-start"
+              className="bg-gray-50 p-6 rounded-2xl border-l-4 hover:shadow-md transition-all text-center flex flex-col items-center flex-shrink-0 w-[72vw] sm:w-[45vw] md:w-auto snap-start"
+              style={{ borderLeftColor: '#f59e0b' }}
             >
-              <div className="bg-emerald-50 p-4 rounded-2xl mb-4">
+              <div className="bg-white p-4 rounded-2xl shadow-sm mb-4">
                 {benefit.icon}
               </div>
               <h3 className="text-lg font-bold text-gray-900 mb-3">{benefit.title}</h3>
