@@ -272,13 +272,13 @@ export default function AdminPage() {
     } catch {}
   };
 
-  const sendKakaoNotify = async (id: number, link: string, message: string): Promise<{ success: boolean; mock?: boolean; error?: string }> => {
+  const sendKakaoNotify = async (id: number, variables: Record<string, string>): Promise<{ success: boolean; mock?: boolean; error?: string }> => {
     if (!token) return { success: false, error: '인증 오류' };
     try {
       const res = await fetch(`/api/applications/${id}/notify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ link, message }),
+        body: JSON.stringify({ variables }),
       });
       const data = await res.json();
       if (!res.ok) return { success: false, error: data.error ?? '발송 실패' };
@@ -417,7 +417,7 @@ function ApplicationsTable({
   onMemoSave: (id: number, memo: string) => Promise<void>;
   onHistoryAdd: (id: number, note: string) => Promise<boolean>;
   onHistoryDelete: (id: number, index: number) => Promise<void>;
-  onNotify: (id: number, link: string, message: string) => Promise<{ success: boolean; mock?: boolean; error?: string }>;
+  onNotify: (id: number, variables: Record<string, string>) => Promise<{ success: boolean; mock?: boolean; error?: string }>;
 }) {
   const [expanded, setExpanded] = useState<number | null>(null);
   const [updating, setUpdating] = useState<number | null>(null);
@@ -656,28 +656,34 @@ function KakaoNotifySection({
   id: number;
   phone: string | null;
   consentedAt: string | null;
-  onNotify: (id: number, link: string, message: string) => Promise<{ success: boolean; mock?: boolean; error?: string }>;
+  onNotify: (id: number, variables: Record<string, string>) => Promise<{ success: boolean; mock?: boolean; error?: string }>;
 }) {
   const consentUrl = `${window.location.origin}${import.meta.env.BASE_URL}consent/${id}`.replace(/([^:])\/\//g, '$1/');
-  const [link, setLink] = useState(consentUrl);
-  const [message, setMessage] = useState('');
+  const [extraVars, setExtraVars] = useState('');
   const [sending, setSending] = useState(false);
   const [result, setResult] = useState<{ type: 'success' | 'mock' | 'error'; text: string } | null>(null);
 
   const handleSend = async () => {
     setSending(true);
     setResult(null);
-    const res = await onNotify(id, link, message);
+    // 기본 변수 + 사용자 입력 추가 변수 병합
+    const variables: Record<string, string> = { '#{링크}': consentUrl };
+    if (extraVars.trim()) {
+      extraVars.split('\n').forEach(line => {
+        const [k, ...v] = line.split('=');
+        if (k && v.length) variables[k.trim()] = v.join('=').trim();
+      });
+    }
+    const res = await onNotify(id, variables);
     setSending(false);
     if (res.success && res.mock) {
       setResult({ type: 'mock', text: 'API 키 미설정 — 실제 발송은 생략됐습니다. (테스트 성공)' });
     } else if (res.success) {
       setResult({ type: 'success', text: '알림톡이 성공적으로 발송됐습니다.' });
-      setMessage('');
     } else {
       setResult({ type: 'error', text: res.error ?? '발송에 실패했습니다.' });
     }
-    setTimeout(() => setResult(null), 5000);
+    setTimeout(() => setResult(null), 6000);
   };
 
   return (
@@ -700,33 +706,35 @@ function KakaoNotifySection({
       )}
 
       <div className="space-y-2">
-        <div>
-          <label className="text-xs text-yellow-700 font-medium mb-1 block">동의서 링크</label>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={link}
-              onChange={e => setLink(e.target.value)}
-              disabled={!phone}
-              className="flex-1 px-3 py-2 text-xs border border-yellow-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:border-yellow-400 transition-colors disabled:opacity-50 font-mono"
-            />
-            <button
-              type="button"
-              onClick={() => { navigator.clipboard.writeText(link); }}
-              className="px-3 py-2 text-xs rounded-lg border border-yellow-300 text-yellow-700 hover:bg-yellow-100 transition-colors whitespace-nowrap"
-            >
-              복사
-            </button>
-          </div>
+        {/* 자동 포함되는 기본 변수 안내 */}
+        <div className="bg-white border border-yellow-200 rounded-lg px-3 py-2 text-xs text-gray-500">
+          <span className="font-semibold text-yellow-700">자동 포함:</span>{' '}
+          <code>{'#{이름}'}</code> (신청자 이름),{' '}
+          <code>{'#{링크}'}</code>{' '}
+          <button
+            type="button"
+            onClick={() => navigator.clipboard.writeText(consentUrl)}
+            className="ml-1 underline text-yellow-600 hover:text-yellow-800"
+          >
+            복사
+          </button>
         </div>
-        <textarea
-          value={message}
-          onChange={e => setMessage(e.target.value)}
-          rows={2}
-          placeholder="추가 메시지 (선택사항)"
-          disabled={!phone}
-          className="w-full px-3 py-2 text-sm border border-yellow-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:border-yellow-400 transition-colors resize-none disabled:opacity-50"
-        />
+
+        {/* 추가 템플릿 변수 입력 */}
+        <div>
+          <label className="text-xs text-yellow-700 font-medium mb-1 block">
+            추가 변수 (선택, 한 줄에 하나씩: <code>{'#{변수명}=값'}</code>)
+          </label>
+          <textarea
+            value={extraVars}
+            onChange={e => setExtraVars(e.target.value)}
+            rows={2}
+            placeholder={'#{내용}=설치 일정을 안내드립니다.\n#{날짜}=2026-06-07'}
+            disabled={!phone}
+            className="w-full px-3 py-2 text-xs font-mono border border-yellow-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-yellow-300 transition-colors resize-none disabled:opacity-50"
+          />
+        </div>
+
         <div className="flex items-center justify-between">
           <div className="text-xs">
             {result && (

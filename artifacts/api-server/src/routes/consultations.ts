@@ -2,6 +2,7 @@ import { Router, type IRouter } from "express";
 import { db, consultationRequestsTable, applicationsTable } from "@workspace/db";
 import { desc, eq } from "drizzle-orm";
 import { adminAuthMiddleware } from "./admin";
+import { SolapiMessageService } from "solapi";
 
 const router: IRouter = Router();
 
@@ -259,7 +260,7 @@ router.post("/consent/:id/agree", async (req, res) => {
 router.post("/applications/:id/notify", adminAuthMiddleware, async (req, res) => {
   try {
     const id = parseInt(String(req.params.id), 10);
-    const { link, message } = req.body;
+    const { variables } = req.body as { variables?: Record<string, string> };
 
     const [app] = await db
       .select({ phone: applicationsTable.phone, name: applicationsTable.name })
@@ -275,57 +276,40 @@ router.post("/applications/:id/notify", adminAuthMiddleware, async (req, res) =>
       return;
     }
 
-    const KAKAO_API_KEY = process.env.KAKAO_API_KEY;
-    const KAKAO_SENDER_KEY = process.env.KAKAO_SENDER_KEY;
-    const KAKAO_TEMPLATE_CODE = process.env.KAKAO_TEMPLATE_CODE;
+    const apiKey = process.env.SOLAPI_API_KEY;
+    const apiSecret = process.env.SOLAPI_API_SECRET;
+    const pfId = process.env.SOLAPI_KAKAO_PF_ID;
+    const templateId = process.env.SOLAPI_KAKAO_TEMPLATE_ID;
+    const from = process.env.SOLAPI_SENDER;
 
-    if (!KAKAO_API_KEY || !KAKAO_SENDER_KEY || !KAKAO_TEMPLATE_CODE) {
-      req.log.warn({ id, phone: app.phone, link, message }, "카카오 알림톡 API 키 미설정 — 실제 발송 생략 (mock)");
+    if (!apiKey || !apiSecret || !pfId || !templateId || !from) {
+      req.log.warn({ id }, "Solapi 환경변수 미설정 — mock 응답");
       res.json({
         mock: true,
-        message: "카카오 API 키가 설정되지 않아 실제 발송은 생략됩니다.",
+        message: "Solapi 환경변수가 설정되지 않아 실제 발송은 생략됩니다.",
         to: app.phone,
         name: app.name,
-        link,
-        body: message,
       });
       return;
     }
 
     const phoneNormalized = app.phone.replace(/-/g, "");
 
-    const payload = {
-      message: {
-        to: phoneNormalized,
-      },
+    const client = new SolapiMessageService(apiKey, apiSecret);
+
+    const result = await client.send({
+      to: phoneNormalized,
+      from,
       kakaoOptions: {
-        senderKey: KAKAO_SENDER_KEY,
-        templateCode: KAKAO_TEMPLATE_CODE,
+        pfId,
+        templateId,
         variables: {
           "#{이름}": app.name ?? "고객",
-          "#{링크}": link ?? "",
-          "#{내용}": message ?? "",
+          ...variables,
         },
       },
-    };
-
-    const kakaoRes = await fetch("https://api.solapi.com/messages/v4/send", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${KAKAO_API_KEY}`,
-      },
-      body: JSON.stringify(payload),
     });
 
-    if (!kakaoRes.ok) {
-      const errBody = await kakaoRes.text();
-      req.log.error({ status: kakaoRes.status, body: errBody }, "카카오 알림톡 발송 실패");
-      res.status(502).json({ error: "알림톡 발송에 실패했습니다.", detail: errBody });
-      return;
-    }
-
-    const result = await kakaoRes.json();
     req.log.info({ id, phone: phoneNormalized, result }, "카카오 알림톡 발송 성공");
     res.json({ success: true, result });
   } catch (err) {
