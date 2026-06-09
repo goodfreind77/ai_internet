@@ -141,7 +141,7 @@ export default function ConsentPage({ id }: { id: string }) {
         `}</style>
         <div style={{ maxWidth: '700px', margin: '0 auto', padding: '0 8px', fontFamily: "'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif" }}>
           <div style={{ borderBottom: '3px solid #e53e1e', paddingBottom: '12px', marginBottom: '20px', textAlign: 'center' }}>
-            <p style={{ fontSize: '11px', color: '#666', margin: '0 0 4px 0' }}>이좋은사람들(ai인터넷.com)</p>
+            <p style={{ fontSize: '11px', color: '#666', margin: '0 0 4px 0' }}>주식회사이좋은사람들(ai인터넷.com)</p>
             <h1 style={{ fontSize: '20px', fontWeight: '900', color: '#1a1a1a', margin: 0 }}>인터넷 가입 사은품 지급 및 반환 동의서</h1>
           </div>
 
@@ -247,7 +247,7 @@ export default function ConsentPage({ id }: { id: string }) {
           </div>
 
           <div style={{ borderTop: '1px solid #eee', marginTop: '24px', paddingTop: '10px', textAlign: 'center' }}>
-            <p style={{ fontSize: '10px', color: '#aaa', margin: 0 }}>© AI인터넷(ai인터넷.com) | 이좋은사람들 | 문서번호: CONSENT-{data.id}-{data.name}</p>
+            <p style={{ fontSize: '10px', color: '#aaa', margin: 0 }}>© AI인터넷(ai인터넷.com) | 주식회사이좋은사람들 | 문서번호: CONSENT-{data.id}-{data.name}</p>
           </div>
         </div>
       </>
@@ -259,7 +259,7 @@ export default function ConsentPage({ id }: { id: string }) {
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="bg-primary px-8 py-6 text-center">
-            <p className="text-white/80 text-sm mb-1">이좋은사람들(ai인터넷.com)</p>
+            <p className="text-white/80 text-sm mb-1">주식회사이좋은사람들(ai인터넷.com)</p>
             <h1 className="text-2xl font-black text-white">인터넷 가입 사은품 지급 및 반환 동의서</h1>
           </div>
 
@@ -381,7 +381,7 @@ export default function ConsentPage({ id }: { id: string }) {
         </div>
 
         <p className="text-center text-xs text-gray-400 mt-6">
-          © AI인터넷(ai인터넷.com) | 이좋은사람들
+          © AI인터넷(ai인터넷.com) | 주식회사이좋은사람들
         </p>
       </div>
     </div>
