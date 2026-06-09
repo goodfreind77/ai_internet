@@ -13,6 +13,7 @@ const ISP_PLANS = [
   {
     key: 'sk',
     provider: 'SK브로드밴드',
+    logo: '/logos/sk_logo.png',
     color: '#E60000',
     name: '기가라이트인터넷 500M + B tv ALL',
     desc: 'Giga 찬 인터넷 속도와 B tv 모든 채널을 한번에!',
@@ -25,6 +26,7 @@ const ISP_PLANS = [
   {
     key: 'kt',
     provider: 'KT 올레',
+    logo: '/logos/kt_logo.png',
     color: '#1a1a1a',
     name: '인터넷베이직 500M + TV베이직',
     desc: '빠른 인터넷속도로 영상은 끊김없이, 인기 채널 모두 담은!',
@@ -37,6 +39,7 @@ const ISP_PLANS = [
   {
     key: 'lg',
     provider: 'LG유플러스',
+    logo: '/logos/lg_logo.png',
     color: '#E5005A',
     name: '와이파이기본 500M + TV실속형',
     desc: '기가 인터넷 속도로 영상 강의 신청, 원격 근무도 편하게!',
@@ -49,6 +52,7 @@ const ISP_PLANS = [
   {
     key: 'skylife',
     provider: 'KT스카이라이프',
+    logo: '/logos/kt_logo_sky.png',
     color: '#16A34A',
     name: '와이파이 100M + TV SKY ALL',
     desc: '모든 채널을 가장 저렴하고 합리적이게!',
@@ -61,6 +65,7 @@ const ISP_PLANS = [
   {
     key: 'hellovision',
     provider: 'LG헬로비전',
+    logo: '/logos/lg_vision.png',
     color: '#E5005A',
     name: '광랜라이트 100M + TV 이코노미',
     desc: '웹서핑, 문서 작업을 편리하고 저렴하게!',
@@ -126,11 +131,13 @@ export default function Home() {
                           가장 인기!
                         </div>
                       )}
-                      <div
-                        className="text-white text-xs font-bold px-3 py-1 rounded-full self-start mb-4"
-                        style={{ backgroundColor: plan.color, marginTop: plan.popular ? '8px' : '0' }}
-                      >
-                        {plan.provider}
+                      <div className="flex items-center gap-2 mb-4" style={{ marginTop: plan.popular ? '8px' : '0' }}>
+                        <img
+                          src={plan.logo}
+                          alt={plan.provider}
+                          className="h-7 object-contain"
+                          draggable={false}
+                        />
                       </div>
                       <p className="text-sm font-bold text-gray-800 mb-1 text-left">{plan.name}</p>
                       <p className="text-xs text-gray-500 mb-4 text-left">{plan.desc}</p>
