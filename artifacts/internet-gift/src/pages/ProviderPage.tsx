@@ -670,7 +670,6 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
                 label="휴대폰"
                 value={filters.phone}
                 options={opts.phone}
-                groups={buildPhoneGroups(opts.phone)}
                 onChange={(v) => setFilters({ ...filters, phone: v })}
               />
             </div>
