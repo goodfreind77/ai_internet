@@ -10,7 +10,7 @@ export function Footer() {
             <p className="text-sm leading-relaxed mb-4">
               고객님의 통신비 절감을 위해 최선을 다하겠습니다.
             </p>
-            <a href="tel:1666-3233" className="font-bold text-xl text-primary hover:underline">1666-3233</a>
+            <a href="tel:1666-3233" className="font-bold text-3xl text-primary hover:underline">1666-3233</a>
           </div>
           
           <div className="col-span-2">
