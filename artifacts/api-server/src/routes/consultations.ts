@@ -87,10 +87,41 @@ router.post("/applications", async (req, res) => {
       .values(data)
       .returning();
     res.status(201).json(created);
-    const { name, phone, provider, internetProduct } = data as Record<string, string>;
-    sendTelegram(
-      `📋 <b>신청서 접수</b>\n👤 이름: ${name ?? "-"}\n📱 연락처: ${phone ?? "-"}\n🌐 통신사: ${provider ?? "-"}\n📦 상품: ${internetProduct ?? "-"}\n🕐 시간: ${new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" })}`
-    );
+    const d = data as Record<string, string>;
+    const v = (val: string | undefined) => val || "-";
+    const lines = [
+      `📋 <b>신청서 접수 #${created.id}</b>`,
+      `🕐 ${new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" })}`,
+      ``,
+      `<b>▶ 고객 정보</b>`,
+      `👤 이름: ${v(d.name)}`,
+      `📱 연락처: ${v(d.phone)}  (통신사: ${v(d.phoneCarrier)})`,
+      `📧 이메일: ${v(d.email)}`,
+      `🏠 주소: ${v(d.address)}`,
+      ``,
+      `<b>▶ 가입 정보</b>`,
+      `🔄 현재 통신사: ${v(d.currentProvider)}`,
+      `🌐 신청 통신사: ${v(d.applyProvider)}`,
+      `📦 인터넷: ${v(d.internet)}`,
+      `📺 TV: ${v(d.tv)}`,
+      `👥 고객 유형: ${v(d.customerType)}`,
+      ``,
+      `<b>▶ 납부 정보</b>`,
+      `💳 납부 방법: ${v(d.paymentMethod)}`,
+      ...(d.paymentMethod === "계좌이체" ? [
+        `🏦 납부 은행: ${v(d.payBank)}`,
+        `💰 납부 계좌: ${v(d.payAccount)} (${v(d.payAccountHolder)})`,
+      ] : []),
+      ...(d.paymentMethod === "카드" ? [
+        `🏦 카드사: ${v(d.cardCompany)}`,
+        `💳 카드번호: ${v(d.cardNumber)}  만료: ${v(d.cardExpiry)}`,
+      ] : []),
+      ``,
+      `<b>▶ 사은품 계좌</b>`,
+      `🏦 ${v(d.giftBank)} / ${v(d.giftAccount)} (${v(d.giftAccountHolder)})`,
+      ...(d.memo ? [``, `📝 메모: ${d.memo}`] : []),
+    ];
+    sendTelegram(lines.join("\n"));
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "서버 오류가 발생했습니다." });
