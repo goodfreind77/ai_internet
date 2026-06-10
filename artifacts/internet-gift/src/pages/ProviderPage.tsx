@@ -27,6 +27,7 @@ type Plan = {
   name: string;
   internet: string;
   monthlyFee: number;
+  discountedFee?: number;
   gift: number;
   features: string[];
   badge?: string;
@@ -123,6 +124,7 @@ const PROVIDERS: Record<string, Provider> = {
         name: '와이파이기본 500MB + TV 실속형',
         internet: '500MB',
         monthlyFee: 45100,
+        discountedFee: 35200,
         gift: 470000,
         features: ['500MB 기가 인터넷', 'U+tv 실속형 (211채널)', '기가 WiFi 6 제공'],
         badge: 'HOT',
@@ -131,6 +133,7 @@ const PROVIDERS: Record<string, Provider> = {
         name: '와이파이기본 1G + TV 실속형',
         internet: '1G',
         monthlyFee: 53900,
+        discountedFee: 40700,
         gift: 520000,
         features: ['1G 기가 인터넷', 'U+tv 실속형 (211채널)', '기가 WiFi 6E 제공'],
         badge: '인기',
@@ -139,6 +142,7 @@ const PROVIDERS: Record<string, Provider> = {
         name: '와이파이기본 100MB + TV 실속형',
         internet: '100MB',
         monthlyFee: 39600,
+        discountedFee: 34100,
         gift: 380000,
         features: ['100MB 기가 인터넷', 'U+tv 실속형 (211채널)', '기가 WiFi 6 제공'],
       },
@@ -582,11 +586,25 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
                 )}
                 <h3 className="font-black text-base text-gray-900 mb-3 leading-tight">{plan.name}</h3>
                 <div className="mb-2">
-                  <span className="text-xs text-gray-500">월 요금</span>
-                  <p className="text-2xl font-black text-gray-900">
-                    {plan.monthlyFee.toLocaleString()}
-                    <span className="text-sm font-normal text-gray-500 ml-1">원</span>
-                  </p>
+                  {plan.discountedFee ? (
+                    <>
+                      <span className="text-xs text-gray-400 line-through block">
+                        월 {plan.monthlyFee.toLocaleString()}원
+                      </span>
+                      <p className="text-2xl font-black text-gray-900">
+                        월 {plan.discountedFee.toLocaleString()}
+                        <span className="text-sm font-normal text-gray-500 ml-1">원</span>
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-xs text-gray-500">월 요금</span>
+                      <p className="text-2xl font-black text-gray-900">
+                        {plan.monthlyFee.toLocaleString()}
+                        <span className="text-sm font-normal text-gray-500 ml-1">원</span>
+                      </p>
+                    </>
+                  )}
                 </div>
                 <ul className="space-y-1 mb-5">
                   {plan.features.map((f) => (
