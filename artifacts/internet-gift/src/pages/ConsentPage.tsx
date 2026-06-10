@@ -353,7 +353,7 @@ export default function ConsentPage({ id }: { id: string }) {
                       <br />
                       웹페이지 내에서 '동의합니다.'를 입력하는 경우 위의 동의서에 동의한 것으로 간주합니다.
                     </p>
-                    <div className="flex gap-3">
+                    <div className="flex flex-col sm:flex-row gap-3">
                       <input
                         type="text"
                         value={confirmation}
@@ -365,7 +365,7 @@ export default function ConsentPage({ id }: { id: string }) {
                       <button
                         type="submit"
                         disabled={submitting || confirmation !== '동의합니다.'}
-                        className="px-6 py-3 rounded-lg bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-colors disabled:opacity-40 whitespace-nowrap"
+                        className="w-full sm:w-auto px-6 py-3 rounded-lg bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-colors disabled:opacity-40 whitespace-nowrap"
                       >
                         {submitting ? '처리 중...' : '동의 완료'}
                       </button>
