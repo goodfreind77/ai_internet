@@ -615,11 +615,8 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
                 </ul>
                 <button
                   onClick={handleConsult}
-                  className={`w-full py-2.5 font-bold rounded-xl text-sm transition-colors ${
-                    plan.badge === 'HOT'
-                      ? 'bg-primary text-white hover:bg-primary/90'
-                      : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                  }`}
+                  className="w-full py-2.5 font-bold rounded-xl text-sm text-white transition-opacity hover:opacity-90"
+                  style={{ backgroundColor: provider.color }}
                 >
                   상담 신청
                 </button>
@@ -705,7 +702,8 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
           </div>
 
           <motion.div
-            className="bg-gradient-to-r from-primary to-orange-400 rounded-2xl p-8 text-center text-white mb-8 shadow-md"
+            className="rounded-2xl p-8 text-center text-white mb-8 shadow-md"
+            style={{ background: `linear-gradient(to right, ${provider.color}, ${provider.color}cc)` }}
             initial={{ scale: 0.97 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.3 }}
