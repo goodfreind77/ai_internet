@@ -6,7 +6,14 @@ export function Footer() {
       <div className="max-w-6xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div>
-            <h4 className="text-white font-bold text-lg mb-4">AI인터넷</h4>
+            <h4 className="text-white font-bold text-lg mb-3">AI인터넷</h4>
+            <div className="flex flex-wrap gap-x-3 gap-y-1 mb-4 text-sm">
+              <a href="/" className="text-gray-300 hover:text-white transition-colors">인터넷 가격비교</a>
+              <span className="text-gray-600">|</span>
+              <a href="/terms" className="text-gray-300 hover:text-white transition-colors">이용약관</a>
+              <span className="text-gray-600">|</span>
+              <a href="/privacy" className="text-gray-300 hover:text-white transition-colors">개인정보처리방침</a>
+            </div>
             <p className="text-sm leading-relaxed mb-4">
               고객님의 통신비 절감을 위해 최선을 다하겠습니다.
             </p>
