@@ -5,7 +5,7 @@ import { ISPNav } from '@/components/ISPNav';
 import { Footer } from '@/components/Footer';
 import { ConsultationModal } from '@/components/ConsultationModal';
 import { motion } from 'framer-motion';
-import { ChevronDown, Wifi, Tv, Box, Smartphone, PhoneCall, FileText } from 'lucide-react';
+import { Wifi, Tv, Box, Smartphone, PhoneCall, FileText } from 'lucide-react';
 
 type FilterOptions = {
   internet: string[];
@@ -255,81 +255,50 @@ type FilterState = {
   phone: string;
 };
 
-type OptionGroup = { label: string; items: string[] };
-
-function DropdownFilter({
+function ButtonFilterRow({
   icon,
   label,
   value,
   options,
-  groups,
   onChange,
+  color,
 }: {
   icon: React.ReactNode;
   label: string;
   value: string;
   options: string[];
-  groups?: OptionGroup[];
   onChange: (v: string) => void;
+  color?: string;
 }) {
-  const [open, setOpen] = useState(false);
   return (
-    <div className="relative w-full lg:flex-1">
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex flex-col items-center gap-1 border border-gray-200 rounded-lg px-2 py-2.5 bg-white hover:border-primary transition-colors"
-      >
-        <div className="text-gray-400">{icon}</div>
-        <span className="text-xs text-gray-500">{label}</span>
-        <div className="flex items-center gap-1 font-bold text-xs sm:text-sm text-center leading-tight">
-          <span className="line-clamp-2">{value}</span>
-          <ChevronDown className="w-3 h-3 flex-shrink-0" />
-        </div>
-      </button>
-      {open && (
-        <div className="absolute top-full left-0 bg-white border border-gray-200 rounded-lg shadow-lg z-20 mt-1 min-w-[180px] w-max max-w-[260px]">
-          {groups ? (
-            groups.map((group, gi) => (
-              <div key={gi}>
-                <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-400 bg-gray-50 border-b border-gray-100 sticky top-0">
-                  {group.label}
-                </div>
-                {group.items.map((opt) => (
-                  <button
-                    key={opt}
-                    onClick={() => { onChange(opt); setOpen(false); }}
-                    className={`w-full px-4 py-2 text-sm text-left hover:bg-gray-50 whitespace-nowrap ${value === opt ? 'text-primary font-bold' : 'text-gray-700'}`}
-                  >
-                    {opt}
-                  </button>
-                ))}
-              </div>
-            ))
-          ) : (
-            options.map((opt) => (
-              <button
-                key={opt}
-                onClick={() => { onChange(opt); setOpen(false); }}
-                className={`w-full px-4 py-2 text-sm text-left hover:bg-gray-50 whitespace-nowrap ${value === opt ? 'text-primary font-bold' : 'text-gray-700'}`}
-              >
-                {opt}
-              </button>
-            ))
-          )}
-        </div>
-      )}
+    <div className="flex items-start gap-3 py-3 border-b border-gray-100 last:border-0">
+      <div className="flex items-center gap-1.5 w-24 flex-shrink-0 pt-1">
+        <span className="text-gray-400">{icon}</span>
+        <span className="text-xs font-bold text-gray-600 whitespace-nowrap">{label}</span>
+      </div>
+      <div className="flex flex-wrap gap-1.5 flex-1">
+        {options.map((opt) => {
+          const selected = value === opt;
+          return (
+            <button
+              key={opt}
+              onClick={() => onChange(opt)}
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all whitespace-nowrap ${
+                selected
+                  ? 'text-white border-transparent shadow-sm'
+                  : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'
+              }`}
+              style={selected ? { backgroundColor: color ?? '#ea580c', borderColor: color ?? '#ea580c' } : {}}
+            >
+              {opt}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
 
-function buildPhoneGroups(options: string[]): OptionGroup[] {
-  const noBundle = options.filter(o => o === '미결합');
-  const bundle = options.filter(o => o !== '미결합');
-  return [
-    { label: '미결합', items: noBundle },
-    ...(bundle.length > 0 ? [{ label: '결합', items: bundle }] : []),
-  ];
-}
 
 interface ProviderPageProps {
   providerKey: string;
@@ -613,66 +582,68 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
           </p>
 
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-4">
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:flex gap-2 sm:gap-3">
-              <DropdownFilter
-                icon={<Wifi className="w-5 h-5" />}
-                label="인터넷"
-                value={filters.internet}
-                options={opts.internet}
-                onChange={(v) => setFilters({ ...filters, internet: v })}
-              />
-              {isHellovision ? (
-                <div className="relative flex-1">
-                  <div className="w-full flex flex-col items-center gap-1 border border-gray-200 rounded-lg px-3 py-3 bg-white">
-                    <div className="text-gray-400"><Wifi className="w-4 h-4" /></div>
-                    <span className="text-xs text-gray-500">와이파이</span>
-                    <span className="font-bold text-sm">포함</span>
-                  </div>
+            <ButtonFilterRow
+              icon={<Wifi className="w-4 h-4" />}
+              label="인터넷"
+              value={filters.internet}
+              options={opts.internet}
+              onChange={(v) => setFilters({ ...filters, internet: v })}
+              color={provider.color}
+            />
+            {isHellovision ? (
+              <div className="flex items-center gap-3 py-3 border-b border-gray-100">
+                <div className="flex items-center gap-1.5 w-24 flex-shrink-0">
+                  <Wifi className="w-4 h-4 text-gray-400" />
+                  <span className="text-xs font-bold text-gray-600">와이파이</span>
                 </div>
-              ) : (
-                <DropdownFilter
-                  icon={<Wifi className="w-4 h-4" />}
-                  label="와이파이"
-                  value={filters.wifi}
-                  options={opts.wifi}
-                  onChange={(v) => setFilters({ ...filters, wifi: v })}
-                />
-              )}
-              <DropdownFilter
-                icon={<Tv className="w-5 h-5" />}
-                label="IPTV"
-                value={filters.iptv}
-                options={opts.iptv}
-                onChange={(v) => setFilters({ ...filters, iptv: v })}
+                <span className="text-xs font-semibold text-white px-3 py-1.5 rounded-full" style={{ backgroundColor: provider.color }}>포함</span>
+              </div>
+            ) : (
+              <ButtonFilterRow
+                icon={<Wifi className="w-4 h-4" />}
+                label="와이파이"
+                value={filters.wifi}
+                options={opts.wifi}
+                onChange={(v) => setFilters({ ...filters, wifi: v })}
+                color={provider.color}
               />
-              {isHellovision ? (
-                <div className="relative flex-1">
-                  <div className="w-full flex flex-col items-center gap-1 border border-gray-200 rounded-lg px-3 py-3 bg-white">
-                    <div className="text-gray-400"><Box className="w-5 h-5" /></div>
-                    <span className="text-xs text-gray-500">셋톱박스</span>
-                    <span className="font-bold text-sm">포함(UHD셋탑)</span>
-                  </div>
+            )}
+            <ButtonFilterRow
+              icon={<Tv className="w-4 h-4" />}
+              label="TV"
+              value={filters.iptv}
+              options={opts.iptv}
+              onChange={(v) => setFilters({ ...filters, iptv: v })}
+              color={provider.color}
+            />
+            {isHellovision ? (
+              <div className="flex items-center gap-3 py-3 border-b border-gray-100">
+                <div className="flex items-center gap-1.5 w-24 flex-shrink-0">
+                  <Box className="w-4 h-4 text-gray-400" />
+                  <span className="text-xs font-bold text-gray-600">셋톱박스</span>
                 </div>
-              ) : (
-                <DropdownFilter
-                  icon={<Box className="w-5 h-5" />}
-                  label="셋톱박스"
-                  value={filters.box}
-                  options={opts.box}
-                  onChange={(v) => setFilters({ ...filters, box: v })}
-                />
-              )}
-              <DropdownFilter
-                icon={<Smartphone className="w-5 h-5" />}
-                label="휴대폰"
-                value={filters.phone}
-                options={opts.phone}
-                groups={buildPhoneGroups(opts.phone)}
-                onChange={(v) => setFilters({ ...filters, phone: v })}
+                <span className="text-xs font-semibold text-white px-3 py-1.5 rounded-full" style={{ backgroundColor: provider.color }}>포함(UHD셋탑)</span>
+              </div>
+            ) : (
+              <ButtonFilterRow
+                icon={<Box className="w-4 h-4" />}
+                label="셋톱박스"
+                value={filters.box}
+                options={opts.box}
+                onChange={(v) => setFilters({ ...filters, box: v })}
+                color={provider.color}
               />
-            </div>
+            )}
+            <ButtonFilterRow
+              icon={<Smartphone className="w-4 h-4" />}
+              label="휴대폰결합"
+              value={filters.phone}
+              options={opts.phone}
+              onChange={(v) => setFilters({ ...filters, phone: v })}
+              color={provider.color}
+            />
 
-            <div className="flex flex-wrap justify-between items-center mt-4 border-t border-gray-100 pt-4 gap-2">
+            <div className="flex flex-wrap justify-between items-center mt-3 border-t border-gray-100 pt-3 gap-2">
               <div className="flex flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
                 <span>인터넷 {BASE_PRICE.toLocaleString()}원</span>
                 {wifiAdd > 0 && <span>+ 와이파이 {wifiAdd.toLocaleString()}원</span>}
@@ -680,7 +651,7 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
                 {boxAdd > 0 && <span>+ 셋탑박스 {boxAdd.toLocaleString()}원</span>}
                 {phoneDiscount < 0 && <span className="text-green-600 font-semibold">- 휴대폰결합 {Math.abs(phoneDiscount).toLocaleString()}원 할인</span>}
               </div>
-              <span className="text-sm font-bold text-gray-700">▶ 합계 <span className="text-primary">{totalFee.toLocaleString()}원</span></span>
+              <span className="text-sm font-bold text-gray-700">합계 <span className="text-xl font-black" style={{ color: provider.color }}>{totalFee.toLocaleString()}원</span></span>
             </div>
           </div>
 
