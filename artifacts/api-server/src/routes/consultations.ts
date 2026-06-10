@@ -6,7 +6,7 @@ import { SolapiMessageService } from "solapi";
 
 const router: IRouter = Router();
 
-const STATUSES = ["처리중", "접수완료", "취소"] as const;
+const STATUSES = ["처리중", "접수완료", "개통완료", "취소"] as const;
 
 router.post("/consultations", async (req, res) => {
   try {

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 
-type Status = '처리중' | '접수완료' | '취소';
-const STATUSES: Status[] = ['처리중', '접수완료', '취소'];
+type Status = '처리중' | '접수완료' | '개통완료' | '취소';
+const STATUSES: Status[] = ['처리중', '접수완료', '개통완료', '취소'];
 
 type HistoryEntry = { date: string; note: string };
 
@@ -53,6 +53,7 @@ function formatDate(iso: string) {
 const STATUS_STYLES: Record<Status, string> = {
   '처리중':  'bg-yellow-100 text-yellow-700 border-yellow-200',
   '접수완료': 'bg-green-100 text-green-700 border-green-200',
+  '개통완료': 'bg-blue-100 text-blue-700 border-blue-200',
   '취소':    'bg-red-100 text-red-600 border-red-200',
 };
 
