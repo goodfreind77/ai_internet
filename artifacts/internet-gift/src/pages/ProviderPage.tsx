@@ -596,7 +596,7 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
                       <span className="text-xs text-gray-400 line-through block">
                         월 {plan.monthlyFee.toLocaleString()}원
                       </span>
-                      <p className="text-2xl font-black text-gray-900">
+                      <p className="text-2xl font-black" style={{ color: provider.color }}>
                         월 {plan.discountedFee.toLocaleString()}
                         <span className="text-sm font-normal text-gray-500 ml-1">원</span>
                       </p>
@@ -604,7 +604,7 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
                   ) : (
                     <>
                       <span className="text-xs text-gray-500">월 요금</span>
-                      <p className="text-2xl font-black text-gray-900">
+                      <p className="text-2xl font-black" style={{ color: provider.color }}>
                         {plan.monthlyFee.toLocaleString()}
                         <span className="text-sm font-normal text-gray-500 ml-1">원</span>
                       </p>
