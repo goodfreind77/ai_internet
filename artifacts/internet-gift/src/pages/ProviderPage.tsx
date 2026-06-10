@@ -391,7 +391,7 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
   }, [filters.internet, providerKey]);
 
   useEffect(() => {
-    const el = document.getElementById('filter-section');
+    const el = document.getElementById('plan-cards');
     if (el) {
       setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     }
@@ -557,7 +557,7 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
           </p>
 
           {/* HOT 인터넷/IPTV 상품 - 최상단 고정 */}
-          <div className="text-center mb-4">
+          <div id="plan-cards" className="text-center mb-4">
             <div className="inline-flex items-center gap-3 mb-3">
               <span className="bg-yellow-400 text-gray-900 font-black text-sm px-3 py-1 rounded-full">HOT</span>
               <h2 className="text-xl sm:text-2xl font-black text-gray-900">인터넷/IPTV 상품</h2>
