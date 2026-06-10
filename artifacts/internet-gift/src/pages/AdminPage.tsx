@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 
@@ -156,44 +156,102 @@ function AdminLoginForm({ onLogin }: { onLogin: (token: string) => void }) {
   );
 }
 
+type Toast = { id: number; message: string; kind: 'consultation' | 'application' };
+
 export default function AdminPage() {
   const [token, setToken] = useState<string | null>(getStoredToken);
   const [tab, setTab] = useState<'consultations' | 'applications'>('consultations');
   const [consultations, setConsultations] = useState<ConsultationRequest[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(false);
+  const [toasts, setToasts] = useState<Toast[]>([]);
+  const knownCIds = useRef<Set<number>>(new Set());
+  const knownAIds = useRef<Set<number>>(new Set());
+  const isFirst = useRef(true);
+
+  const pushToast = useCallback((message: string, kind: Toast['kind']) => {
+    const id = Date.now() + Math.random();
+    setToasts(prev => [...prev, { id, message, kind }]);
+    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 7000);
+  }, []);
 
   const handleLogin = (newToken: string) => {
     setStoredToken(newToken);
     setToken(newToken);
   };
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     clearStoredToken();
     setToken(null);
     setConsultations([]);
     setApplications([]);
-  };
+  }, []);
 
+  const load = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
+    try {
+      const headers = { Authorization: `Bearer ${token}` };
+      const [cRes, aRes] = await Promise.all([
+        fetch('/api/consultations', { headers }),
+        fetch('/api/applications', { headers }),
+      ]);
+      if (cRes.status === 401) { handleLogout(); return; }
+
+      if (cRes.ok) {
+        const cData: ConsultationRequest[] = await cRes.json();
+        setConsultations(cData);
+        if (!isFirst.current) {
+          for (const c of cData.filter(c => !knownCIds.current.has(c.id))) {
+            const msg = `📋 새 빠른견적 문의: ${c.name} (${c.phone})`;
+            pushToast(msg, 'consultation');
+            if (Notification.permission === 'granted') {
+              new Notification('AI인터넷 — 새 빠른견적 문의', {
+                body: `${c.name}님 (${c.phone})이 빠른견적을 문의했습니다.`,
+              });
+            }
+          }
+        }
+        knownCIds.current = new Set(cData.map(c => c.id));
+      }
+
+      if (aRes.ok) {
+        const aData: Application[] = await aRes.json();
+        setApplications(aData);
+        if (!isFirst.current) {
+          for (const a of aData.filter(a => !knownAIds.current.has(a.id))) {
+            const msg = `📝 새 신청서: ${a.name ?? '이름없음'} (${a.phone ?? '-'})`;
+            pushToast(msg, 'application');
+            if (Notification.permission === 'granted') {
+              new Notification('AI인터넷 — 새 신청서 접수', {
+                body: `${a.name ?? '고객'}님이 신청서를 제출했습니다.`,
+              });
+            }
+          }
+        }
+        knownAIds.current = new Set(aData.map(a => a.id));
+      }
+
+      isFirst.current = false;
+    } finally {
+      if (!silent) setLoading(false);
+    }
+  }, [token, handleLogout, pushToast]);
+
+  // 브라우저 알림 권한 요청
+  useEffect(() => {
+    if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }, []);
+
+  // 초기 로드 + 30초 폴링
   useEffect(() => {
     if (!token) return;
-    async function load() {
-      setLoading(true);
-      try {
-        const headers = { Authorization: `Bearer ${token}` };
-        const [cRes, aRes] = await Promise.all([
-          fetch('/api/consultations', { headers }),
-          fetch('/api/applications', { headers }),
-        ]);
-        if (cRes.status === 401) { handleLogout(); return; }
-        if (cRes.ok) setConsultations(await cRes.json());
-        if (aRes.ok) setApplications(await aRes.json());
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, [token]);
+    isFirst.current = true;
+    load(false);
+    const interval = setInterval(() => load(true), 30_000);
+    return () => clearInterval(interval);
+  }, [token, load]);
 
   const updateConsultationStatus = async (id: number, status: Status) => {
     if (!token) return;
@@ -293,6 +351,23 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* 토스트 알림 */}
+      <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
+        {toasts.map(t => (
+          <div
+            key={t.id}
+            className={`pointer-events-auto flex items-start gap-3 px-4 py-3 rounded-xl shadow-lg text-white text-sm font-semibold max-w-xs animate-bounce-in ${
+              t.kind === 'application' ? 'bg-primary' : 'bg-orange-500'
+            }`}
+          >
+            <span className="text-lg leading-none">{t.kind === 'application' ? '📝' : '📋'}</span>
+            <div>
+              <p className="font-black text-xs mb-0.5">{t.kind === 'application' ? '새 신청서 접수!' : '새 빠른견적 문의!'}</p>
+              <p className="opacity-90 text-xs font-normal">{t.message.replace(/^[📋📝]\s*새\s*(빠른견적 문의|신청서):\s*/, '')}</p>
+            </div>
+          </div>
+        ))}
+      </div>
       <Header />
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-10">
         <div className="flex items-center justify-between mb-2">
