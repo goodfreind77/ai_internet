@@ -6,6 +6,19 @@ import { SolapiMessageService } from "solapi";
 
 const router: IRouter = Router();
 
+async function sendTelegram(text: string) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId) return;
+  try {
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: chatId, text, parse_mode: "HTML" }),
+    });
+  } catch (_) {}
+}
+
 const STATUSES = ["처리중", "접수완료", "개통완료", "취소"] as const;
 
 router.post("/consultations", async (req, res) => {
@@ -20,6 +33,9 @@ router.post("/consultations", async (req, res) => {
       .values({ name, phone })
       .returning();
     res.status(201).json(created);
+    sendTelegram(
+      `📞 <b>빠른 견적 문의</b>\n👤 이름: ${name}\n📱 연락처: ${phone}\n🕐 시간: ${new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" })}`
+    );
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "서버 오류가 발생했습니다." });
@@ -71,6 +87,10 @@ router.post("/applications", async (req, res) => {
       .values(data)
       .returning();
     res.status(201).json(created);
+    const { name, phone, provider, internetProduct } = data as Record<string, string>;
+    sendTelegram(
+      `📋 <b>신청서 접수</b>\n👤 이름: ${name ?? "-"}\n📱 연락처: ${phone ?? "-"}\n🌐 통신사: ${provider ?? "-"}\n📦 상품: ${internetProduct ?? "-"}\n🕐 시간: ${new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" })}`
+    );
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "서버 오류가 발생했습니다." });
