@@ -83,6 +83,7 @@ export default function ApplyPage() {
   const [giftBank, setGiftBank] = useState('은행선택');
   const [giftAccount, setGiftAccount] = useState('');
   const [giftAccountHolder, setGiftAccountHolder] = useState('');
+  const [sameAsPayment, setSameAsPayment] = useState(false);
   const [name, setName] = useState('');
   const [phoneCarrier, setPhoneCarrier] = useState('KT');
   const [phone, setPhone] = useState('');
@@ -460,7 +461,28 @@ export default function ApplyPage() {
 
             {/* 사은품 입금 계좌번호 */}
             <div className="space-y-3">
-              <FieldLabel required>사은품 입금 계좌번호</FieldLabel>
+              <div className="flex items-center gap-3 flex-wrap">
+                <FieldLabel required>사은품 입금 계좌번호</FieldLabel>
+                {paymentMethod === '자동이체' && (
+                  <label className="flex items-center gap-1.5 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={sameAsPayment}
+                      onChange={e => {
+                        const checked = e.target.checked;
+                        setSameAsPayment(checked);
+                        if (checked) {
+                          setGiftBank(payBank);
+                          setGiftAccount(payAccount);
+                          setGiftAccountHolder(payAccountHolder);
+                        }
+                      }}
+                      className="w-4 h-4 accent-primary cursor-pointer"
+                    />
+                    <span className="text-sm font-semibold text-primary">납부계좌 동일</span>
+                  </label>
+                )}
+              </div>
               <p className="text-sm text-gray-500 -mt-2">사은품(현금)을 받으실 계좌 정보를 입력해주세요.</p>
               <div className="grid md:grid-cols-[180px_1fr] gap-3">
                 <select
