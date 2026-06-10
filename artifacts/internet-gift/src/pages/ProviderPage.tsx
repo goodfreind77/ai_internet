@@ -37,7 +37,7 @@ const PROVIDERS: Record<string, Provider> = {
   sk: {
     key: 'sk',
     name: 'SK브로드밴드',
-    color: '#E60000',
+    color: '#0064D2',
     filterOptions: {
       internet: ['100MB', '500MB', '1G'],
       wifi: ['미포함', '기본와이파이', '기가와이파이', '윙즈(와이파이증폭기)'],
