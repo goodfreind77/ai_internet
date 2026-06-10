@@ -224,7 +224,7 @@ export default function ConsentPage({ id }: { id: string }) {
           </div>
 
           <p style={{ fontSize: '11px', color: '#999', marginBottom: '20px' }}>
-            본 동의서는 전자적으로 작성 및 보관되며, 분쟁 발생 시 법적 증거로 활용될 수 있습니다. 동의 완료 후 PDF로 저장되어 AI인터넷(AI인터넷.com)에 보관됩니다.
+            본 동의서는 전자적으로 작성 및 저장되며, 분쟁 발생 시 증거로 활용될 수 있습니다. 동의 완료 후 PDF로 저장되어 주식회사이좋은사람들(AI인터넷.com)에 저장됩니다.
           </p>
 
           <div style={{ borderTop: '2px solid #222', paddingTop: '16px', marginTop: '8px' }}>
@@ -331,7 +331,7 @@ export default function ConsentPage({ id }: { id: string }) {
               </div>
 
               <p className="text-xs text-gray-500 mt-4">
-                본 동의서는 전자적으로 작성 및 보관되며, 분쟁 발생 시 법적 증거로 활용될 수 있습니다. 동의 완료 후 PDF로 저장되어 AI인터넷(AI인터넷.com)에 보관됩니다.
+                본 동의서는 전자적으로 작성 및 저장되며, 분쟁 발생 시 증거로 활용될 수 있습니다. 동의 완료 후 PDF로 저장되어 주식회사이좋은사람들(AI인터넷.com)에 저장됩니다.
               </p>
             </div>
 
