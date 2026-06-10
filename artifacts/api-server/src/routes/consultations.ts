@@ -108,18 +108,21 @@ router.patch("/applications/:id/status", adminAuthMiddleware, async (req, res) =
       return;
     }
 
-    // 개통완료 상태로 변경 시 카카오 알림톡 자동 발송
+    // 개통완료 상태로 변경 시 카카오 알림톡 자동 발송 (기존 동의서 템플릿 사용)
     if (status === "개통완료" && updated.phone) {
       const apiKey = process.env.SOLAPI_API_KEY;
       const apiSecret = process.env.SOLAPI_API_SECRET;
       const pfId = process.env.SOLAPI_KAKAO_PF_ID;
-      const templateId = process.env.SOLAPI_KAKAO_COMPLETE_TEMPLATE_ID;
+      const templateId = process.env.SOLAPI_KAKAO_TEMPLATE_ID;
       const from = process.env.SOLAPI_SENDER;
 
       if (apiKey && apiSecret && pfId && templateId && from) {
         try {
           const client = new SolapiMessageService(apiKey, apiSecret);
           const phoneNormalized = updated.phone.replace(/-/g, "");
+          const consentUrl = `${process.env.REPLIT_DOMAINS?.split(",")[0] ? `https://${process.env.REPLIT_DOMAINS.split(",")[0]}` : ""}${
+            process.env.BASE_PATH ?? ""
+          }/consent/${id}`;
           await client.send({
             to: phoneNormalized,
             from,
@@ -128,6 +131,7 @@ router.patch("/applications/:id/status", adminAuthMiddleware, async (req, res) =
               templateId,
               variables: {
                 "#{name}": updated.name ?? "고객",
+                "#{agreement_api}": consentUrl,
               },
             },
           });
@@ -136,7 +140,7 @@ router.patch("/applications/:id/status", adminAuthMiddleware, async (req, res) =
           req.log.error({ id, notifyErr }, "개통완료 알림톡 발송 실패 (상태 변경은 완료)");
         }
       } else {
-        req.log.warn({ id }, "SOLAPI_KAKAO_COMPLETE_TEMPLATE_ID 미설정 — 개통완료 알림톡 생략");
+        req.log.warn({ id }, "Solapi 환경변수 미설정 — 개통완료 알림톡 생략");
       }
     }
 
