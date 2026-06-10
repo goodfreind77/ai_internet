@@ -391,7 +391,7 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
   }, [filters.internet, providerKey]);
 
   useEffect(() => {
-    const el = document.getElementById('plan-cards');
+    const el = document.getElementById('page-top');
     if (el) {
       setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     }
@@ -542,7 +542,7 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
       <Header />
       <ISPNav />
 
-      <main className="max-w-5xl mx-auto px-4 pt-4 pb-12 sm:py-12">
+      <main id="page-top" className="max-w-5xl mx-auto px-4 pt-4 pb-12 sm:py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
