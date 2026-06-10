@@ -24,7 +24,7 @@ export function Footer() {
             <p><strong>상호명:</strong> 주식회사 이좋은사람들 | <strong>대표자:</strong> 이미선</p>
             <p><strong>사업자등록번호:</strong> 813-88-00632 | <strong>통신판매업신고번호:</strong> 제2019-인천미추홀-0455호</p>
             <p><strong>주소:</strong> 인천 미추홀구 주안로70 301호</p>
-            <p><strong>개인정보보호책임자:</strong> 이미선 (msjs0416@nate.com)</p>
+            <p><strong>개인정보보호책임자:</strong> 김정수</p>
           </div>
 
           <div className="flex flex-col items-start justify-center">
