@@ -188,7 +188,7 @@ const PROVIDERS: Record<string, Provider> = {
   hellovision: {
     key: 'hellovision',
     name: 'LG헬로비전',
-    color: '#E5005A',
+    color: '#7C3AED',
     filterOptions: {
       internet: ['광랜 100M', '광랜 160M', '기가라이트 500M', '플래티넘기가 1G'],
       iptv: ['미결합', '이코노미(109채널)', '뉴베이직(245채널)', '뉴프리미엄(245채널)'],
