@@ -390,6 +390,13 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters.internet, providerKey]);
 
+  useEffect(() => {
+    const el = document.getElementById('filter-section');
+    if (el) {
+      setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+    }
+  }, [providerKey]);
+
   const internetPriceMap: Record<string, number> = {
     '100MB': 22000, '200MB': 27500, '500MB': 33000, '1G': 38500, '1GB': 38500,
     '광랜 100M': 20790, '광랜 160M': 25410, '기가라이트 500M': 29260, '플래티넘기가 1G': 30800,
@@ -635,7 +642,7 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
               : '※ 3년약정, VAT 포함가'}
           </p>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-4">
+          <div id="filter-section" className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-4">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:flex gap-2 sm:gap-3">
               <DropdownFilter
                 icon={<Wifi className="w-5 h-5" />}
