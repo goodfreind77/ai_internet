@@ -107,6 +107,39 @@ router.patch("/applications/:id/status", adminAuthMiddleware, async (req, res) =
       res.status(404).json({ error: "항목을 찾을 수 없습니다." });
       return;
     }
+
+    // 개통완료 상태로 변경 시 카카오 알림톡 자동 발송
+    if (status === "개통완료" && updated.phone) {
+      const apiKey = process.env.SOLAPI_API_KEY;
+      const apiSecret = process.env.SOLAPI_API_SECRET;
+      const pfId = process.env.SOLAPI_KAKAO_PF_ID;
+      const templateId = process.env.SOLAPI_KAKAO_COMPLETE_TEMPLATE_ID;
+      const from = process.env.SOLAPI_SENDER;
+
+      if (apiKey && apiSecret && pfId && templateId && from) {
+        try {
+          const client = new SolapiMessageService(apiKey, apiSecret);
+          const phoneNormalized = updated.phone.replace(/-/g, "");
+          await client.send({
+            to: phoneNormalized,
+            from,
+            kakaoOptions: {
+              pfId,
+              templateId,
+              variables: {
+                "#{name}": updated.name ?? "고객",
+              },
+            },
+          });
+          req.log.info({ id, phone: phoneNormalized }, "개통완료 카카오 알림톡 발송 성공");
+        } catch (notifyErr) {
+          req.log.error({ id, notifyErr }, "개통완료 알림톡 발송 실패 (상태 변경은 완료)");
+        }
+      } else {
+        req.log.warn({ id }, "SOLAPI_KAKAO_COMPLETE_TEMPLATE_ID 미설정 — 개통완료 알림톡 생략");
+      }
+    }
+
     res.json(updated);
   } catch (err) {
     req.log.error(err);
