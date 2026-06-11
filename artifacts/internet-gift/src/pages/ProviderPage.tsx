@@ -197,7 +197,7 @@ const PROVIDERS: Record<string, Provider> = {
     color: '#7C3AED',
     filterOptions: {
       internet: ['광랜 100M', '광랜 160M', '기가라이트 500M', '플래티넘기가 1G'],
-      iptv: ['미결합', 'UHD이코노미(111채널)', '뉴베이직(245채널)', '뉴프리미엄(245채널)'],
+      iptv: ['미결합', 'UHD이코노미(111채널)', 'UHD뉴베이직(245채널)', 'UHD뉴프리미엄(245채널)'],
       box: ['미포함', '포함(UHD셋탑)'],
       phone: ['미결합', '결합'],
     },
@@ -210,19 +210,19 @@ const PROVIDERS: Record<string, Provider> = {
         features: ['100MB 광랜 인터넷', 'TV UHD이코노미 (111채널)', 'UHD 셋탑 포함'],
       },
       {
-        name: '기가라이트 + TV 뉴베이직',
+        name: '기가라이트 + TV UHD뉴베이직',
         internet: '500MB',
         monthlyFee: 42790,
         gift: 440000,
-        features: ['500MB 기가 인터넷', 'TV 뉴베이직 (245채널)', 'UHD 셋탑 포함'],
+        features: ['500MB 기가 인터넷', 'TV UHD뉴베이직 (245채널)', 'UHD 셋탑 포함'],
         badge: '판매 1위',
       },
       {
-        name: '광랜 160M + TV 뉴베이직',
+        name: '광랜 160M + TV UHD뉴베이직',
         internet: '160MB',
         monthlyFee: 39760,
         gift: 390000,
-        features: ['160MB 광랜 인터넷', 'TV 뉴베이직 (245채널)', 'UHD 셋탑 포함'],
+        features: ['160MB 광랜 인터넷', 'TV UHD뉴베이직 (245채널)', 'UHD 셋탑 포함'],
         badge: 'HOT',
       },
     ],
@@ -417,7 +417,7 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
     '실속형(211채널)': 15400, '실속형(217채널)': 15400,
     '고급형(223채널)': 16500, '고급형(231채널)': 16500, '기본형(223채널)': 16500,
     '프리미엄(252채널)': 18700,
-    'UHD이코노미(111채널)': 11000, '뉴베이직(245채널)': 13200, '뉴프리미엄(245채널)': 15400,
+    'UHD이코노미(111채널)': 11000, 'UHD뉴베이직(245채널)': 13200, 'UHD뉴프리미엄(245채널)': 15400,
     'SKY ALL(238채널)': 7000,
   };
   const boxFeeMap: Record<string, number> = {
