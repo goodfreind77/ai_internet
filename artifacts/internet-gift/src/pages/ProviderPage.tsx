@@ -197,16 +197,17 @@ const PROVIDERS: Record<string, Provider> = {
     color: '#7C3AED',
     filterOptions: {
       internet: ['광랜 100M', '광랜 160M', '기가라이트 500M', '플래티넘기가 1G'],
-      iptv: ['미결합', '이코노미(109채널)', '뉴베이직(245채널)', '뉴프리미엄(245채널)'],
+      iptv: ['미결합', 'UHD이코노미(111채널)', '뉴베이직(245채널)', '뉴프리미엄(245채널)'],
+      box: ['미포함', '포함(UHD셋탑)'],
       phone: ['미결합', '결합'],
     },
     plans: [
       {
-        name: '광랜라이트 + TV 이코노미',
+        name: '광랜라이트 + TV UHD이코노미',
         internet: '100MB',
         monthlyFee: 32830,
         gift: 350000,
-        features: ['100MB 광랜 인터넷', 'TV 이코노미 (109채널)', 'UHD 셋탑 포함'],
+        features: ['100MB 광랜 인터넷', 'TV UHD이코노미 (111채널)', 'UHD 셋탑 포함'],
       },
       {
         name: '기가라이트 + TV 뉴베이직',
@@ -402,7 +403,7 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
 
   const internetPriceMap: Record<string, number> = {
     '100MB': 22000, '200MB': 27500, '500MB': 33000, '1G': 38500, '1GB': 38500,
-    '광랜 100M': 20790, '광랜 160M': 25410, '기가라이트 500M': 29260, '플래티넘기가 1G': 30800,
+    '광랜 100M': 21890, '광랜 160M': 26620, '기가라이트 500M': 27330, '플래티넘기가 1G': 30800,
     '와이파이기본광랜(100M)': 22000, '와이파이기본기가슬림(500M)': 33000, '와이파이기본기가(1G)': 38500,
     '프리미엄안심100M': 25300, '프리미엄안심500M': 37400, '프리미엄안심1G': 42900,
     '프리미엄안심보상 100M': 27500, '프리미엄안심보상 500M': 39600, '프리미엄안심보상 1G': 45100,
@@ -416,7 +417,7 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
     '실속형(211채널)': 15400, '실속형(217채널)': 15400,
     '고급형(223채널)': 16500, '고급형(231채널)': 16500, '기본형(223채널)': 16500,
     '프리미엄(252채널)': 18700,
-    '이코노미(109채널)': 11000, '뉴베이직(245채널)': 13200, '뉴프리미엄(245채널)': 15400,
+    'UHD이코노미(111채널)': 11000, '뉴베이직(245채널)': 13200, '뉴프리미엄(245채널)': 15400,
     'SKY ALL(238채널)': 7000,
   };
   const boxFeeMap: Record<string, number> = {
@@ -445,8 +446,7 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
   })();
   const wifiAdd = (isHellovision || providerKey === 'skylife') ? 0 : (wifiPriceMap[filters.wifi] ?? 0);
   const iptvAdd = providerKey === 'skylife' ? 0 : (iptvPriceMap[filters.iptv] ?? 0);
-  // 헬로비전은 UHD셋탑 항상 4400원 추가 (참조 사이트 동일)
-  const boxAdd = isHellovision ? 4400 : (boxFeeMap[filters.box] ?? 0);
+  const boxAdd = boxFeeMap[filters.box] ?? 0;
 
   // 통신사별 결합 할인 계산 (참조 사이트 E() 함수 로직과 동일)
   const getPhoneDiscount = (): number => {
@@ -521,10 +521,11 @@ export default function ProviderPage({ providerKey }: ProviderPageProps) {
     }
 
     if (providerKey === 'hellovision') {
-      if (hasIptv && phone === '미결합') {
-        if (internet === '광랜 160M') return -7650;
-        if (internet === '기가라이트 500M') return -8470;
-        if (internet === '플래티넘기가 1G') return -8800;
+      if (hasIptv) {
+        if (internet === '광랜 100M') return -4460;
+        if (internet === '광랜 160M') return -4460;
+        if (internet === '기가라이트 500M') return -13470;
+        if (internet === '플래티넘기가 1G') return -13470;
       }
       return 0;
     }
