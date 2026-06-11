@@ -90,6 +90,7 @@ const PROVIDERS: Record<string, Provider> = {
         name: '인터넷 베이직 + OTV 베이직',
         internet: '500MB',
         monthlyFee: 45100,
+        discountedFee: 39600,
         gift: 450000,
         features: ['500MB 기가 인터넷', 'OTV 베이직 (233채널)', '기가 WiFi 제공'],
         badge: '인기',
@@ -97,7 +98,8 @@ const PROVIDERS: Record<string, Provider> = {
       {
         name: '인터넷 에센스 + OTV 에센스',
         internet: '1G',
-        monthlyFee: 50600,
+        monthlyFee: 49500,
+        discountedFee: 44000,
         gift: 560000,
         features: ['1G 기가 인터넷', 'OTV 에센스 (263채널)', '기가 WiFi 6 제공'],
         badge: 'HOT',
@@ -105,7 +107,8 @@ const PROVIDERS: Record<string, Provider> = {
       {
         name: '인터넷 슬림 + OTV 베이직',
         internet: '100MB',
-        monthlyFee: 34100,
+        monthlyFee: 39600,
+        discountedFee: 34100,
         gift: 280000,
         features: ['100MB 인터넷', 'OTV 베이직 (233채널)', 'WiFi 제공'],
       },
