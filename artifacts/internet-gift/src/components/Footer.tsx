@@ -173,10 +173,10 @@ function PrivacyContent() {
 }
 
 const DOCS = [
-  { label: '사업자등록증', file: '사업자등록증.pdf' },
-  { label: '사전승낙서', file: '사전승락서.pdf' },
-  { label: '전화권유판매업신고증', file: '전화권유판매업신고증.pdf' },
-  { label: '통신판매업신고증', file: '통신판매업신고증.pdf' },
+  { label: '사업자등록증', file: '사업자등록증.pdf', image: '/doc-images/사업자등록증-1.png' },
+  { label: '사전승낙서', file: '사전승락서.pdf', image: '/doc-images/사전승락서-1.png' },
+  { label: '전화권유판매업신고증', file: '전화권유판매업신고증.pdf', image: '/doc-images/전화권유판매업신고증-1.png' },
+  { label: '통신판매업신고증', file: '통신판매업신고증.pdf', image: '/doc-images/통신판매업신고증-1.png' },
 ];
 
 function DocsModal({ onClose }: { onClose: () => void }) {
@@ -220,18 +220,20 @@ function DocsModal({ onClose }: { onClose: () => void }) {
                 rel="noopener noreferrer"
                 className="text-xs text-blue-600 hover:underline flex items-center gap-1"
               >
-                새 탭에서 열기
+                PDF 다운로드
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                 </svg>
               </a>
             </div>
-            <iframe
-              key={DOCS[selected].file}
-              src={`/docs/${DOCS[selected].file}`}
-              className="flex-1 w-full"
-              title={DOCS[selected].label}
-            />
+            <div className="flex-1 overflow-y-auto bg-gray-100 flex items-start justify-center p-4">
+              <img
+                key={DOCS[selected].image}
+                src={DOCS[selected].image}
+                alt={DOCS[selected].label}
+                className="max-w-full shadow-lg rounded"
+              />
+            </div>
           </div>
         </div>
       </div>
