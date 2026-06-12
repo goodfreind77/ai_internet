@@ -173,7 +173,7 @@ function PrivacyContent() {
 }
 
 export function Footer() {
-  const [modal, setModal] = useState<'terms' | 'privacy' | null>(null);
+  const [modal, setModal] = useState<'terms' | 'privacy' | 'docs' | null>(null);
 
   return (
     <>
@@ -185,6 +185,35 @@ export function Footer() {
       {modal === 'privacy' && (
         <Modal title="개인정보처리방침" onClose={() => setModal(null)}>
           <PrivacyContent />
+        </Modal>
+      )}
+      {modal === 'docs' && (
+        <Modal title="AI인터넷 문서" onClose={() => setModal(null)}>
+          <p className="text-gray-500 text-xs mb-4">아래 문서를 클릭하면 새 탭에서 열립니다.</p>
+          <div className="space-y-3">
+            {[
+              { label: '사업자등록증', file: '사업자등록증.pdf' },
+              { label: '사전승낙서', file: '사전승락서.pdf' },
+              { label: '전화권유판매업신고증', file: '전화권유판매업신고증.pdf' },
+              { label: '통신판매업신고증', file: '통신판매업신고증.pdf' },
+            ].map(({ label, file }) => (
+              <a
+                key={file}
+                href={`/docs/${file}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors group"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                </svg>
+                <span className="font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">{label}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 ml-auto text-gray-400 group-hover:text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                </svg>
+              </a>
+            ))}
+          </div>
         </Modal>
       )}
 
@@ -224,16 +253,15 @@ export function Footer() {
             </div>
 
             <div className="flex flex-col items-start justify-center">
-              <a
-                href="#"
-                onClick={(e) => e.preventDefault()}
+              <button
+                onClick={() => setModal('docs')}
                 className="inline-flex items-center gap-2 border border-gray-500 text-gray-300 hover:text-white hover:border-gray-300 rounded-full px-6 py-3 text-sm font-semibold transition-colors"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
                 </svg>
                 AI인터넷 문서
-              </a>
+              </button>
             </div>
           </div>
 
