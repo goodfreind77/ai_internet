@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useLocation } from 'wouter';
 import { Header } from '@/components/Header';
 import { ISPNav } from '@/components/ISPNav';
@@ -94,25 +95,26 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white text-gray-900 font-sans">
-      {showQuoteModal && (
+      {showQuoteModal && createPortal(
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+          style={{ position: 'fixed', inset: 0, zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}
           onClick={() => setShowQuoteModal(false)}
         >
-          <div className="absolute inset-0 bg-black/50" />
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)' }} />
           <div
-            className="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl"
+            style={{ position: 'relative', width: '100%', maxWidth: '28rem', maxHeight: '90vh', overflowY: 'auto', borderRadius: '1rem', boxShadow: '0 25px 50px rgba(0,0,0,0.3)', background: 'white' }}
             onClick={e => e.stopPropagation()}
           >
             <button
               onClick={() => setShowQuoteModal(false)}
-              className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200"
+              style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', zIndex: 10, width: '2rem', height: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '9999px', background: '#f3f4f6', border: 'none', cursor: 'pointer' }}
             >
-              <X className="w-4 h-4" />
+              <X style={{ width: '1rem', height: '1rem', color: '#4b5563' }} />
             </button>
             <ConsultationForm onSuccess={() => setShowQuoteModal(false)} />
           </div>
-        </div>
+        </div>,
+        document.body
       )}
       <Header />
       <ISPNav />
