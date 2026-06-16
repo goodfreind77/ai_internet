@@ -67,7 +67,7 @@ export function BenefitsSection({ onConsult }: { onConsult?: () => void } = {}) 
             <span className="inline-block bg-orange-100 text-orange-500 text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full mb-4 border border-orange-200">
               EXPERT TEAM
             </span>
-            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">전담 팀장이 직접 상담해드립니다</h2>
+            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">AI 와 전담팀장이 직접 상담해 드립니다.</h2>
             <p className="text-orange-400 text-lg">10년 이상의 노하우로 고객님께 최고의 혜택을 찾아드립니다.</p>
           </motion.div>
 
