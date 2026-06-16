@@ -21,7 +21,7 @@ const ISP_PLANS = [
     channels: 257,
     gift: 47,
     originalPrice: '49,500원',
-    price: '월 39,400원',
+    price: '월 39,600원',
     popular: false,
   },
   {
