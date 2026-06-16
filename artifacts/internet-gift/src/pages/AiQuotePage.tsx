@@ -173,7 +173,7 @@ function getRecommendations(answers: Answers): Plan[] {
       {
         provider: 'SK브로드밴드', providerKey: 'sk', color: '#0064D2',
         name: '기가라이트 인터넷', speed: '500MB',
-        monthlyFee: 34100, discountedFee: 23100,
+        monthlyFee: 34100,
         features: ['500MB 기가라이트 인터넷', 'WiFi 공유기 포함', '3년 약정 기준'],
         reason: '가성비 뛰어난 SK 기가라이트 인터넷이에요.',
       },
