@@ -22,6 +22,7 @@ import { ConsultationForm } from "@/components/ConsultationForm";
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
+import { consultModal } from "@/lib/consultModal";
 
 const queryClient = new QueryClient();
 
@@ -80,9 +81,8 @@ function GlobalConsultModal() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const handler = () => setOpen(true);
-    window.addEventListener('openConsultModal', handler);
-    return () => window.removeEventListener('openConsultModal', handler);
+    consultModal.register(() => setOpen(true));
+    return () => consultModal.unregister();
   }, []);
 
   if (!open) return null;
