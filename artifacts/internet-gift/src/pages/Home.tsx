@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useLocation } from 'wouter';
 import { Header } from '@/components/Header';
 import { ISPNav } from '@/components/ISPNav';
@@ -6,8 +6,9 @@ import { HeroSection } from '@/components/HeroSection';
 import { BenefitsSection } from '@/components/BenefitsSection';
 import { Footer } from '@/components/Footer';
 import { RealtimeApplicants } from '@/components/RealtimeApplicants';
+import { ConsultationForm } from '@/components/ConsultationForm';
 import useEmblaCarousel from 'embla-carousel-react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 
 const ISP_PLANS = [
   {
@@ -89,13 +90,34 @@ export default function Home() {
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+  const [showQuoteModal, setShowQuoteModal] = useState(false);
 
   return (
     <div className="min-h-screen bg-white text-gray-900 font-sans">
+      {showQuoteModal && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+          onClick={() => setShowQuoteModal(false)}
+        >
+          <div className="absolute inset-0 bg-black/50" />
+          <div
+            className="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowQuoteModal(false)}
+              className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            <ConsultationForm onSuccess={() => setShowQuoteModal(false)} />
+          </div>
+        </div>
+      )}
       <Header />
       <ISPNav />
       <HeroSection />
-      <BenefitsSection />
+      <BenefitsSection onConsult={() => setShowQuoteModal(true)} />
 
       {/* ISP Best Plans Carousel */}
       <section className="py-16" style={{ background: 'linear-gradient(135deg, #fb923c 0%, #fdba74 50%, #fed7aa 100%)' }}>
