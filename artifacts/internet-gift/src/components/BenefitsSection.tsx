@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { createPortal } from 'react-dom';
-import { X } from 'lucide-react';
-import { ConsultationForm } from './ConsultationForm';
+import { ConsultationModal } from './ConsultationModal';
 
 const managers = [
   {
@@ -51,41 +49,7 @@ export function BenefitsSection({ onConsult }: { onConsult?: () => void } = {}) 
 
   return (
     <>
-      {showModal && createPortal(
-        <div
-          style={{
-            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-            zIndex: 999999,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            padding: '1rem',
-            backgroundColor: 'rgba(0,0,0,0.55)',
-          }}
-          onClick={handleClose}
-        >
-          <div
-            style={{
-              position: 'relative', width: '100%', maxWidth: '28rem',
-              maxHeight: '90vh', overflowY: 'auto', borderRadius: '1rem',
-              boxShadow: '0 25px 50px rgba(0,0,0,0.4)', backgroundColor: 'white',
-            }}
-            onClick={e => e.stopPropagation()}
-          >
-            <button
-              onClick={handleClose}
-              style={{
-                position: 'absolute', top: '0.75rem', right: '0.75rem', zIndex: 10,
-                width: '2rem', height: '2rem', display: 'flex', alignItems: 'center',
-                justifyContent: 'center', borderRadius: '9999px',
-                backgroundColor: '#f3f4f6', border: 'none', cursor: 'pointer',
-              }}
-            >
-              <X style={{ width: '1rem', height: '1rem', color: '#4b5563' }} />
-            </button>
-            <ConsultationForm onSuccess={handleClose} />
-          </div>
-        </div>,
-        document.body
-      )}
+      <ConsultationModal open={showModal} onClose={handleClose} />
 
       <section className="py-24 relative overflow-hidden" style={{ background: 'linear-gradient(160deg, #fff7ed 0%, #ffedd5 100%)' }}>
         {/* decorative blobs */}
