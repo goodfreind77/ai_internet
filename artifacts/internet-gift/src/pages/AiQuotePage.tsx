@@ -118,16 +118,16 @@ function getRecommendations(answers: Answers): Plan[] {
       plans.push({
         provider: 'KT 올레', providerKey: 'kt', color: '#E30000',
         name: '인터넷 슬림', speed: '100MB',
-        monthlyFee: 34100,
+        monthlyFee: 34100, discountedFee: 28600,
         features: ['100MB 인터넷', 'WiFi 제공', '3년 약정 기준'],
         badge: 'KT 결합 추천',
-        reason: 'KT 휴대폰 결합 시 할인 혜택이 크며 안정적인 네트워크를 제공해요.',
+        reason: 'KT 휴대폰 결합 시 월 5,500원 할인! 안정적인 네트워크를 제공해요.',
       });
     } else if (speed === '1GB') {
       plans.push({
         provider: 'KT 올레', providerKey: 'kt', color: '#E30000',
         name: '인터넷 에센스', speed: '1GB',
-        monthlyFee: 34100,
+        monthlyFee: 34100, discountedFee: 28600,
         features: ['1GB 기가 인터넷', '기가 WiFi 6 제공', '3년 약정 기준'],
         badge: 'KT 결합 추천',
         reason: 'KT 최강 기가 인터넷! 온 가족이 동시에 써도 끊김 없어요.',
@@ -136,10 +136,10 @@ function getRecommendations(answers: Answers): Plan[] {
       plans.push({
         provider: 'KT 올레', providerKey: 'kt', color: '#E30000',
         name: '인터넷 베이직', speed: '500MB',
-        monthlyFee: 34100,
+        monthlyFee: 34100, discountedFee: 28600,
         features: ['500MB 기가 인터넷', '기가 WiFi 제공', '3년 약정 기준'],
         badge: 'KT 결합 추천',
-        reason: 'KT 안정적인 500MB 인터넷으로 유튜브·넷플릭스를 쾌적하게 즐겨요.',
+        reason: 'KT 휴대폰 결합 시 월 5,500원 할인! 유튜브·넷플릭스를 쾌적하게 즐겨요.',
       });
     }
   }
