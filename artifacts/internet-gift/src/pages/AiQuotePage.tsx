@@ -86,16 +86,16 @@ function getRecommendations(answers: Answers): Plan[] {
       plans.push({
         provider: 'SK브로드밴드', providerKey: 'sk', color: '#0064D2',
         name: '광랜 인터넷', speed: '100MB',
-        monthlyFee: 27500, discountedFee: 20900,
+        monthlyFee: 34100,
         features: ['100MB 광랜 인터넷', 'WiFi 공유기 포함', '3년 약정 기준'],
         badge: 'SKT 결합 추천',
-        reason: 'SKT 휴대폰과 결합하면 월 6,600원 추가 할인을 받을 수 있어요.',
+        reason: 'SKT 휴대폰과 결합하면 추가 할인 혜택을 받을 수 있어요.',
       });
     } else if (speed === '1GB') {
       plans.push({
         provider: 'SK브로드밴드', providerKey: 'sk', color: '#0064D2',
         name: '기가 인터넷', speed: '1GB',
-        monthlyFee: 38500, discountedFee: 27500,
+        monthlyFee: 34100,
         features: ['1GB 초고속 인터넷', 'WiFi 공유기 포함', '3년 약정 기준'],
         badge: 'SKT 결합 추천',
         reason: 'SKT 휴대폰 결합으로 최대 할인! 가족 모두가 동시에 써도 끊김 없어요.',
@@ -104,10 +104,10 @@ function getRecommendations(answers: Answers): Plan[] {
       plans.push({
         provider: 'SK브로드밴드', providerKey: 'sk', color: '#0064D2',
         name: '기가라이트 인터넷', speed: '500MB',
-        monthlyFee: 34100, discountedFee: 23100,
+        monthlyFee: 34100,
         features: ['500MB 기가라이트 인터넷', 'WiFi 공유기 포함', '3년 약정 기준'],
         badge: 'SKT 결합 추천',
-        reason: 'SKT 휴대폰 결합 시 월 11,000원 할인! 유튜브·넷플릭스에 딱 맞는 속도예요.',
+        reason: 'SKT 휴대폰 결합 시 추가 할인 혜택! 유튜브·넷플릭스에 딱 맞는 속도예요.',
       });
     }
   }
@@ -150,16 +150,16 @@ function getRecommendations(answers: Answers): Plan[] {
       plans.push({
         provider: 'LG유플러스', providerKey: 'lg', color: '#E5005A',
         name: '와이파이기본 500M', speed: '500MB',
-        monthlyFee: 33000,
+        monthlyFee: 33000, discountedFee: 23100,
         features: ['500MB 기가 인터넷', '기가 WiFi 6 제공', '3년 약정 기준'],
         badge: 'LG 결합 추천',
-        reason: 'LG U+ 휴대폰 결합 시 최대 할인! 합리적인 가격에 빠른 속도를 누려요.',
+        reason: 'LG U+ 휴대폰 결합 시 월 9,900원 할인! 합리적인 가격에 빠른 속도를 누려요.',
       });
     } else {
       plans.push({
         provider: 'LG유플러스', providerKey: 'lg', color: '#E5005A',
         name: '와이파이기본 1G', speed: '1GB',
-        monthlyFee: 33000,
+        monthlyFee: 33000, discountedFee: 23100,
         features: ['1GB 기가 인터넷', '기가 WiFi 6E 제공', '3년 약정 기준'],
         badge: 'LG 결합 추천',
         reason: 'LG U+ 기가 인터넷으로 4K 스트리밍, 게임 모두 완벽하게 즐겨요.',
