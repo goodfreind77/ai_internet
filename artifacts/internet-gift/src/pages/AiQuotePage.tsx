@@ -73,103 +73,128 @@ const QUESTIONS = [
 ];
 
 function getRecommendations(answers: Answers): Plan[] {
-  const { household, usage, phone } = answers;
+  const { household, iptv, usage, phone } = answers;
+  const withTV = iptv === 'yes';
 
   const isFast = usage === 'game' || household === 'family';
   const speed = household === 'solo' && usage === 'basic' ? '100MB' : household === 'family' || isFast ? '1GB' : '500MB';
 
   const plans: Plan[] = [];
 
-  // SK브로드밴드 (인터넷 단독)
+  // SK브로드밴드
   if (phone === 'skt' || phone === 'other') {
-    if (speed === '100MB') {
+    if (withTV) {
       plans.push({
         provider: 'SK브로드밴드', providerKey: 'sk', color: '#0064D2',
-        name: '광랜 인터넷', speed: '100MB',
-        monthlyFee: 34100,
-        features: ['100MB 광랜 인터넷', 'WiFi 공유기 포함', '3년 약정 기준'],
+        name: speed === '1GB' ? '기가인터넷 + B TV ALL' : speed === '100MB' ? '광랜인터넷 + B TV 스탠다드' : '기가라이트인터넷 + B TV ALL',
+        speed,
+        monthlyFee: speed === '1GB' ? 46200 : speed === '100MB' ? 35200 : 42900,
+        features: [
+          `${speed} 인터넷`,
+          speed === '100MB' ? 'B TV 스탠다드 (226채널)' : 'B TV ALL (256채널)',
+          'WiFi 공유기 포함',
+        ],
         badge: 'SKT 결합 추천',
-        reason: 'SKT 휴대폰과 결합하면 추가 할인 혜택을 받을 수 있어요.',
-      });
-    } else if (speed === '1GB') {
-      plans.push({
-        provider: 'SK브로드밴드', providerKey: 'sk', color: '#0064D2',
-        name: '기가 인터넷', speed: '1GB',
-        monthlyFee: 34100,
-        features: ['1GB 초고속 인터넷', 'WiFi 공유기 포함', '3년 약정 기준'],
-        badge: 'SKT 결합 추천',
-        reason: 'SKT 휴대폰 결합으로 최대 할인! 가족 모두가 동시에 써도 끊김 없어요.',
+        reason: 'SKT 휴대폰과 결합하면 인터넷·TV·휴대폰 3종 할인을 받아요.',
       });
     } else {
       plans.push({
         provider: 'SK브로드밴드', providerKey: 'sk', color: '#0064D2',
-        name: '기가라이트 인터넷', speed: '500MB',
+        name: speed === '1GB' ? '기가 인터넷' : speed === '100MB' ? '광랜 인터넷' : '기가라이트 인터넷',
+        speed,
         monthlyFee: 34100,
-        features: ['500MB 기가라이트 인터넷', 'WiFi 공유기 포함', '3년 약정 기준'],
+        features: [`${speed} 인터넷`, 'WiFi 공유기 포함', '3년 약정 기준'],
         badge: 'SKT 결합 추천',
         reason: 'SKT 휴대폰 결합 시 추가 할인 혜택! 유튜브·넷플릭스에 딱 맞는 속도예요.',
       });
     }
   }
 
-  // KT 올레 (인터넷 단독)
+  // KT 올레
   if (phone === 'kt' || phone === 'other') {
-    if (speed === '100MB') {
+    if (withTV) {
       plans.push({
         provider: 'KT 올레', providerKey: 'kt', color: '#E30000',
-        name: '인터넷 슬림', speed: '100MB',
-        monthlyFee: 34100, discountedFee: 28600,
-        features: ['100MB 인터넷', 'WiFi 제공', '3년 약정 기준'],
+        name: speed === '1GB' ? '인터넷 에센스 + 지니TV모든G' : speed === '100MB' ? '인터넷 슬림 + 지니TV슬림' : '인터넷 베이직 + 지니TV모든G',
+        speed,
+        monthlyFee: speed === '1GB' ? 50600 : speed === '100MB' ? 34100 : 45100,
+        features: [
+          `${speed} 인터넷`,
+          speed === '100MB' ? '지니TV슬림 (217채널)' : '지니TV모든G (255채널)',
+          '기가 WiFi 제공',
+        ],
         badge: 'KT 결합 추천',
-        reason: 'KT 휴대폰 결합 시 월 5,500원 할인! 안정적인 네트워크를 제공해요.',
-      });
-    } else if (speed === '1GB') {
-      plans.push({
-        provider: 'KT 올레', providerKey: 'kt', color: '#E30000',
-        name: '인터넷 에센스', speed: '1GB',
-        monthlyFee: 34100, discountedFee: 28600,
-        features: ['1GB 기가 인터넷', '기가 WiFi 6 제공', '3년 약정 기준'],
-        badge: 'KT 결합 추천',
-        reason: 'KT 최강 기가 인터넷! 온 가족이 동시에 써도 끊김 없어요.',
+        reason: 'KT 휴대폰 결합으로 TV·인터넷을 한 번에 저렴하게 이용하세요.',
       });
     } else {
       plans.push({
         provider: 'KT 올레', providerKey: 'kt', color: '#E30000',
-        name: '인터넷 베이직', speed: '500MB',
+        name: speed === '1GB' ? '인터넷 에센스' : speed === '100MB' ? '인터넷 슬림' : '인터넷 베이직',
+        speed,
         monthlyFee: 34100, discountedFee: 28600,
-        features: ['500MB 기가 인터넷', '기가 WiFi 제공', '3년 약정 기준'],
+        features: [`${speed} 인터넷`, '기가 WiFi 제공', '3년 약정 기준'],
         badge: 'KT 결합 추천',
         reason: 'KT 휴대폰 결합 시 월 5,500원 할인! 유튜브·넷플릭스를 쾌적하게 즐겨요.',
       });
     }
   }
 
-  // LG유플러스 (인터넷 단독)
+  // LG유플러스
   if (phone === 'lgu' || phone === 'other') {
-    if (speed === '100MB' || speed === '500MB') {
+    if (withTV) {
+      const is1G = speed === '1GB';
       plans.push({
         provider: 'LG유플러스', providerKey: 'lg', color: '#E5005A',
-        name: '와이파이기본 500M', speed: '500MB',
-        monthlyFee: 33000, discountedFee: 23100,
-        features: ['500MB 기가 인터넷', '기가 WiFi 6 제공', '3년 약정 기준'],
+        name: is1G ? '와이파이기본 1G + U+tv 프리미엄' : '와이파이기본 500M + U+tv 실속형',
+        speed: is1G ? '1GB' : '500MB',
+        monthlyFee: is1G ? 40700 : 35200,
+        features: [
+          is1G ? '1GB 기가 인터넷' : '500MB 기가 인터넷',
+          is1G ? 'U+tv 프리미엄 (252채널)' : 'U+tv 실속형 (217채널)',
+          '기가 WiFi 6 제공',
+        ],
         badge: 'LG 결합 추천',
-        reason: 'LG U+ 휴대폰 결합 시 월 9,900원 할인! 합리적인 가격에 빠른 속도를 누려요.',
+        reason: 'LG U+ 휴대폰 결합 시 최대 할인! TV·인터넷을 함께 즐겨요.',
       });
     } else {
+      const is1G = speed === '1GB';
       plans.push({
         provider: 'LG유플러스', providerKey: 'lg', color: '#E5005A',
-        name: '와이파이기본 1G', speed: '1GB',
+        name: is1G ? '와이파이기본 1G' : '와이파이기본 500M',
+        speed: is1G ? '1GB' : '500MB',
         monthlyFee: 33000, discountedFee: 23100,
-        features: ['1GB 기가 인터넷', '기가 WiFi 6E 제공', '3년 약정 기준'],
+        features: [is1G ? '1GB 기가 인터넷' : '500MB 기가 인터넷', '기가 WiFi 6 제공', '3년 약정 기준'],
         badge: 'LG 결합 추천',
-        reason: 'LG U+ 기가 인터넷으로 4K 스트리밍, 게임 모두 완벽하게 즐겨요.',
+        reason: 'LG U+ 휴대폰 결합 시 월 9,900원 할인! 합리적인 가격에 빠른 속도를 누려요.',
       });
     }
   }
 
-  // 3개 미만이면 추가
+  // 3개 미만이면 채우기
   if (plans.length < 3) {
-    const extras: Plan[] = [
+    const extras: Plan[] = withTV ? [
+      {
+        provider: 'SK브로드밴드', providerKey: 'sk', color: '#0064D2',
+        name: '기가라이트인터넷 + B TV ALL', speed: '500MB',
+        monthlyFee: 42900,
+        features: ['500MB 기가 인터넷', 'B TV ALL (256채널)', 'WiFi 공유기 포함'],
+        reason: '가성비 뛰어난 SK 기가라이트 + TV 결합 상품이에요.',
+      },
+      {
+        provider: 'KT 올레', providerKey: 'kt', color: '#E30000',
+        name: '인터넷 베이직 + 지니TV모든G', speed: '500MB',
+        monthlyFee: 45100,
+        features: ['500MB 기가 인터넷', '지니TV모든G (255채널)', '기가 WiFi 제공'],
+        reason: 'KT 안정적인 인터넷과 풍성한 TV 채널을 한 번에.',
+      },
+      {
+        provider: 'LG유플러스', providerKey: 'lg', color: '#E5005A',
+        name: '와이파이기본 500M + U+tv 실속형', speed: '500MB',
+        monthlyFee: 35200,
+        features: ['500MB 기가 인터넷', 'U+tv 실속형 (217채널)', '기가 WiFi 6 제공'],
+        reason: '가격 대비 최고의 LG U+ 인터넷+TV 결합 상품이에요.',
+      },
+    ] : [
       {
         provider: 'SK브로드밴드', providerKey: 'sk', color: '#0064D2',
         name: '기가라이트 인터넷', speed: '500MB',
@@ -180,14 +205,14 @@ function getRecommendations(answers: Answers): Plan[] {
       {
         provider: 'KT 올레', providerKey: 'kt', color: '#E30000',
         name: '인터넷 베이직', speed: '500MB',
-        monthlyFee: 34100,
+        monthlyFee: 34100, discountedFee: 28600,
         features: ['500MB 기가 인터넷', '기가 WiFi 제공', '3년 약정 기준'],
         reason: 'KT 안정적인 네트워크로 끊김 없는 인터넷을 경험해요.',
       },
       {
         provider: 'LG유플러스', providerKey: 'lg', color: '#E5005A',
         name: '와이파이기본 500M', speed: '500MB',
-        monthlyFee: 33000,
+        monthlyFee: 33000, discountedFee: 23100,
         features: ['500MB 기가 인터넷', '기가 WiFi 6 제공', '3년 약정 기준'],
         reason: '가격 대비 최고의 LG U+ 인터넷 상품이에요.',
       },
