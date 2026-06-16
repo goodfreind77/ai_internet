@@ -1,28 +1,28 @@
 import React from 'react';
-import { Rocket, Coins, Clock, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const benefits = [
+const managers = [
   {
-    icon: <Rocket className="w-10 h-10 text-primary mb-4" />,
-    title: "빠른 설치",
-    desc: "신청 당일 즉시 설치 가능! 답답한 기다림 없이 빠르게 이용하세요."
+    name: '곽희연',
+    team: '영업 1팀',
+    title: '팀장',
+    initial: '곽',
+    color: '#0064D2',
   },
   {
-    icon: <Coins className="w-10 h-10 text-secondary mb-4" />,
-    title: "최대 지원금",
-    desc: "업계 최고 수준의 현금 사은품을 약속드립니다."
+    name: '이미선',
+    team: '영업 2팀',
+    title: '팀장',
+    initial: '이',
+    color: '#E30000',
   },
   {
-    icon: <ShieldCheck className="w-10 h-10 text-green-500 mb-4" />,
-    title: "정식 대리점",
-    desc: "방송통신위원회 사전승낙을 받은 믿을 수 있는 공식 가입센터입니다."
+    name: '나은영',
+    team: '영업 4팀',
+    title: '팀장',
+    initial: '나',
+    color: '#E5005A',
   },
-  {
-    icon: <Clock className="w-10 h-10 text-blue-500 mb-4" />,
-    title: "365일 상담",
-    desc: "휴일, 주말 상관없이 365일 연중무휴 전문 상담사가 대기중입니다."
-  }
 ];
 
 export function BenefitsSection() {
@@ -30,27 +30,36 @@ export function BenefitsSection() {
     <section className="py-20" style={{ background: 'linear-gradient(160deg, #fff7ed 0%, #ffedd5 100%)' }}>
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-black text-gray-900 mb-4">왜 AI인터넷을 선택해야 할까요?</h2>
+          <h2 className="text-3xl font-black text-gray-900 mb-4">전담 팀장이 직접 상담해드립니다</h2>
           <p className="text-orange-400 text-lg">10년 이상의 노하우로 고객님께 최고의 혜택을 찾아드립니다.</p>
         </div>
-        
-        {/* 모바일: 가로 스크롤 / PC: 4열 그리드 */}
-        <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-5 overflow-x-auto md:overflow-visible pb-2 md:pb-0 -mx-6 px-6 md:mx-0 md:px-0 scrollbar-hide snap-x snap-mandatory">
-          {benefits.map((benefit, idx) => (
+
+        <div className="flex md:grid md:grid-cols-3 gap-6 overflow-x-auto md:overflow-visible pb-2 md:pb-0 -mx-6 px-6 md:mx-0 md:px-0 scrollbar-hide snap-x snap-mandatory justify-center">
+          {managers.map((m, idx) => (
             <motion.div
               key={idx}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className="bg-white p-6 rounded-2xl shadow-sm border border-orange-100 hover:shadow-md hover:border-orange-200 transition-all text-center flex flex-col items-center flex-shrink-0 w-[72vw] sm:w-[45vw] md:w-auto snap-start"
+              transition={{ duration: 0.5, delay: idx * 0.15 }}
+              className="bg-white rounded-2xl shadow-sm border border-orange-100 hover:shadow-md hover:border-orange-200 transition-all text-center flex flex-col items-center px-8 py-10 flex-shrink-0 w-[72vw] sm:w-[45vw] md:w-auto snap-start"
             >
-              <div className="bg-orange-50 p-4 rounded-2xl mb-4">
-                {benefit.icon}
+              <div
+                className="w-20 h-20 rounded-full flex items-center justify-center text-white text-3xl font-black mb-5 shadow-md"
+                style={{ backgroundColor: m.color }}
+              >
+                {m.initial}
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-3">{benefit.title}</h3>
-              <p className="text-gray-500 leading-relaxed text-sm">
-                {benefit.desc}
+              <p className="text-xs font-semibold text-gray-400 tracking-widest uppercase mb-1">{m.team}</p>
+              <h3 className="text-2xl font-black text-gray-900 mb-1">{m.name}</h3>
+              <span
+                className="text-sm font-bold px-4 py-1 rounded-full text-white mt-2"
+                style={{ backgroundColor: m.color }}
+              >
+                {m.title}
+              </span>
+              <p className="text-gray-500 text-sm mt-5 leading-relaxed">
+                최고의 혜택으로<br />직접 상담해드립니다.
               </p>
             </motion.div>
           ))}
