@@ -18,6 +18,10 @@ import AdminPage from "@/pages/AdminPage";
 import ConsentPage from "@/pages/ConsentPage";
 import AiQuotePage from "@/pages/AiQuotePage";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { ConsultationForm } from "@/components/ConsultationForm";
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import { X } from "lucide-react";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +76,52 @@ function Router() {
   );
 }
 
+function GlobalConsultModal() {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const handler = () => setOpen(true);
+    window.addEventListener('openConsultModal', handler);
+    return () => window.removeEventListener('openConsultModal', handler);
+  }, []);
+
+  if (!open) return null;
+
+  return createPortal(
+    <div
+      style={{
+        position: 'fixed', inset: 0, zIndex: 999999,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: '1rem', background: 'rgba(0,0,0,0.55)',
+      }}
+      onMouseDown={() => setOpen(false)}
+    >
+      <div
+        style={{
+          position: 'relative', width: '100%', maxWidth: '28rem',
+          maxHeight: '90vh', overflowY: 'auto', borderRadius: '1rem',
+          boxShadow: '0 25px 50px rgba(0,0,0,0.4)', background: 'white',
+        }}
+        onMouseDown={e => e.stopPropagation()}
+      >
+        <button
+          onMouseDown={() => setOpen(false)}
+          style={{
+            position: 'absolute', top: '0.75rem', right: '0.75rem', zIndex: 10,
+            width: '2rem', height: '2rem', display: 'flex', alignItems: 'center',
+            justifyContent: 'center', borderRadius: '9999px', background: '#f3f4f6',
+            border: 'none', cursor: 'pointer',
+          }}
+        >
+          <X style={{ width: '1rem', height: '1rem', color: '#4b5563' }} />
+        </button>
+        <ConsultationForm onSuccess={() => setOpen(false)} />
+      </div>
+    </div>,
+    document.body
+  );
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -81,6 +131,7 @@ function App() {
           <MobileBottomNav />
         </WouterRouter>
         <Toaster />
+        <GlobalConsultModal />
       </TooltipProvider>
     </QueryClientProvider>
   );

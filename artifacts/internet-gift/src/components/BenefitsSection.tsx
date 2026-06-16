@@ -34,7 +34,7 @@ const managers = [
   },
 ];
 
-export function BenefitsSection({ onConsult }: { onConsult: () => void }) {
+export function BenefitsSection({ onConsult }: { onConsult?: () => void }) {
   return (
     <section className="py-24 relative overflow-hidden" style={{ background: 'linear-gradient(160deg, #fff7ed 0%, #ffedd5 100%)' }}>
       {/* decorative blobs */}
@@ -105,7 +105,7 @@ export function BenefitsSection({ onConsult }: { onConsult: () => void }) {
 
                 {/* 상담 버튼 — 타원 카드 밖에 배치 */}
                 <button
-                  onClick={onConsult}
+                  onClick={() => { onConsult?.(); window.dispatchEvent(new CustomEvent('openConsultModal')); }}
                   className="mt-5 inline-flex items-center gap-2 text-white text-sm font-bold px-5 py-2.5 rounded-full transition-all hover:scale-105 shadow-md"
                   style={{ background: `linear-gradient(135deg, ${m.gradientFrom}, ${m.gradientTo})` }}
                 >

@@ -1,5 +1,4 @@
-import React, { useCallback, useState } from 'react';
-import { createPortal } from 'react-dom';
+import React, { useCallback } from 'react';
 import { useLocation } from 'wouter';
 import { Header } from '@/components/Header';
 import { ISPNav } from '@/components/ISPNav';
@@ -7,9 +6,8 @@ import { HeroSection } from '@/components/HeroSection';
 import { BenefitsSection } from '@/components/BenefitsSection';
 import { Footer } from '@/components/Footer';
 import { RealtimeApplicants } from '@/components/RealtimeApplicants';
-import { ConsultationForm } from '@/components/ConsultationForm';
 import useEmblaCarousel from 'embla-carousel-react';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const ISP_PLANS = [
   {
@@ -91,35 +89,13 @@ export default function Home() {
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
-  const [showQuoteModal, setShowQuoteModal] = useState(false);
 
   return (
     <div className="min-h-screen bg-white text-gray-900 font-sans">
-      {showQuoteModal && createPortal(
-        <div
-          style={{ position: 'fixed', inset: 0, zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}
-          onClick={() => setShowQuoteModal(false)}
-        >
-          <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)' }} />
-          <div
-            style={{ position: 'relative', width: '100%', maxWidth: '28rem', maxHeight: '90vh', overflowY: 'auto', borderRadius: '1rem', boxShadow: '0 25px 50px rgba(0,0,0,0.3)', background: 'white' }}
-            onClick={e => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setShowQuoteModal(false)}
-              style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', zIndex: 10, width: '2rem', height: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '9999px', background: '#f3f4f6', border: 'none', cursor: 'pointer' }}
-            >
-              <X style={{ width: '1rem', height: '1rem', color: '#4b5563' }} />
-            </button>
-            <ConsultationForm onSuccess={() => setShowQuoteModal(false)} />
-          </div>
-        </div>,
-        document.body
-      )}
       <Header />
       <ISPNav />
       <HeroSection />
-      <BenefitsSection onConsult={() => setShowQuoteModal(true)} />
+      <BenefitsSection />
 
       {/* ISP Best Plans Carousel */}
       <section className="py-16" style={{ background: 'linear-gradient(135deg, #fb923c 0%, #fdba74 50%, #fed7aa 100%)' }}>
