@@ -81,8 +81,7 @@ function getRecommendations(answers: Answers): Plan[] {
 
   const plans: Plan[] = [];
 
-  // 같은 통신사 결합 여부에 따라 할인가 적용
-  const skDiscount  = phone === 'skt' ? 23100 : undefined;
+  // 같은 통신사 결합 여부에 따라 할인가 적용 (속도별 상이)
   const ktDiscount  = phone === 'kt'  ? 28600 : undefined;
   const lgDiscount  = phone === 'lgu' ? 23100 : undefined;
 
@@ -99,16 +98,22 @@ function getRecommendations(answers: Answers): Plan[] {
         reason: phone === 'skt' ? 'SKT 휴대폰과 결합하면 인터넷·TV·휴대폰 3종 할인을 받아요.' : '가성비 뛰어난 SK 인터넷+TV 결합 상품이에요.',
       });
     } else {
+      const sk1G = speed === '1GB';
+      const skName = sk1G ? '1기가인터넷' : speed === '100MB' ? '광랜 인터넷' : '기가라이트 인터넷';
+      const skFee  = sk1G ? 39600 : 34100;
+      const skDiscount = phone === 'skt' ? (sk1G ? 26400 : 23100) : undefined;
       plans.push({
         provider: 'SK브로드밴드', providerKey: 'sk', color: '#0064D2',
-        name: speed === '1GB' ? '기가 인터넷' : speed === '100MB' ? '광랜 인터넷' : '기가라이트 인터넷',
+        name: skName,
         speed,
-        monthlyFee: 34100, discountedFee: skDiscount,
+        monthlyFee: skFee, discountedFee: skDiscount,
         features: [`${speed} 인터넷`, 'WiFi 공유기 포함', '3년 약정 기준'],
         badge: phone === 'skt' ? 'SKT 결합 추천' : undefined,
         reason: phone === 'skt'
-          ? 'SKT 휴대폰 결합 시 월 11,000원 할인! 유튜브·넷플릭스에 딱 맞는 속도예요.'
-          : '가성비 뛰어난 SK 기가라이트 인터넷이에요.',
+          ? sk1G ? 'SKT 휴대폰 결합 시 월 13,200원 할인! 초고속 1기가 인터넷을 저렴하게 누려요.'
+                 : 'SKT 휴대폰 결합 시 월 11,000원 할인! 유튜브·넷플릭스에 딱 맞는 속도예요.'
+          : sk1G ? '초고속 SK 1기가 인터넷으로 게임·4K 스트리밍 모두 완벽하게!'
+                 : '가성비 뛰어난 SK 기가라이트 인터넷이에요.',
       });
     }
   }
