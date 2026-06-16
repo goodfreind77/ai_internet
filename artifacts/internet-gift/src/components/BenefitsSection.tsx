@@ -66,7 +66,7 @@ export function BenefitsSection() {
               transition={{ duration: 0.5, delay: idx * 0.15 }}
               className="relative flex-shrink-0 w-[80vw] sm:w-[55vw] md:w-auto snap-start"
             >
-              <div className="bg-white rounded-3xl p-8 text-center shadow-md border border-orange-100 hover:shadow-xl transition-all hover:-translate-y-1">
+              <div className="bg-white p-10 text-center shadow-md border border-orange-100 hover:shadow-xl transition-all hover:-translate-y-1" style={{ borderRadius: '50%', aspectRatio: '3/4', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                 {/* 팀 뱃지 */}
                 <div className="inline-block bg-orange-50 text-orange-500 text-xs font-bold px-3 py-1 rounded-full mb-6 border border-orange-200">
                   {m.team} 팀장
