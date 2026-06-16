@@ -55,7 +55,7 @@ export function ConsultationForm({ onSuccess }: ConsultationFormProps = {}) {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100">
+    <div id="quick-quote" className="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100">
       <div className="bg-gradient-to-r from-primary to-[#ff6b6b] p-4 text-center">
         <h2 className="text-xl font-black text-white tracking-tight">빠른 견적 문의</h2>
       </div>
