@@ -36,10 +36,10 @@ const managers = [
 
 export function BenefitsSection() {
   return (
-    <section className="py-24 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e3a5f 100%)' }}>
+    <section className="py-24 relative overflow-hidden" style={{ background: 'linear-gradient(160deg, #fff7ed 0%, #ffedd5 100%)' }}>
       {/* decorative blobs */}
-      <div className="absolute top-0 left-0 w-96 h-96 rounded-full opacity-10 blur-3xl" style={{ background: '#818cf8', transform: 'translate(-30%, -30%)' }} />
-      <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full opacity-10 blur-3xl" style={{ background: '#f97316', transform: 'translate(30%, 30%)' }} />
+      <div className="absolute top-0 left-0 w-96 h-96 rounded-full opacity-20 blur-3xl" style={{ background: '#fdba74', transform: 'translate(-30%, -30%)' }} />
+      <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full opacity-20 blur-3xl" style={{ background: '#fde68a', transform: 'translate(30%, 30%)' }} />
 
       <div className="relative max-w-6xl mx-auto px-6">
         <motion.div
@@ -49,11 +49,11 @@ export function BenefitsSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <span className="inline-block bg-white/10 text-white/80 text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full mb-4 border border-white/20">
+          <span className="inline-block bg-orange-100 text-orange-500 text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full mb-4 border border-orange-200">
             EXPERT TEAM
           </span>
-          <h2 className="text-3xl md:text-4xl font-black text-white mb-4">전담 팀장이 직접 상담해드립니다</h2>
-          <p className="text-indigo-200 text-lg">10년 이상의 노하우로 고객님께 최고의 혜택을 찾아드립니다.</p>
+          <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">전담 팀장이 직접 상담해드립니다</h2>
+          <p className="text-orange-400 text-lg">10년 이상의 노하우로 고객님께 최고의 혜택을 찾아드립니다.</p>
         </motion.div>
 
         <div className="flex md:grid md:grid-cols-3 gap-6 overflow-x-auto md:overflow-visible pb-4 md:pb-0 -mx-6 px-6 md:mx-0 md:px-0 scrollbar-hide snap-x snap-mandatory">
@@ -66,9 +66,9 @@ export function BenefitsSection() {
               transition={{ duration: 0.5, delay: idx * 0.15 }}
               className="relative flex-shrink-0 w-[80vw] sm:w-[55vw] md:w-auto snap-start"
             >
-              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-3xl p-8 text-center hover:bg-white/15 transition-all hover:-translate-y-1 hover:shadow-2xl">
+              <div className="bg-white rounded-3xl p-8 text-center shadow-md border border-orange-100 hover:shadow-xl transition-all hover:-translate-y-1">
                 {/* 팀 뱃지 */}
-                <div className="inline-block bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full mb-6 border border-white/30">
+                <div className="inline-block bg-orange-50 text-orange-500 text-xs font-bold px-3 py-1 rounded-full mb-6 border border-orange-200">
                   {m.team} 팀장
                 </div>
 
@@ -90,14 +90,14 @@ export function BenefitsSection() {
                 </div>
 
                 {/* 이름 */}
-                <h3 className="text-2xl font-black text-white mb-1">{m.name}</h3>
+                <h3 className="text-2xl font-black text-gray-900 mb-1">{m.name}</h3>
                 <div
                   className="h-0.5 w-12 mx-auto rounded-full my-4 opacity-60"
                   style={{ background: `linear-gradient(90deg, ${m.gradientFrom}, ${m.gradientTo})` }}
                 />
 
                 {/* 소개 */}
-                <p className="text-indigo-200 text-sm leading-relaxed whitespace-pre-line">
+                <p className="text-gray-500 text-sm leading-relaxed whitespace-pre-line">
                   {m.desc}
                 </p>
 
