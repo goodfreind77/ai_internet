@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { X } from 'lucide-react';
+import { ConsultationForm } from './ConsultationForm';
 
 const managers = [
   {
@@ -35,8 +37,31 @@ const managers = [
 ];
 
 export function BenefitsSection() {
+  const [showQuote, setShowQuote] = useState(false);
+
   return (
-    <section className="py-24 relative overflow-hidden" style={{ background: 'linear-gradient(160deg, #fff7ed 0%, #ffedd5 100%)' }}>
+    <>
+      {showQuote && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          onClick={() => setShowQuote(false)}
+        >
+          <div className="absolute inset-0 bg-black/50" />
+          <div
+            className="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowQuote(false)}
+              className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            <ConsultationForm onSuccess={() => setShowQuote(false)} />
+          </div>
+        </div>
+      )}
+      <section className="py-24 relative overflow-hidden" style={{ background: 'linear-gradient(160deg, #fff7ed 0%, #ffedd5 100%)' }}>
       {/* decorative blobs */}
       <div className="absolute top-0 left-0 w-96 h-96 rounded-full opacity-20 blur-3xl" style={{ background: '#fdba74', transform: 'translate(-30%, -30%)' }} />
       <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full opacity-20 blur-3xl" style={{ background: '#fde68a', transform: 'translate(30%, 30%)' }} />
@@ -103,10 +128,7 @@ export function BenefitsSection() {
 
                 {/* 상담 버튼 */}
                 <button
-                  onClick={() => {
-                    const el = document.getElementById('quick-quote');
-                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  }}
+                  onClick={() => setShowQuote(true)}
                   className="mt-6 inline-flex items-center gap-2 text-white text-sm font-bold px-5 py-2.5 rounded-full transition-all hover:scale-105 shadow-md"
                   style={{ background: `linear-gradient(135deg, ${m.gradientFrom}, ${m.gradientTo})` }}
                 >
@@ -121,5 +143,6 @@ export function BenefitsSection() {
         </div>
       </div>
     </section>
+    </>
   );
 }
