@@ -123,14 +123,31 @@ export default function VideoTemplate({
     if (prevBaseSceneKey.current === 'scene1') return;
     prevBaseSceneKey.current = 'scene1';
 
-    const timer = setTimeout(() => {
+    const speak = () => {
       window.speechSynthesis.cancel();
       const utter = new SpeechSynthesisUtterance(NARRATION_TEXT);
       utter.lang = 'ko-KR';
-      utter.rate = 0.92;
-      utter.pitch = 1.05;
+      utter.rate = 1.0;
+      utter.pitch = 1.4;
       utter.volume = 1.0;
+
+      const voices = window.speechSynthesis.getVoices();
+      const koVoices = voices.filter(v => v.lang.startsWith('ko'));
+      const femaleKeywords = ['female', 'woman', 'yuna', 'heami', 'seoyeon', 'google 여성', '여성'];
+      const femaleVoice = koVoices.find(v =>
+        femaleKeywords.some(k => v.name.toLowerCase().includes(k))
+      ) || koVoices[0];
+      if (femaleVoice) utter.voice = femaleVoice;
+
       window.speechSynthesis.speak(utter);
+    };
+
+    const timer = setTimeout(() => {
+      if (window.speechSynthesis.getVoices().length === 0) {
+        window.speechSynthesis.onvoiceschanged = speak;
+      } else {
+        speak();
+      }
     }, 600);
 
     return () => clearTimeout(timer);
