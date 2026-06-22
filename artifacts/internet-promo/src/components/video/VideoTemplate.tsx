@@ -83,6 +83,9 @@ function Confetti() {
   );
 }
 
+const NARRATION_TEXT =
+  '인터넷 가입, 이제 AI가 직접 추천해 드립니다. SK, KT, LG 전 통신사 비교부터 신청까지 한 번에! 지금 바로 상담받으세요. 1666-3233';
+
 export default function VideoTemplate({
   durations = SCENE_DURATIONS,
   loop = true,
@@ -98,6 +101,7 @@ export default function VideoTemplate({
   const baseSceneKey = currentSceneKey.replace(/_r[12]$/, '');
   const SceneComponent = SCENE_COMPONENTS[baseSceneKey];
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const prevBaseSceneKey = useRef<string>('');
 
   useEffect(() => {
     onSceneChange?.(currentSceneKey);
@@ -106,11 +110,37 @@ export default function VideoTemplate({
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    audio.volume = 0.4;
+    audio.volume = 0.3;
     const target = SCENE_START_SEC[baseSceneKey] ?? 0;
     if (Math.abs(audio.currentTime - target) > 0.25) audio.currentTime = target;
     audio.play().catch(() => {});
   }, [currentSceneKey, baseSceneKey, muted]);
+
+  useEffect(() => {
+    if (muted) return;
+    if (!('speechSynthesis' in window)) return;
+    if (baseSceneKey !== 'scene1') return;
+    if (prevBaseSceneKey.current === 'scene1') return;
+    prevBaseSceneKey.current = 'scene1';
+
+    const timer = setTimeout(() => {
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(NARRATION_TEXT);
+      utter.lang = 'ko-KR';
+      utter.rate = 0.92;
+      utter.pitch = 1.05;
+      utter.volume = 1.0;
+      window.speechSynthesis.speak(utter);
+    }, 600);
+
+    return () => clearTimeout(timer);
+  }, [baseSceneKey, muted]);
+
+  useEffect(() => {
+    if (baseSceneKey !== 'scene1') {
+      prevBaseSceneKey.current = baseSceneKey;
+    }
+  }, [baseSceneKey]);
 
   return (
     <>
