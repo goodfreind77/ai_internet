@@ -1,0 +1,31 @@
+kind = "video"
+previewPath = "/internet-promo/"
+title = "인터넷 가입 홍보 영상"
+version = "1.0.0"
+id = "artifacts/internet-promo"
+router = "path"
+
+[[integratedSkills]]
+name = "video-js"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/internet-promo/" ]
+localPort = 19269
+
+[services.development]
+run = "pnpm --filter @workspace/internet-promo run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/internet-promo", "run", "build" ]
+publicDir = "artifacts/internet-promo/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19269"
+BASE_PATH = "/internet-promo/"

@@ -1,8 +1,49 @@
 uploads = []
-outputs = []
 
 [[generated]]
 id = "vcNJs3FRI_6J8ItpGvA5f"
 uri = "file://artifacts/internet-gift/public/hero-bg.png"
 type = "image"
 title = "happy Korean family sitting on sofa"
+
+[[generated]]
+id = "tV5z7ivw1kIzeT6K2PSY7"
+uri = "file://artifacts/internet-promo/public/images/person1.png"
+type = "image"
+title = "korean woman phone"
+
+[[generated]]
+id = "-RR7T02GMiItsCezt1s03"
+uri = "file://artifacts/internet-promo/public/images/person2.png"
+type = "image"
+title = "korean man pointing"
+
+[[generated]]
+id = "zwKBrGLWGONWB3OtTj6R9"
+uri = "file://artifacts/internet-promo/public/images/person3.png"
+type = "image"
+title = "korean woman headset"
+
+[[generated]]
+id = "LsRqrhAFOWWvrTjIFLSiW"
+uri = "file://artifacts/internet-promo/public/images/char1.png"
+type = "image"
+title = "cartoon woman cash character"
+
+[[generated]]
+id = "s9ZxgUgw29gi0ii_0ac97"
+uri = "file://artifacts/internet-promo/public/images/char2.png"
+type = "image"
+title = "cartoon man pointing character"
+
+[[generated]]
+id = "Q46FI0qogBo0Tqpu8YYWo"
+uri = "file://artifacts/internet-promo/public/images/char3.png"
+type = "image"
+title = "cartoon woman headset character"
+
+[[outputs]]
+id = "HoLEmU7gtepnXrtnxwiVi"
+uri = "file://artifacts/internet-promo/public/audio/bg_music.mp3"
+type = "audio"
+title = "internet promo background music"
