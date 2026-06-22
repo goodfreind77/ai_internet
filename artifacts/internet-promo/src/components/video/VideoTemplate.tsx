@@ -127,13 +127,16 @@ export default function VideoTemplate({
       window.speechSynthesis.cancel();
       const utter = new SpeechSynthesisUtterance(NARRATION_TEXT);
       utter.lang = 'ko-KR';
-      utter.rate = 1.0;
-      utter.pitch = 1.4;
+      utter.rate = 1.05;
+      utter.pitch = 1.7;
       utter.volume = 1.0;
 
       const voices = window.speechSynthesis.getVoices();
       const koVoices = voices.filter(v => v.lang.startsWith('ko'));
-      const femaleKeywords = ['female', 'woman', 'yuna', 'heami', 'seoyeon', 'google 여성', '여성'];
+      const femaleKeywords = [
+        'female', 'woman', 'yuna', 'heami', 'seoyeon',
+        'google 여성', '여성', 'google 한국어', 'korean',
+      ];
       const femaleVoice = koVoices.find(v =>
         femaleKeywords.some(k => v.name.toLowerCase().includes(k))
       ) || koVoices[0];
