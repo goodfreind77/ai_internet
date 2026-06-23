@@ -42,6 +42,18 @@ uri = "file://artifacts/internet-promo/public/images/char3.png"
 type = "image"
 title = "cartoon woman headset character"
 
+[[generated]]
+id = "UehVMJEXnRP_MKjgHG8pg"
+uri = "file://artifacts/internet-promo/public/images/scene1_shh.png"
+type = "image"
+title = "Woman winking shh expression"
+
+[[generated]]
+id = "3ZluX_Pi-CqGlS7rGkoLc"
+uri = "file://artifacts/internet-promo/public/images/scene3_gift.png"
+type = "image"
+title = "Exploding gift box confetti"
+
 [[outputs]]
 id = "HoLEmU7gtepnXrtnxwiVi"
 uri = "file://artifacts/internet-promo/public/audio/bg_music.mp3"
