@@ -1,0 +1,31 @@
+kind = "video"
+previewPath = "/internet-promo-v1/"
+title = "인터넷 홍보영상 (구버전)"
+version = "1.0.0"
+id = "artifacts/internet-promo-v1"
+router = "path"
+
+[[integratedSkills]]
+name = "video-js"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/internet-promo-v1/" ]
+localPort = 23514
+
+[services.development]
+run = "pnpm --filter @workspace/internet-promo-v1 run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/internet-promo-v1", "run", "build" ]
+publicDir = "artifacts/internet-promo-v1/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23514"
+BASE_PATH = "/internet-promo-v1/"
