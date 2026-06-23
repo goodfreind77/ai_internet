@@ -123,7 +123,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-6',
-    thumbnail: DEFAULT_THUMB,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_sk.jpg`,
     title: 'KT 인터넷 설치 완료! 대만족이에요',
     author: '오**',
     content: 'KT 인터넷으로 바꿨는데 속도가 확실히 달라요. 유튜브 4K도 끊김 없이 잘 나오고 게임도 쾌적하게 즐기고 있습니다. 기사님도 친절하게 설명해 주셔서 감사해요!',
@@ -143,7 +143,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-8',
-    thumbnail: DEFAULT_THUMB,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_kt.jpg`,
     title: '이사하면서 새로 신청했는데 최고예요',
     author: '권**',
     content: '이사 당일에 맞춰서 설치 예약 잡아주셨고 이삿날 바로 인터넷 사용할 수 있었어요. 이런 서비스는 처음이에요. 너무 만족합니다!',
@@ -163,7 +163,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-10',
-    thumbnail: DEFAULT_THUMB,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_lg.jpg`,
     title: '상담부터 설치까지 하루만에 끝!',
     author: '안**',
     content: '어제 오전에 전화 상담하고 오후에 바로 설치 완료했습니다. 이렇게 빠른 줄 몰랐어요. 기사님도 꼼꼼하게 체크해 주시고 너무 감사합니다.',
@@ -173,7 +173,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-11',
-    thumbnail: DEFAULT_THUMB,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_skylife.jpg`,
     title: '아파트 이사 후 인터넷 설치 후기',
     author: '송**',
     content: '새 아파트로 이사 후 인터넷 신청했습니다. 상담사분이 우리 집에 맞는 요금제 잘 추천해 주셔서 가격도 합리적으로 계약했어요. 설치 기사님도 깔끔하게 잘 해주셨습니다.',
@@ -193,7 +193,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-13',
-    thumbnail: DEFAULT_THUMB,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_hellovision.jpg`,
     title: '가족 결합 할인으로 통신비 반값!',
     author: '조**',
     content: '인터넷에 모바일까지 결합하니까 통신비가 거의 반값이 됐어요. 상담사님이 꼼꼼하게 비교해서 최적 요금제 찾아주셨습니다. 이런 꿀팁은 직접 상담해봐야 알 수 있어요!',
@@ -213,7 +213,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-15',
-    thumbnail: DEFAULT_THUMB,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_event.jpg`,
     title: '인터넷+TV 결합 설치 완료',
     author: '임**',
     content: 'TV랑 인터넷 같이 신청했더니 할인도 많이 되고 설치도 한 번에 끝났어요. 채널도 풍부하고 화질도 선명합니다. 온 가족이 다 만족하고 있어요!',
@@ -223,7 +223,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-16',
-    thumbnail: DEFAULT_THUMB,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_cards.jpg`,
     title: '재약정 도움 주셔서 감사해요',
     author: '나**',
     content: '약정 만료 됐는데 어떻게 해야할지 몰랐는데 상담사님이 친절하게 설명해 주시고 더 저렴한 요금제로 재약정할 수 있도록 도와주셨어요. 감사합니다!',
@@ -243,7 +243,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-18',
-    thumbnail: DEFAULT_THUMB,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_ai.jpg`,
     title: '다음에도 꼭 여기서 신청할게요!',
     author: '하**',
     content: '2년 전에도 여기서 신청했고 이번에 이사하면서 또 신청했어요. 그때도 지금도 서비스가 정말 좋습니다. 믿고 맡길 수 있는 곳이에요!',
@@ -263,7 +263,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-20',
-    thumbnail: DEFAULT_THUMB,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_apply.jpg`,
     title: '사은품 종류가 정말 다양해요',
     author: '배**',
     content: '신청할 때 사은품 선택지가 많아서 원하는 걸로 고를 수 있었어요. 현금으로 받을 수 있어서 더 좋았습니다. 설치도 빠르고 인터넷 품질도 만족해요!',
