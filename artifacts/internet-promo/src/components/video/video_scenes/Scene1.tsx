@@ -1,70 +1,64 @@
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
 
 export function Scene1() {
-  const [phase, setPhase] = useState(0);
-
-  useEffect(() => {
-    const ts = [setTimeout(() => setPhase(1), 300)];
-    return () => ts.forEach(clearTimeout);
-  }, []);
-
   const words = ['너만', '몰랐던거', '알려줄께', '~!'];
 
   return (
     <motion.div
-      className="absolute inset-0 flex flex-col overflow-hidden bg-[#0d1117]"
+      className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden bg-[#0d1117]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0, scale: 1.1 }}
+      exit={{ opacity: 0, scale: 1.05 }}
       transition={{ duration: 0.5 }}
     >
+      {/* Background image */}
       <motion.img
         src={`${import.meta.env.BASE_URL}images/scene1_shh.png`}
         className="absolute inset-0 w-full h-full object-cover mix-blend-luminosity"
         style={{ opacity: 0.6 }}
-        initial={{ scale: 1.1 }}
+        initial={{ scale: 1.08 }}
         animate={{ scale: 1 }}
         transition={{ duration: 4, ease: 'easeOut' }}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0d1117] via-[#0d1117]/40 to-transparent" />
+      {/* Vignette */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0d1117]/60 via-transparent to-[#0d1117]/70" />
 
-      {/* Text — top section, safely within the 9:16 card */}
-      <div className="relative z-10 w-full flex flex-col items-center" style={{ paddingTop: '10%' }}>
-        <h1 className="flex flex-col items-center" style={{ gap: '1%' }}>
-          {words.map((word, wordIdx) => (
-            <div key={wordIdx} className="flex">
-              {word.split('').map((char, charIdx) => {
-                const i = wordIdx * 8 + charIdx;
-                return (
-                  <motion.span
-                    key={charIdx}
-                    className="inline-block"
-                    style={{
-                      fontFamily: 'var(--font-display)',
-                      /* cap by vh so canvas iframe (wide) doesn't overflow the 9:16 card */
-                      fontSize: 'min(12vw, 6.75vh)',
-                      lineHeight: 1.2,
-                      color: '#fcd34d',
-                      textShadow:
-                        '0 4px 12px rgba(0,0,0,0.9), 0 0 24px rgba(252,211,77,0.25)',
-                    }}
-                    initial={{ opacity: 0, y: 40, scale: 0.6, rotate: -15 }}
-                    animate={phase >= 1 ? { opacity: 1, y: 0, scale: 1, rotate: 0 } : {}}
-                    transition={{
-                      type: 'spring',
-                      stiffness: 300,
-                      damping: 14,
-                      delay: i * 0.07,
-                    }}
-                  >
-                    {char}
-                  </motion.span>
-                );
-              })}
-            </div>
-          ))}
-        </h1>
+      {/* Words — all appear together, centred, never clipped */}
+      <div className="relative z-10 flex flex-col items-center" style={{ gap: '1vmin' }}>
+        {words.map((word, wordIdx) => (
+          <motion.div
+            key={wordIdx}
+            className="flex items-center justify-center"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.5,
+              delay: wordIdx * 0.18,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          >
+            <span
+              style={{
+                fontFamily: 'var(--font-display)',
+                /*
+                 * vmin = min(vw, vh). In a wide canvas iframe the card is
+                 * height-constrained, so vmin == vh → font scales with card height.
+                 * On a portrait phone vmin == vw → matches original intent.
+                 * 12vmin keeps "몰랐던거" (4 chars) at 48vmin ≤ card width (56.25vmin).
+                 */
+                fontSize: '12vmin',
+                lineHeight: 1.15,
+                fontWeight: 900,
+                color: '#fcd34d',
+                textShadow:
+                  '0 3px 10px rgba(0,0,0,0.95), 0 0 24px rgba(252,211,77,0.25)',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {word}
+            </span>
+          </motion.div>
+        ))}
       </div>
     </motion.div>
   );
