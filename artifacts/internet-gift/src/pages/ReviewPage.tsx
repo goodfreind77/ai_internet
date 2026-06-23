@@ -123,7 +123,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-6',
-    thumbnail: DEFAULT_THUMB,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_sk.jpg`,
     title: 'KT 인터넷 설치 완료! 대만족이에요',
     author: '오**',
     content: 'KT 인터넷으로 바꿨는데 속도가 확실히 달라요. 유튜브 4K도 끊김 없이 잘 나오고 게임도 쾌적하게 즐기고 있습니다. 기사님도 친절하게 설명해 주셔서 감사해요!',
@@ -133,7 +133,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-7',
-    thumbnail: `${REVIEW_BASE}20250520190022_IMG_8746.jpeg`,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_kt.jpg`,
     title: '현금 사은품 당일 입금 확인했어요',
     author: '서**',
     content: '신청하면서 사은품 준다고 했는데 설치 당일 바로 입금됐습니다. 믿고 신청하시면 됩니다. 인터넷 속도도 만족스러워요!',
@@ -143,7 +143,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-8',
-    thumbnail: `${REVIEW_BASE}20240503172441_20240503_171848.jpg`,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_lg.jpg`,
     title: '이사하면서 새로 신청했는데 최고예요',
     author: '권**',
     content: '이사 당일에 맞춰서 설치 예약 잡아주셨고 이삿날 바로 인터넷 사용할 수 있었어요. 이런 서비스는 처음이에요. 너무 만족합니다!',
@@ -153,7 +153,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-9',
-    thumbnail: DEFAULT_THUMB,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_skylife.jpg`,
     title: 'LG유플러스 기가 인터넷, 진짜 빠릅니다',
     author: '황**',
     content: '기존에 쓰던 인터넷이 너무 느려서 바꿨는데 확실히 다르네요. 재택근무도 화상회의도 전혀 끊김이 없어요. 좀 더 일찍 바꿀걸 싶어요.',
@@ -163,7 +163,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-10',
-    thumbnail: `${REVIEW_BASE}20240404163445_IMG_4005.jpeg`,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_hellovision.jpg`,
     title: '상담부터 설치까지 하루만에 끝!',
     author: '안**',
     content: '어제 오전에 전화 상담하고 오후에 바로 설치 완료했습니다. 이렇게 빠른 줄 몰랐어요. 기사님도 꼼꼼하게 체크해 주시고 너무 감사합니다.',
@@ -173,7 +173,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-11',
-    thumbnail: `${REVIEW_BASE}20250625151711_20250625_151401.jpg`,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_list.jpg`,
     title: '아파트 이사 후 인터넷 설치 후기',
     author: '송**',
     content: '새 아파트로 이사 후 인터넷 신청했습니다. 상담사분이 우리 집에 맞는 요금제 잘 추천해 주셔서 가격도 합리적으로 계약했어요. 설치 기사님도 깔끔하게 잘 해주셨습니다.',
@@ -183,7 +183,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-12',
-    thumbnail: DEFAULT_THUMB,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_tip.jpg`,
     title: 'SK브로드밴드로 변경 후 속도 대만족',
     author: '전**',
     content: '타사에서 SK브로드밴드로 바꿨는데 속도 차이가 확실히 느껴집니다. 특히 저녁 시간대 속도가 안정적이에요. 변경하길 잘했습니다!',
@@ -193,7 +193,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-13',
-    thumbnail: `${REVIEW_BASE}20250513170624_20250512_212459.jpg`,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_ai.jpg`,
     title: '가족 결합 할인으로 통신비 반값!',
     author: '조**',
     content: '인터넷에 모바일까지 결합하니까 통신비가 거의 반값이 됐어요. 상담사님이 꼼꼼하게 비교해서 최적 요금제 찾아주셨습니다. 이런 꿀팁은 직접 상담해봐야 알 수 있어요!',
@@ -203,7 +203,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-14',
-    thumbnail: DEFAULT_THUMB,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_event.jpg`,
     title: '설치 기사님 너무 친절하셨어요',
     author: '장**',
     content: '설치하면서 공유기 위치 잡는 것도 도와주시고 와이파이 비밀번호 설정까지 다 해주셨어요. 이렇게까지 해주시는 분은 처음이에요. 진심으로 감사드립니다.',
@@ -213,7 +213,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-15',
-    thumbnail: `${REVIEW_BASE}20240522021808_IMG_6203.jpeg`,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_cards.jpg`,
     title: '인터넷+TV 결합 설치 완료',
     author: '임**',
     content: 'TV랑 인터넷 같이 신청했더니 할인도 많이 되고 설치도 한 번에 끝났어요. 채널도 풍부하고 화질도 선명합니다. 온 가족이 다 만족하고 있어요!',
@@ -223,7 +223,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-16',
-    thumbnail: DEFAULT_THUMB,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_apply.jpg`,
     title: '재약정 도움 주셔서 감사해요',
     author: '나**',
     content: '약정 만료 됐는데 어떻게 해야할지 몰랐는데 상담사님이 친절하게 설명해 주시고 더 저렴한 요금제로 재약정할 수 있도록 도와주셨어요. 감사합니다!',
@@ -233,7 +233,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-17',
-    thumbnail: `${REVIEW_BASE}20240315114634_%ED%9B%84%EA%B8%B03.png`,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_cards_sk.jpg`,
     title: 'KT스카이라이프 위성방송까지 한 번에',
     author: '류**',
     content: '시골 집인데 KT스카이라이프로 인터넷이랑 위성방송 동시에 신청했습니다. 도서 산간지역이라 걱정했는데 깔끔하게 설치해 주셨어요. 덕분에 TV도 잘 나오네요!',
@@ -243,7 +243,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-18',
-    thumbnail: DEFAULT_THUMB,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_detail1.jpg`,
     title: '다음에도 꼭 여기서 신청할게요!',
     author: '하**',
     content: '2년 전에도 여기서 신청했고 이번에 이사하면서 또 신청했어요. 그때도 지금도 서비스가 정말 좋습니다. 믿고 맡길 수 있는 곳이에요!',
@@ -253,7 +253,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-19',
-    thumbnail: `${REVIEW_BASE}20250520190022_IMG_8746.jpeg`,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_detail2.jpg`,
     title: '게임용 인터넷으로 딱이에요',
     author: '문**',
     content: '온라인 게임 많이 하는데 기존 인터넷이 저녁마다 렉이 심했어요. 기가 인터넷으로 바꾸고 나서 핑도 낮아지고 끊김도 없어졌습니다. 게이머라면 꼭 바꾸세요!',
@@ -263,7 +263,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-20',
-    thumbnail: DEFAULT_THUMB,
+    thumbnail: `${import.meta.env.BASE_URL}images/review_detail3.jpg`,
     title: '사은품 종류가 정말 다양해요',
     author: '배**',
     content: '신청할 때 사은품 선택지가 많아서 원하는 걸로 고를 수 있었어요. 현금으로 받을 수 있어서 더 좋았습니다. 설치도 빠르고 인터넷 품질도 만족해요!',
