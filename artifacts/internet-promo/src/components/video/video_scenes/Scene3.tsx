@@ -58,7 +58,7 @@ export function Scene3() {
               whiteSpace: 'nowrap',
               color: '#111827',
             }}>
-              인터넷 최대
+              인터넷 최대사은품,
             </p>
             <p style={{
               fontFamily: 'var(--font-display)',
@@ -67,16 +67,7 @@ export function Scene3() {
               whiteSpace: 'nowrap',
               color: '#e65100',
             }}>
-              사은품 혜택~!
-            </p>
-            <p style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: '5.5vh',
-              lineHeight: 1.3,
-              whiteSpace: 'nowrap',
-              color: '#555',
-            }}>
-              받는 방법 알려드려요
+              혜택 받는법
             </p>
           </motion.div>
         )}
@@ -102,7 +93,7 @@ export function Scene3() {
               whiteSpace: 'nowrap',
               textShadow: '0 2px 8px rgba(0,0,0,0.3)',
             }}>
-              AI인터넷
+              AI인터넷.com
             </span>
           </motion.div>
         )}
