@@ -18,21 +18,23 @@ export function Scene4() {
   return (
     <motion.div
       className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden"
-      style={{ background: 'linear-gradient(160deg, #0d001a 0%, #000d1a 50%, #1a0d00 100%)' }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Ambient colour orbs */}
+      {/* Deep royal blue to indigo-violet background */}
       <div className="absolute inset-0" style={{
-        background: 'radial-gradient(ellipse at 25% 35%, rgba(124,58,237,0.4) 0%, transparent 50%)'
+        background: 'linear-gradient(145deg, #0d47a1 0%, #1a237e 35%, #311b92 65%, #0d47a1 100%)',
       }} />
       <div className="absolute inset-0" style={{
-        background: 'radial-gradient(ellipse at 75% 65%, rgba(236,72,153,0.3) 0%, transparent 50%)'
+        background: 'radial-gradient(ellipse at 30% 30%, rgba(100,181,246,0.4) 0%, transparent 50%)',
       }} />
       <div className="absolute inset-0" style={{
-        background: 'radial-gradient(ellipse at 50% 80%, rgba(245,158,11,0.25) 0%, transparent 45%)'
+        background: 'radial-gradient(ellipse at 70% 70%, rgba(179,136,255,0.4) 0%, transparent 50%)',
+      }} />
+      <div className="absolute inset-0" style={{
+        background: 'radial-gradient(ellipse at 50% 50%, rgba(255,215,0,0.08) 0%, transparent 60%)',
       }} />
 
       <div className="relative z-10 w-[80%] flex flex-col items-center" style={{ gap: '3vh' }}>
@@ -49,8 +51,9 @@ export function Scene4() {
               display: 'flex',
               alignItems: 'center',
               gap: '1vh',
-              background: 'linear-gradient(90deg, #7c3aed 0%, #db2777 100%)',
-              boxShadow: '0 4px 20px rgba(124,58,237,0.4)',
+              background: 'rgba(255,255,255,0.15)',
+              backdropFilter: 'blur(8px)',
+              border: '1.5px solid rgba(255,255,255,0.3)',
             }}
           >
             <span style={{ fontSize: '2.5vh' }}>📞</span>
@@ -60,14 +63,13 @@ export function Scene4() {
               fontWeight: 700,
               color: '#ffffff',
               whiteSpace: 'nowrap',
-              textShadow: '0 1px 4px rgba(0,0,0,0.4)',
             }}>
               인터넷 가입 상담전화
             </span>
           </motion.div>
         )}
 
-        {/* Phone number with gradient */}
+        {/* Phone number — solid gold */}
         {phase >= 2 && (
           <motion.div
             className="flex items-baseline"
@@ -77,11 +79,8 @@ export function Scene4() {
               fontWeight: 900,
               letterSpacing: '-0.02em',
               lineHeight: 1,
-              background: 'linear-gradient(90deg, #fcd34d 0%, #fb923c 40%, #f472b6 70%, #a78bfa 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              filter: 'drop-shadow(0 2px 10px rgba(252,211,77,0.5))',
+              color: '#fcd34d',
+              textShadow: '0 2px 16px rgba(252,211,77,0.5)',
             }}
           >
             {phone.split('').map((char, i) => (
@@ -106,7 +105,7 @@ export function Scene4() {
             style={{
               fontFamily: 'var(--font-body)',
               fontSize: '2.2vh',
-              color: '#c4b5fd',
+              color: '#bfdbfe',
               letterSpacing: '0.08em',
               whiteSpace: 'nowrap',
             }}
@@ -115,28 +114,27 @@ export function Scene4() {
           </motion.p>
         )}
 
-        {/* CTA — rainbow gradient */}
+        {/* CTA — bright gold button */}
         {phase >= 3 && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             style={{
-              background: 'linear-gradient(90deg, #7c3aed 0%, #db2777 35%, #f59e0b 65%, #10b981 100%)',
+              background: 'linear-gradient(90deg, #fbbf24 0%, #fcd34d 50%, #fbbf24 100%)',
               borderRadius: 14,
               padding: '2vh 0',
               width: '100%',
               textAlign: 'center',
-              boxShadow: '0 6px 24px rgba(124,58,237,0.35)',
+              boxShadow: '0 6px 24px rgba(252,211,77,0.35)',
             }}
           >
             <span style={{
               fontFamily: 'var(--font-body)',
               fontSize: '2.8vh',
               fontWeight: 800,
-              color: '#ffffff',
+              color: '#1a237e',
               whiteSpace: 'nowrap',
-              textShadow: '0 1px 4px rgba(0,0,0,0.3)',
             }}>
               지금 바로 전화하세요
             </span>
