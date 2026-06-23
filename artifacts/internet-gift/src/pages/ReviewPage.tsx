@@ -28,7 +28,7 @@ export const ALL_REVIEWS: Review[] = [
     author: '김**',
     content: '처음에는 걱정했는데 설치 기사님이 정말 친절하시고 꼼꼼하게 해주셨습니다. 인터넷 속도도 빠르고 가격도 저렴해서 매우 만족합니다!',
     views: 574,
-    date: '2025-11-07',
+    date: '2026-06-20',
     isBest: true,
   },
   {
@@ -38,7 +38,7 @@ export const ALL_REVIEWS: Review[] = [
     author: '이**',
     content: '신청하고 바로 다음날 설치 완료! 기사님도 친절하시고 작업도 깔끔하게 잘 해주셨어요. 강력 추천합니다!',
     views: 548,
-    date: '2025-11-07',
+    date: '2026-06-18',
     isBest: true,
   },
   {
@@ -48,7 +48,7 @@ export const ALL_REVIEWS: Review[] = [
     author: '박**',
     content: '인터넷과 IPTV 동시에 설치했는데 정말 만족스럽습니다. 화질도 좋고 속도도 빠릅니다. 사은품도 받아서 더욱 좋았어요!',
     views: 551,
-    date: '2025-11-07',
+    date: '2026-06-15',
     isBest: true,
   },
   {
@@ -58,7 +58,7 @@ export const ALL_REVIEWS: Review[] = [
     author: '최**',
     content: '배선 정리도 깔끔하게 해주시고 설명도 자세히 해주셔서 좋았습니다. 다음에도 이용하겠습니다!',
     views: 468,
-    date: '2025-11-07',
+    date: '2026-06-10',
     isBest: true,
   },
   {
@@ -68,7 +68,7 @@ export const ALL_REVIEWS: Review[] = [
     author: '정**',
     content: '평소에 후기 잘 안 남기는데 이번엔 정말 만족해서 남깁니다. 상담부터 설치까지 모두 완벽했어요. 추천합니다!',
     views: 653,
-    date: '2025-11-07',
+    date: '2026-06-05',
     isBest: true,
   },
   {
@@ -78,7 +78,7 @@ export const ALL_REVIEWS: Review[] = [
     author: '홍**',
     content: '신청하고 빠르게 설치해주셔서 감사합니다! 속도도 빠르고 너무 만족스럽습니다.',
     views: 96,
-    date: '2025-11-07',
+    date: '2026-06-22',
     isBest: false,
   },
   {
@@ -88,7 +88,7 @@ export const ALL_REVIEWS: Review[] = [
     author: '강**',
     content: '설치 정말 빠르게 잘 해주셨어요. 기사님도 친절하시고 좋았습니다!',
     views: 109,
-    date: '2025-11-07',
+    date: '2026-06-19',
     isBest: false,
   },
   {
@@ -98,7 +98,7 @@ export const ALL_REVIEWS: Review[] = [
     author: '윤**',
     content: '신청 상담부터 설치까지 모든 과정이 완벽했습니다. 강력 추천드립니다!',
     views: 141,
-    date: '2025-11-07',
+    date: '2026-06-14',
     isBest: false,
   },
   {
@@ -108,7 +108,7 @@ export const ALL_REVIEWS: Review[] = [
     author: '임**',
     content: '설치 정말 빠르게 끝났어요. 만족합니다!',
     views: 110,
-    date: '2025-11-07',
+    date: '2026-06-08',
     isBest: false,
   },
   {
@@ -118,7 +118,7 @@ export const ALL_REVIEWS: Review[] = [
     author: '한**',
     content: '빠른 설치 정말 감사합니다. 기사님 친절하세요!',
     views: 117,
-    date: '2025-11-07',
+    date: '2026-06-03',
     isBest: false,
   },
 ];
