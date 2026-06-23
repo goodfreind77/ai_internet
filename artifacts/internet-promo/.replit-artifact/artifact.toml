@@ -1,6 +1,6 @@
 kind = "video"
 previewPath = "/internet-promo/"
-title = "인터넷 가입 홍보 영상"
+title = "인터넷 가입홍보 2"
 version = "1.0.0"
 id = "artifacts/internet-promo"
 router = "path"
