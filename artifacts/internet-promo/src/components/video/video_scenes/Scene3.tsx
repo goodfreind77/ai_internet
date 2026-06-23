@@ -51,6 +51,10 @@ export function Scene3() {
              * Split into 3 shorter lines so no character overflows the card.
              * Card content width (w-[80%]) = 45vh. Each line is ≤7 chars × 6vh = 42vh ✓
              */}
+            {/*
+             * "인터넷 최대사은품," = 10chars × 6.5vh = 65vh > 카드(56.25vh)
+             * → 두 줄로 분리: "인터넷 최대" (6자=39vh) + "사은품," (4자=26vh) — 둘 다 안전
+             */}
             <p style={{
               fontFamily: 'var(--font-display)',
               fontSize: '6.5vh',
@@ -58,7 +62,16 @@ export function Scene3() {
               whiteSpace: 'nowrap',
               color: '#111827',
             }}>
-              인터넷 최대사은품,
+              인터넷 최대
+            </p>
+            <p style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: '6.5vh',
+              lineHeight: 1.25,
+              whiteSpace: 'nowrap',
+              color: '#111827',
+            }}>
+              사은품,
             </p>
             <p style={{
               fontFamily: 'var(--font-display)',
