@@ -18,12 +18,23 @@ export function Scene4() {
   return (
     <motion.div
       className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden"
-      style={{ background: 'radial-gradient(ellipse at 50% 40%, #1a2332 0%, #0d1117 70%)' }}
+      style={{ background: 'linear-gradient(160deg, #0d001a 0%, #000d1a 50%, #1a0d00 100%)' }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
+      {/* Ambient colour orbs */}
+      <div className="absolute inset-0" style={{
+        background: 'radial-gradient(ellipse at 25% 35%, rgba(124,58,237,0.4) 0%, transparent 50%)'
+      }} />
+      <div className="absolute inset-0" style={{
+        background: 'radial-gradient(ellipse at 75% 65%, rgba(236,72,153,0.3) 0%, transparent 50%)'
+      }} />
+      <div className="absolute inset-0" style={{
+        background: 'radial-gradient(ellipse at 50% 80%, rgba(245,158,11,0.25) 0%, transparent 45%)'
+      }} />
+
       <div className="relative z-10 w-[80%] flex flex-col items-center" style={{ gap: '3vh' }}>
 
         {/* Badge */}
@@ -33,29 +44,30 @@ export function Scene4() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
             style={{
-              background: '#fcd34d',
               borderRadius: 999,
               padding: '1.5vh 6%',
               display: 'flex',
               alignItems: 'center',
               gap: '1vh',
+              background: 'linear-gradient(90deg, #7c3aed 0%, #db2777 100%)',
+              boxShadow: '0 4px 20px rgba(124,58,237,0.4)',
             }}
           >
             <span style={{ fontSize: '2.5vh' }}>📞</span>
-            {/* vh-only: "인터넷 가입 상담전화" always fits in card */}
             <span style={{
               fontFamily: 'var(--font-display)',
               fontSize: '2.8vh',
               fontWeight: 700,
-              color: '#0d1117',
+              color: '#ffffff',
               whiteSpace: 'nowrap',
+              textShadow: '0 1px 4px rgba(0,0,0,0.4)',
             }}>
               인터넷 가입 상담전화
             </span>
           </motion.div>
         )}
 
-        {/* Phone number — "1666-3233" = 9 chars at 5vh = 45vh = 80% of card (56.25vh) ✓ */}
+        {/* Phone number with gradient */}
         {phase >= 2 && (
           <motion.div
             className="flex items-baseline"
@@ -63,10 +75,13 @@ export function Scene4() {
               fontFamily: 'var(--font-display)',
               fontSize: '5vh',
               fontWeight: 900,
-              color: '#fcd34d',
               letterSpacing: '-0.02em',
               lineHeight: 1,
-              textShadow: '0 3px 8px rgba(0,0,0,0.8)',
+              background: 'linear-gradient(90deg, #fcd34d 0%, #fb923c 40%, #f472b6 70%, #a78bfa 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              filter: 'drop-shadow(0 2px 10px rgba(252,211,77,0.5))',
             }}
           >
             {phone.split('').map((char, i) => (
@@ -91,8 +106,8 @@ export function Scene4() {
             style={{
               fontFamily: 'var(--font-body)',
               fontSize: '2.2vh',
-              color: '#9ca3af',
-              letterSpacing: '0.06em',
+              color: '#c4b5fd',
+              letterSpacing: '0.08em',
               whiteSpace: 'nowrap',
             }}
           >
@@ -100,27 +115,28 @@ export function Scene4() {
           </motion.p>
         )}
 
-        {/* CTA */}
+        {/* CTA — rainbow gradient */}
         {phase >= 3 && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             style={{
-              background: 'linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%)',
+              background: 'linear-gradient(90deg, #7c3aed 0%, #db2777 35%, #f59e0b 65%, #10b981 100%)',
               borderRadius: 14,
               padding: '2vh 0',
               width: '100%',
               textAlign: 'center',
-              boxShadow: '0 6px 20px rgba(245,158,11,0.25)',
+              boxShadow: '0 6px 24px rgba(124,58,237,0.35)',
             }}
           >
             <span style={{
               fontFamily: 'var(--font-body)',
               fontSize: '2.8vh',
               fontWeight: 800,
-              color: '#0d1117',
+              color: '#ffffff',
               whiteSpace: 'nowrap',
+              textShadow: '0 1px 4px rgba(0,0,0,0.3)',
             }}>
               지금 바로 전화하세요
             </span>
