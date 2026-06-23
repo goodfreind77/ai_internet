@@ -18,7 +18,7 @@ const BANNER_FALLBACK_COLORS = ['#e74c3c', '#2ecc71', '#3498db', '#9b59b6'];
 const BANNER_FALLBACK_TEXTS = ['TV + 인터넷 결합할인', '당일 설치 당일 입금!', '꿀TIP으로 통신비 절약'];
 
 const REVIEW_BASE = 'https://xn--t60bm44a12c2wap96ap6f.com/upload/review/';
-const DEFAULT_THUMB = 'https://xn--t60bm44a12c2wap96ap6f.com/resource/images/common/default_thum.png';
+const DEFAULT_THUMB = `${import.meta.env.BASE_URL}images/home_screenshot.jpg`;
 
 export const ALL_REVIEWS: Review[] = [
   {
