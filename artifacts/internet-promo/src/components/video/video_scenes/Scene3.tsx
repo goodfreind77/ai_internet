@@ -15,46 +15,81 @@ export function Scene3() {
   return (
     <motion.div
       className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden bg-[#0d1117]"
-      initial={{ opacity: 0, scale: 0.9 }}
+      initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, y: '-10%' }}
       transition={{ duration: 0.5 }}
     >
+      {/* Background image */}
       <motion.img
         src={`${import.meta.env.BASE_URL}images/scene3_gift.png`}
-        className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-luminosity"
-        initial={{ scale: 1.3 }}
+        className="absolute inset-0 w-full h-full object-cover mix-blend-luminosity"
+        style={{ opacity: 0.35 }}
+        initial={{ scale: 1.2 }}
         animate={{ scale: 1 }}
-        transition={{ duration: 4, ease: "easeOut" }}
+        transition={{ duration: 4, ease: 'easeOut' }}
       />
-      <div className="absolute inset-0 bg-[#0d1117]/60" />
+      <div className="absolute inset-0" style={{ background: 'rgba(13,17,23,0.55)' }} />
 
-      <div className="relative z-10 w-full px-6 flex flex-col items-center gap-8">
+      {/* Content */}
+      <div className="relative z-10 w-full px-6 flex flex-col items-center gap-6">
         {phase >= 1 && (
           <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.8 }}
+            initial={{ opacity: 0, y: 28, scale: 0.85 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ type: 'spring', stiffness: 250, damping: 20 }}
+            transition={{ type: 'spring', stiffness: 240, damping: 20 }}
             className="text-center"
           >
-            <h2 className="text-[8.5vw] font-black leading-tight text-white drop-shadow-2xl" style={{ fontFamily: 'var(--font-display)', textShadow: '0 4px 20px rgba(0,0,0,0.9)' }}>
+            <p
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: '8vw',
+                lineHeight: 1.3,
+                color: '#ffffff',
+                textShadow: '0 4px 20px rgba(0,0,0,0.9)',
+              }}
+            >
               인터넷 최대 사은품,
-            </h2>
-            <h2 className="text-[9vw] font-black leading-tight text-[#f59e0b] mt-3" style={{ fontFamily: 'var(--font-display)', textShadow: '0 4px 20px rgba(245,158,11,0.4), 0 2px 10px rgba(0,0,0,0.9)' }}>
-              혜택 받는법~!
-            </h2>
+            </p>
+            <p
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: '8.5vw',
+                lineHeight: 1.3,
+                color: '#f59e0b',
+                marginTop: '4%',
+                textShadow: '0 4px 20px rgba(245,158,11,0.4), 0 2px 10px rgba(0,0,0,0.9)',
+              }}
+            >
+              혜택 받는 법~!
+            </p>
           </motion.div>
         )}
 
         {phase >= 2 && (
           <motion.div
-            initial={{ opacity: 0, scale: 0 }}
+            initial={{ opacity: 0, scale: 0.6 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-            className="bg-[#111827] text-[#fcd34d] px-8 py-4 rounded-full shadow-2xl border border-[#fcd34d]"
-            style={{ boxShadow: '0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(252,211,77,0.2)' }}
+            transition={{ type: 'spring', stiffness: 380, damping: 18 }}
+            style={{
+              background: '#111827',
+              border: '2px solid #fcd34d',
+              borderRadius: 999,
+              padding: '3.5% 9%',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.8), 0 0 24px rgba(252,211,77,0.2)',
+            }}
           >
-            <span className="text-[10vw] font-black tracking-wide" style={{ fontFamily: 'var(--font-display)' }}>AI인터넷</span>
+            <span
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: '9.5vw',
+                color: '#fcd34d',
+                fontWeight: 900,
+                letterSpacing: '0.04em',
+              }}
+            >
+              AI인터넷
+            </span>
           </motion.div>
         )}
       </div>

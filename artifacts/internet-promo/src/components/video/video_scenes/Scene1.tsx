@@ -5,58 +5,52 @@ export function Scene1() {
   const [phase, setPhase] = useState(0);
 
   useEffect(() => {
-    const ts = [
-      setTimeout(() => setPhase(1), 300),
-    ];
+    const ts = [setTimeout(() => setPhase(1), 300)];
     return () => ts.forEach(clearTimeout);
   }, []);
 
-  const textStr = "너만 몰랐던거 알려줄께 ~!";
+  const words = ["너만", "몰랐던거", "알려줄께", "~!"];
 
   return (
     <motion.div
-      className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden bg-[#0d1117]"
+      className="absolute inset-0 flex flex-col overflow-hidden bg-[#0d1117]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 1.1 }}
       transition={{ duration: 0.5 }}
     >
+      {/* Background image */}
       <motion.img
         src={`${import.meta.env.BASE_URL}images/scene1_shh.png`}
         className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-luminosity"
-        initial={{ scale: 1.1, y: '5%' }}
-        animate={{ scale: 1, y: '0%' }}
+        initial={{ scale: 1.1 }}
+        animate={{ scale: 1 }}
         transition={{ duration: 4, ease: "easeOut" }}
       />
-      
-      {/* Premium dark vignette with subtle gold shimmer */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#111827] via-transparent to-transparent opacity-90" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#fcd34d] mix-blend-overlay opacity-20" />
-      
-      <div className="relative z-10 w-full px-4 pt-12" style={{ marginTop: '-40%' }}>
-        <h1 className="text-center font-black flex flex-wrap justify-center gap-x-2 gap-y-1">
-          {textStr.split(' ').map((word, wordIdx) => (
+      {/* Bottom dark vignette */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0d1117] via-[#0d1117]/40 to-transparent" />
+
+      {/* Text block — top third, safely within frame */}
+      <div className="relative z-10 w-full flex flex-col items-center" style={{ paddingTop: '12%' }}>
+        <h1 className="flex flex-col items-center gap-1">
+          {words.map((word, wordIdx) => (
             <div key={wordIdx} className="flex">
               {word.split('').map((char, charIdx) => {
-                const i = wordIdx * 10 + charIdx;
+                const i = wordIdx * 8 + charIdx;
                 return (
                   <motion.span
                     key={charIdx}
-                    className="inline-block text-[11vw]"
-                    style={{ 
+                    className="inline-block"
+                    style={{
                       fontFamily: 'var(--font-display)',
+                      fontSize: '13.5vw',
+                      lineHeight: 1.15,
                       color: '#fcd34d',
-                      textShadow: '0 4px 12px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.8), 0 0 20px rgba(252,211,77,0.3)',
-                      lineHeight: 1.1
+                      textShadow: '0 4px 12px rgba(0,0,0,0.9), 0 0 24px rgba(252,211,77,0.25)',
                     }}
-                    initial={{ opacity: 0, y: 50, scale: 0.5, rotate: -20 }}
+                    initial={{ opacity: 0, y: 40, scale: 0.6, rotate: -15 }}
                     animate={phase >= 1 ? { opacity: 1, y: 0, scale: 1, rotate: 0 } : {}}
-                    transition={{
-                      type: 'spring',
-                      stiffness: 300,
-                      damping: 12,
-                      delay: i * 0.08
-                    }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 14, delay: i * 0.07 }}
                   >
                     {char}
                   </motion.span>
