@@ -27,15 +27,19 @@ export function Scene1() {
         background: 'radial-gradient(ellipse at 50% 50%, rgba(120,0,200,0.3) 0%, transparent 60%)',
       }} />
 
-      {/* Background image sits on top of colour, blended */}
+      {/* Background image — original colours preserved */}
       <motion.img
         src={`${import.meta.env.BASE_URL}images/scene1_shh.png`}
         className="absolute inset-0 w-full h-full object-cover"
-        style={{ opacity: 0.25, mixBlendMode: 'overlay' }}
+        style={{ opacity: 0.9 }}
         initial={{ scale: 1.08 }}
         animate={{ scale: 1 }}
         transition={{ duration: 4, ease: 'easeOut' }}
       />
+      {/* Subtle dark vignette so text stays readable */}
+      <div className="absolute inset-0" style={{
+        background: 'linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.35) 100%)',
+      }} />
 
       {/* Text — solid gold, crisp */}
       <div
