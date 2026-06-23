@@ -11,7 +11,6 @@ export function Scene1() {
       exit={{ opacity: 0, scale: 1.05 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Background image */}
       <motion.img
         src={`${import.meta.env.BASE_URL}images/scene1_shh.png`}
         className="absolute inset-0 w-full h-full object-cover mix-blend-luminosity"
@@ -20,44 +19,40 @@ export function Scene1() {
         animate={{ scale: 1 }}
         transition={{ duration: 4, ease: 'easeOut' }}
       />
-      {/* Vignette */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0d1117]/60 via-transparent to-[#0d1117]/70" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0d1117]/50 via-transparent to-[#0d1117]/60" />
 
-      {/* Words — all appear together, centred, never clipped */}
-      <div className="relative z-10 flex flex-col items-center" style={{ gap: '1vmin' }}>
-        {words.map((word, wordIdx) => (
-          <motion.div
-            key={wordIdx}
-            className="flex items-center justify-center"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.5,
-              delay: wordIdx * 0.18,
-              ease: [0.22, 1, 0.36, 1],
+      {/*
+       * vh-only font sizing: vh is always iframe-height / 100, unaffected by
+       * the viewport meta width=device-width.
+       *
+       * Card width = 100vh × 9/16 = 56.25vh.
+       * At 7.5vh per char, "몰랐던거" (4 chars) = 30vh = 53% of card — safe margin.
+       * Horizontal padding 10% keeps glow well inside overflow-hidden boundary.
+       */}
+      <div
+        className="relative z-10 flex flex-col items-center w-full"
+        style={{ gap: '1.5vh', paddingLeft: '10%', paddingRight: '10%' }}
+      >
+        {words.map((word, idx) => (
+          <motion.span
+            key={word}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: idx * 0.12 }}
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: '7.5vh',
+              fontWeight: 900,
+              lineHeight: 1.1,
+              color: '#fcd34d',
+              textShadow: '0 3px 8px rgba(0,0,0,0.95)',
+              whiteSpace: 'nowrap',
+              display: 'block',
+              textAlign: 'center',
             }}
           >
-            <span
-              style={{
-                fontFamily: 'var(--font-display)',
-                /*
-                 * vmin = min(vw, vh). In a wide canvas iframe the card is
-                 * height-constrained, so vmin == vh → font scales with card height.
-                 * On a portrait phone vmin == vw → matches original intent.
-                 * 12vmin keeps "몰랐던거" (4 chars) at 48vmin ≤ card width (56.25vmin).
-                 */
-                fontSize: '12vmin',
-                lineHeight: 1.15,
-                fontWeight: 900,
-                color: '#fcd34d',
-                textShadow:
-                  '0 3px 10px rgba(0,0,0,0.95), 0 0 24px rgba(252,211,77,0.25)',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {word}
-            </span>
-          </motion.div>
+            {word}
+          </motion.span>
         ))}
       </div>
     </motion.div>

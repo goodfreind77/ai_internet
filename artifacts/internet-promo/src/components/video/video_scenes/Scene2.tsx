@@ -25,8 +25,8 @@ export function Scene2() {
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
     >
       {/* Floating brand names */}
-      <div className="absolute inset-0 opacity-30">
-        {[...Array(20)].map((_, i) => {
+      <div className="absolute inset-0 opacity-25">
+        {[...Array(16)].map((_, i) => {
           const brand = BRANDS[i % BRANDS.length];
           return (
             <motion.div
@@ -34,14 +34,14 @@ export function Scene2() {
               className="absolute font-black"
               style={{
                 color: brand.color,
-                fontSize: 'min(5vw, 2.8vh)',
-                left: `${(i * 17 + 5) % 88}%`,
-                top: `${(i * 23 + 3) % 88}%`,
+                fontSize: '3vh',
+                left: `${(i * 19 + 5) % 85}%`,
+                top: `${(i * 23 + 3) % 85}%`,
               }}
               animate={{
-                x: [0, ((i % 3) - 1) * 60],
-                y: [0, ((i % 5) - 2) * 40],
-                rotate: [0, ((i % 7) - 3) * 40],
+                x: [0, ((i % 3) - 1) * 40],
+                y: [0, ((i % 5) - 2) * 30],
+                rotate: [0, ((i % 7) - 3) * 30],
               }}
               transition={{ duration: 3 + (i % 3), repeat: Infinity, repeatType: 'reverse' }}
             >
@@ -51,49 +51,38 @@ export function Scene2() {
         })}
       </div>
 
-      {/* Center card */}
+      {/*
+       * vh-only sizing. Card width = 56.25vh.
+       * At 7vh per line, "여기저기" (4 chars) = 28vh = 49.8% of card. Safe.
+       * Padding 10% keeps content and glow away from overflow-hidden edges.
+       */}
       <motion.div
-        className="relative z-10 text-center w-[82%] px-5 py-7 rounded-2xl"
+        className="relative z-10 w-[80%] px-5 py-7 rounded-2xl text-center"
         style={{
           background: 'rgba(17,24,39,0.88)',
           backdropFilter: 'blur(12px)',
           border: '1.5px solid rgba(252,211,77,0.3)',
-          boxShadow: '0 0 40px rgba(252,211,77,0.06)',
         }}
         initial={{ scale: 0.85, opacity: 0 }}
         animate={phase >= 1 ? { scale: 1, opacity: 1 } : {}}
         transition={{ type: 'spring', stiffness: 200, damping: 18 }}
       >
-        <h2 style={{ fontFamily: 'var(--font-display)', lineHeight: 1.3 }}>
+        {['여기저기', '찾아봐야', '눈만 아파! 😵‍💫'].map((line, i) => (
           <span
-            className="block text-white"
+            key={line}
             style={{
-              fontSize: 'min(9vw, 5.1vh)',
-              textShadow: '0 4px 16px rgba(0,0,0,0.9)',
+              fontFamily: 'var(--font-display)',
+              fontSize: '7vh',
+              lineHeight: 1.3,
+              display: 'block',
+              color: i === 2 ? '#fcd34d' : '#ffffff',
+              textShadow: '0 3px 8px rgba(0,0,0,0.9)',
+              whiteSpace: 'nowrap',
             }}
           >
-            여기저기
+            {line}
           </span>
-          <span
-            className="block text-white"
-            style={{
-              fontSize: 'min(9vw, 5.1vh)',
-              textShadow: '0 4px 16px rgba(0,0,0,0.9)',
-            }}
-          >
-            찾아봐야
-          </span>
-          <span
-            className="block text-[#fcd34d] mt-2"
-            style={{
-              fontSize: 'min(9vw, 5.1vh)',
-              textShadow:
-                '0 4px 20px rgba(252,211,77,0.3), 0 4px 16px rgba(0,0,0,0.9)',
-            }}
-          >
-            눈만 아파! 😵‍💫
-          </span>
-        </h2>
+        ))}
       </motion.div>
     </motion.div>
   );

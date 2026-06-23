@@ -30,36 +30,33 @@ export function Scene3() {
       />
       <div className="absolute inset-0" style={{ background: 'rgba(13,17,23,0.55)' }} />
 
-      <div className="relative z-10 w-[86%] flex flex-col items-center" style={{ gap: '5%' }}>
+      <div className="relative z-10 w-[80%] flex flex-col items-center" style={{ gap: '4vh' }}>
         {phase >= 1 && (
           <motion.div
-            initial={{ opacity: 0, y: 28, scale: 0.85 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ type: 'spring', stiffness: 240, damping: 20 }}
             className="text-center w-full"
           >
-            <p
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'min(7.5vw, 4.2vh)',
-                lineHeight: 1.4,
-                color: '#ffffff',
-                textShadow: '0 4px 20px rgba(0,0,0,0.9)',
-              }}
-            >
+            {/* vh-only: 6.5vh per char. "인터넷 최대 사은품" fits safely. */}
+            <p style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: '6.5vh',
+              lineHeight: 1.35,
+              color: '#ffffff',
+              textShadow: '0 3px 8px rgba(0,0,0,0.9)',
+              whiteSpace: 'nowrap',
+            }}>
               인터넷 최대 사은품,
             </p>
-            <p
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'min(8vw, 4.5vh)',
-                lineHeight: 1.4,
-                color: '#f59e0b',
-                marginTop: '3%',
-                textShadow:
-                  '0 4px 20px rgba(245,158,11,0.4), 0 2px 10px rgba(0,0,0,0.9)',
-              }}
-            >
+            <p style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: '7vh',
+              lineHeight: 1.35,
+              color: '#f59e0b',
+              textShadow: '0 3px 12px rgba(245,158,11,0.35)',
+              whiteSpace: 'nowrap',
+            }}>
               혜택 받는 법~!
             </p>
           </motion.div>
@@ -74,20 +71,18 @@ export function Scene3() {
               background: '#111827',
               border: '2px solid #fcd34d',
               borderRadius: 999,
-              padding: '3% 8%',
-              boxShadow:
-                '0 10px 30px rgba(0,0,0,0.8), 0 0 24px rgba(252,211,77,0.2)',
+              padding: '2vh 8%',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.8), 0 0 20px rgba(252,211,77,0.15)',
             }}
           >
-            <span
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'min(9vw, 5.1vh)',
-                color: '#fcd34d',
-                fontWeight: 900,
-                letterSpacing: '0.04em',
-              }}
-            >
+            <span style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: '7vh',
+              color: '#fcd34d',
+              fontWeight: 900,
+              letterSpacing: '0.04em',
+              whiteSpace: 'nowrap',
+            }}>
               AI인터넷
             </span>
           </motion.div>
