@@ -24,20 +24,20 @@ export function Scene4() {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Subtle gold ring glow */}
+      {/* Ambient glow */}
       <div
         className="absolute"
         style={{
-          width: '70%',
-          height: '35%',
-          top: '32%',
+          width: '60%',
+          height: '30%',
+          top: '35%',
           borderRadius: '50%',
-          background: 'radial-gradient(ellipse, rgba(252,211,77,0.08) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse, rgba(252,211,77,0.07) 0%, transparent 70%)',
           filter: 'blur(20px)',
         }}
       />
 
-      <div className="relative z-10 w-full px-5 flex flex-col items-center gap-5">
+      <div className="relative z-10 w-[84%] flex flex-col items-center" style={{ gap: '4%' }}>
         {/* Badge */}
         {phase >= 1 && (
           <motion.div
@@ -47,17 +47,18 @@ export function Scene4() {
             style={{
               background: '#fcd34d',
               borderRadius: 999,
-              padding: '2.5% 7%',
+              padding: '2% 6%',
               display: 'flex',
               alignItems: 'center',
-              gap: 8,
+              gap: 6,
             }}
           >
-            <span style={{ fontSize: '4.5vw' }}>📞</span>
+            <span style={{ fontSize: 'min(4vw, 2.25vh)' }}>📞</span>
             <span
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '5vw',
+                /* "인터넷 가입 상담전화" = 11 chars — cap by vh to fit card */
+                fontSize: 'min(4.5vw, 2.5vh)',
                 fontWeight: 700,
                 color: '#0d1117',
                 whiteSpace: 'nowrap',
@@ -68,18 +69,20 @@ export function Scene4() {
           </motion.div>
         )}
 
-        {/* Phone number */}
+        {/* Phone number — "1666-3233" = 9 chars, capped to fit card width */}
         {phase >= 2 && (
           <motion.div
             className="flex items-baseline"
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: '13.5vw',
+              /* 9 chars × font-size ≤ card width; min(10.5vw, 5.9vh) stays within 527px on canvas */
+              fontSize: 'min(10.5vw, 5.9vh)',
               fontWeight: 900,
               color: '#fcd34d',
               letterSpacing: '-0.02em',
               lineHeight: 1,
-              textShadow: '0 0 40px rgba(252,211,77,0.35), 0 4px 16px rgba(0,0,0,0.8)',
+              textShadow:
+                '0 0 40px rgba(252,211,77,0.35), 0 4px 16px rgba(0,0,0,0.8)',
             }}
           >
             {phone.split('').map((char, i) => (
@@ -103,7 +106,7 @@ export function Scene4() {
             transition={{ delay: 1.1 }}
             style={{
               fontFamily: 'var(--font-body)',
-              fontSize: '4vw',
+              fontSize: 'min(3.8vw, 2.1vh)',
               color: '#9ca3af',
               letterSpacing: '0.06em',
             }}
@@ -112,7 +115,7 @@ export function Scene4() {
           </motion.p>
         )}
 
-        {/* CTA button */}
+        {/* CTA */}
         {phase >= 3 && (
           <motion.div
             initial={{ opacity: 0, scale: 0.88, y: 10 }}
@@ -120,9 +123,9 @@ export function Scene4() {
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             style={{
               background: 'linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%)',
-              borderRadius: 16,
-              padding: '4% 0',
-              width: '80%',
+              borderRadius: 14,
+              padding: '3.5% 0',
+              width: '100%',
               textAlign: 'center',
               boxShadow: '0 8px 28px rgba(245,158,11,0.3)',
             }}
@@ -130,7 +133,7 @@ export function Scene4() {
             <span
               style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '5vw',
+                fontSize: 'min(4.5vw, 2.5vh)',
                 fontWeight: 800,
                 color: '#0d1117',
               }}
