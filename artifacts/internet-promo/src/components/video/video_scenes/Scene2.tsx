@@ -28,25 +28,48 @@ export function Scene2() {
         background: 'radial-gradient(ellipse at 80% 75%, rgba(100,120,255,0.45) 0%, transparent 50%)',
       }} />
 
-      {/* Floating brand names (decorative) */}
-      <div className="absolute inset-0 overflow-hidden opacity-15">
-        {['SK', 'KT', 'LG', 'SKY', 'LG헬로', 'SK', 'KT', 'LG'].map((name, i) => (
+      {/* Floating brand names (decorative) — larger, more numerous */}
+      <div className="absolute inset-0 overflow-hidden" style={{ opacity: 0.28 }}>
+        {[
+          { name: 'SK브로드밴드', size: '5vh',  left: '2%',  top: '3%'  },
+          { name: 'KT',          size: '8vh',  left: '55%', top: '1%'  },
+          { name: 'LG유플러스',  size: '4.5vh',left: '10%', top: '14%' },
+          { name: 'KT스카이라이프', size: '4vh', left: '48%', top: '18%' },
+          { name: 'SK',          size: '9vh',  left: '3%',  top: '30%' },
+          { name: 'LG헬로비전',  size: '4.5vh',left: '58%', top: '32%' },
+          { name: 'KT',          size: '6vh',  left: '20%', top: '44%' },
+          { name: 'LG',          size: '10vh', left: '68%', top: '48%' },
+          { name: 'SK브로드밴드',size: '4vh',  left: '5%',  top: '58%' },
+          { name: 'KT스카이라이프', size: '5.5vh', left: '35%', top: '62%' },
+          { name: 'LG유플러스',  size: '7vh',  left: '55%', top: '72%' },
+          { name: 'SK',          size: '5vh',  left: '8%',  top: '76%' },
+          { name: 'KT',          size: '4.5vh',left: '68%', top: '84%' },
+          { name: 'LG헬로비전',  size: '4vh',  left: '22%', top: '88%' },
+          { name: 'SK브로드밴드',size: '6vh',  left: '48%', top: '90%' },
+          { name: 'LG',          size: '7vh',  left: '2%',  top: '92%' },
+        ].map((item, i) => (
           <motion.div
             key={i}
             className="absolute font-black text-white"
             style={{
-              fontSize: '2.8vh',
-              left: `${(i * 21 + 5) % 82}%`,
-              top: `${(i * 27 + 7) % 82}%`,
+              fontSize: item.size,
+              left: item.left,
+              top: item.top,
+              whiteSpace: 'nowrap',
             }}
             animate={{
-              x: [0, ((i % 3) - 1) * 35],
-              y: [0, ((i % 5) - 2) * 25],
-              rotate: [0, ((i % 7) - 3) * 25],
+              x: [0, ((i % 3) - 1) * 28],
+              y: [0, ((i % 5) - 2) * 20],
+              rotate: [0, ((i % 7) - 3) * 15],
             }}
-            transition={{ duration: 3 + (i % 3), repeat: Infinity, repeatType: 'reverse' }}
+            transition={{
+              duration: 3 + (i % 4),
+              repeat: Infinity,
+              repeatType: 'reverse',
+              delay: i * 0.15,
+            }}
           >
-            {name}
+            {item.name}
           </motion.div>
         ))}
       </div>
