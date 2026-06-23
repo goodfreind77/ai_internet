@@ -15,35 +15,29 @@ export function Scene3() {
   return (
     <motion.div
       className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden"
+      style={{ background: '#ffffff' }}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, y: '-10%' }}
       transition={{ duration: 0.5 }}
     >
-      {/* Warm coral-to-orange-to-crimson background */}
+      {/* Subtle warm accent blobs on white */}
       <div className="absolute inset-0" style={{
-        background: 'linear-gradient(145deg, #b71c1c 0%, #e65100 35%, #bf360c 65%, #880e4f 100%)',
+        background: 'radial-gradient(ellipse at 15% 15%, rgba(255,200,50,0.2) 0%, transparent 50%)',
       }} />
       <div className="absolute inset-0" style={{
-        background: 'radial-gradient(ellipse at 25% 30%, rgba(255,200,0,0.45) 0%, transparent 50%)',
-      }} />
-      <div className="absolute inset-0" style={{
-        background: 'radial-gradient(ellipse at 75% 70%, rgba(255,80,80,0.4) 0%, transparent 50%)',
+        background: 'radial-gradient(ellipse at 85% 85%, rgba(255,100,50,0.15) 0%, transparent 50%)',
       }} />
 
-      {/* Gift image */}
+      {/* Gift image — light blend on white */}
       <motion.img
         src={`${import.meta.env.BASE_URL}images/scene3_gift.png`}
         className="absolute inset-0 w-full h-full object-cover"
-        style={{ opacity: 0.2, mixBlendMode: 'overlay' }}
+        style={{ opacity: 0.08 }}
         initial={{ scale: 1.2 }}
         animate={{ scale: 1 }}
         transition={{ duration: 4, ease: 'easeOut' }}
       />
-      {/* Darken bottom */}
-      <div className="absolute inset-0" style={{
-        background: 'linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.4) 100%)'
-      }} />
 
       <div className="relative z-10 w-[80%] flex flex-col items-center" style={{ gap: '4vh' }}>
         {phase >= 1 && (
@@ -53,25 +47,36 @@ export function Scene3() {
             transition={{ type: 'spring', stiffness: 240, damping: 20 }}
             className="text-center w-full"
           >
+            {/*
+             * Split into 3 shorter lines so no character overflows the card.
+             * Card content width (w-[80%]) = 45vh. Each line is ≤7 chars × 6vh = 42vh ✓
+             */}
             <p style={{
               fontFamily: 'var(--font-display)',
               fontSize: '6.5vh',
-              lineHeight: 1.35,
+              lineHeight: 1.25,
               whiteSpace: 'nowrap',
-              color: '#ffffff',
-              textShadow: '0 2px 12px rgba(0,0,0,0.5)',
+              color: '#111827',
             }}>
-              인터넷 최대 사은품,
+              인터넷 최대
             </p>
             <p style={{
               fontFamily: 'var(--font-display)',
-              fontSize: '7vh',
-              lineHeight: 1.35,
+              fontSize: '6.5vh',
+              lineHeight: 1.25,
               whiteSpace: 'nowrap',
-              color: '#fcd34d',
-              textShadow: '0 2px 12px rgba(0,0,0,0.5)',
+              color: '#e65100',
             }}>
-              혜택 받는 법~!
+              사은품 혜택~!
+            </p>
+            <p style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: '5.5vh',
+              lineHeight: 1.3,
+              whiteSpace: 'nowrap',
+              color: '#555',
+            }}>
+              받는 방법 알려드려요
             </p>
           </motion.div>
         )}
@@ -84,18 +89,18 @@ export function Scene3() {
             style={{
               borderRadius: 999,
               padding: '2vh 8%',
-              background: 'rgba(0,0,0,0.45)',
-              border: '2.5px solid #fcd34d',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.4), 0 0 24px rgba(252,211,77,0.25)',
+              background: 'linear-gradient(90deg, #e65100 0%, #f59e0b 100%)',
+              boxShadow: '0 8px 32px rgba(230,81,0,0.3)',
             }}
           >
             <span style={{
               fontFamily: 'var(--font-display)',
               fontSize: '7vh',
-              color: '#fcd34d',
+              color: '#ffffff',
               fontWeight: 900,
               letterSpacing: '0.04em',
               whiteSpace: 'nowrap',
+              textShadow: '0 2px 8px rgba(0,0,0,0.3)',
             }}>
               AI인터넷
             </span>
