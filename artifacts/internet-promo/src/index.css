@@ -12,7 +12,7 @@
   --color-red: #FF3344;
   --color-white: #FFFFFF;
 
-  --font-display: 'Black Han Sans', sans-serif;
+  --font-display: 'Noto Serif KR', serif;
   --font-body: 'Noto Sans KR', sans-serif;
 
   /* legacy aliases used by some components */
