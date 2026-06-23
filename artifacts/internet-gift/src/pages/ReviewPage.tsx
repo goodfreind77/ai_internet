@@ -83,7 +83,7 @@ export const ALL_REVIEWS: Review[] = [
   },
   {
     id: 'all-2',
-    thumbnail: DEFAULT_THUMB,
+    thumbnail: `${import.meta.env.BASE_URL}images/home_screenshot.jpg`,
     title: '빠른 설지 감사합니다',
     author: '강**',
     content: '설치 정말 빠르게 잘 해주셨어요. 기사님도 친절하시고 좋았습니다!',
