@@ -59,3 +59,9 @@ id = "HoLEmU7gtepnXrtnxwiVi"
 uri = "file://artifacts/internet-promo/public/audio/bg_music.mp3"
 type = "audio"
 title = "internet promo background music"
+
+[[outputs]]
+id = "XNuP-jtyrzDwq2kO4fjXK"
+uri = "file://attached_assets/이좋은사람들_당근프로필.PNG"
+type = "image"
+title = "이좋은사람들 당근 프로필 (640×640)"
