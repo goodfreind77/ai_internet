@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ai인터넷.com/sitemap.xml
+Sitemap: https://xn--ai-y14i784ep9k.com/sitemap.xml

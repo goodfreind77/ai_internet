@@ -2,84 +2,84 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- 홈 -->
   <url>
-    <loc>https://ai인터넷.com/</loc>
+    <loc>https://xn--ai-y14i784ep9k.com/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <!-- 통신사별 요금제 -->
   <url>
-    <loc>https://ai인터넷.com/provider/kt</loc>
+    <loc>https://xn--ai-y14i784ep9k.com/provider/kt</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://ai인터넷.com/provider/sk</loc>
+    <loc>https://xn--ai-y14i784ep9k.com/provider/sk</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://ai인터넷.com/provider/lg</loc>
+    <loc>https://xn--ai-y14i784ep9k.com/provider/lg</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://ai인터넷.com/provider/hellovision</loc>
+    <loc>https://xn--ai-y14i784ep9k.com/provider/hellovision</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://ai인터넷.com/provider/skylife</loc>
+    <loc>https://xn--ai-y14i784ep9k.com/provider/skylife</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <!-- 사은품 카드 -->
   <url>
-    <loc>https://ai인터넷.com/cards</loc>
+    <loc>https://xn--ai-y14i784ep9k.com/cards</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://ai인터넷.com/cards/kt</loc>
+    <loc>https://xn--ai-y14i784ep9k.com/cards/kt</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://ai인터넷.com/cards/sk</loc>
+    <loc>https://xn--ai-y14i784ep9k.com/cards/sk</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://ai인터넷.com/cards/lg</loc>
+    <loc>https://xn--ai-y14i784ep9k.com/cards/lg</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <!-- 이벤트 -->
   <url>
-    <loc>https://ai인터넷.com/event</loc>
+    <loc>https://xn--ai-y14i784ep9k.com/event</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <!-- 꿀팁 -->
   <url>
-    <loc>https://ai인터넷.com/tip</loc>
+    <loc>https://xn--ai-y14i784ep9k.com/tip</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <!-- 후기 -->
   <url>
-    <loc>https://ai인터넷.com/review</loc>
+    <loc>https://xn--ai-y14i784ep9k.com/review</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <!-- 가입 신청 -->
   <url>
-    <loc>https://ai인터넷.com/apply</loc>
+    <loc>https://xn--ai-y14i784ep9k.com/apply</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <!-- AI 요금 추천 -->
   <url>
-    <loc>https://ai인터넷.com/ai-quote</loc>
+    <loc>https://xn--ai-y14i784ep9k.com/ai-quote</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
