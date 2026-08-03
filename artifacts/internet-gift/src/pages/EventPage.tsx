@@ -19,28 +19,28 @@ const EVENTS: EventItem[] = [
     thumbnail: 'https://xn--t60bm44a12c2wap96ap6f.com/upload/event/20240320160018_%EC%82%AC%EC%97%85%EC%9E%A5,%EC%86%8C%EC%83%81%EA%B3%B5%EC%9D%B8_450x450.png',
     title: '사업장, 소상공인 신청 인터넷',
     views: 280,
-    date: '2025-11-07',
+    date: '2026-08-03',
   },
   {
     id: 2,
     thumbnail: 'https://xn--t60bm44a12c2wap96ap6f.com/upload/event/20240320160024_%EC%8B%A0%EC%9A%A9%EC%B9%B4%EB%93%9C%20%EC%82%AC%EC%9A%A9%ED%95%98%EC%8B%9C%EB%82%98%EC%9A%94_450x450.png',
     title: '신용카드 사용하시나요?',
     views: 304,
-    date: '2025-11-07',
+    date: '2026-08-03',
   },
   {
     id: 4,
     thumbnail: 'https://xn--t60bm44a12c2wap96ap6f.com/upload/event/20240320160009_%EC%8A%A4%ED%83%80%EB%B2%85%EC%8A%A4%EC%9D%B4%EB%B2%A4%ED%8A%B8_450x450.png',
     title: '전 고객 대상 후기 이벤트',
     views: 245,
-    date: '2025-11-07',
+    date: '2026-08-03',
   },
   {
     id: 1,
     thumbnail: 'https://xn--t60bm44a12c2wap96ap6f.com/upload/event/20240320160029_%EA%B0%80%EC%A0%84%EC%A0%9C%ED%92%88%20%EC%8B%A0%EC%B2%AD%ED%95%98%EA%B3%A0%20%EC%82%AC%EC%9D%80%ED%92%88_450x450.png',
     title: '현금 사은품받자~',
     views: 517,
-    date: '2025-11-07',
+    date: '2026-08-03',
   },
 ];
 
