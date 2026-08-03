@@ -24,7 +24,7 @@ const FEATURED_TIPS = [
     thumbnail: `${TIP_BASE}20240321104125_%ED%98%84%EA%B8%88%EB%8B%B9%EC%9D%BC%EC%A7%80%EA%B8%89.png`,
     title: '인터넷가입은 AI인터넷에서!!',
     views: 1129,
-    date: '2026-08-03',
+    date: '2025-11-07',
   },
   {
     id: 2,
@@ -32,7 +32,7 @@ const FEATURED_TIPS = [
     thumbnail: `${TIP_BASE}20240320162057_4.png`,
     title: 'LG유플러스 결합할인',
     views: 712,
-    date: '2026-08-03',
+    date: '2025-11-07',
   },
   {
     id: 3,
@@ -40,7 +40,7 @@ const FEATURED_TIPS = [
     thumbnail: `${TIP_BASE}20240320162112_%EC%A0%9C%EB%AA%A9%20%EC%97%86%EC%9D%8C-1.png`,
     title: 'KT 결합할인',
     views: 559,
-    date: '2026-08-03',
+    date: '2025-11-07',
   },
   {
     id: 4,
@@ -48,7 +48,7 @@ const FEATURED_TIPS = [
     thumbnail: `${TIP_BASE}20240320162119_2.png`,
     title: 'SK브로드밴드 결합할인',
     views: 613,
-    date: '2026-08-03',
+    date: '2025-11-07',
   },
   {
     id: 5,
@@ -56,7 +56,7 @@ const FEATURED_TIPS = [
     thumbnail: `${TIP_BASE}20240320162129_3.png`,
     title: '신규가입 VS 재약정',
     views: 743,
-    date: '2026-08-03',
+    date: '2025-11-07',
   },
 ];
 
@@ -67,7 +67,7 @@ const ALL_TIPS = [
     thumbnail: `${TIP_BASE}20250703150733_%EC%A0%9C%EB%AA%A9%EC%9D%84-%EC%9E%85%EB%A0%A5%ED%95%B4%EC%A3%BC%EC%84%B8%EC%9A%94_-001%20(52).png`,
     title: 'KT 천만 프로모션이라고 아시나요? KT 인터넷 가입자 1,000만명 돌파 이벤트!',
     views: 314,
-    date: '2026-08-03',
+    date: '2025-11-07',
   },
 ];
 
