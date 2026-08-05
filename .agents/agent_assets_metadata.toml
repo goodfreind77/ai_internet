@@ -92,3 +92,10 @@ uri = "file://attached_assets/ai%EC%9D%B8%ED%84%B0%EB%84%B7_QR%EC%BD%94%EB%93%9C
 type = "image"
 title = "AI인터넷 QR코드"
 description = "AI인터넷.com (대문자 수정)"
+
+[[outputs]]
+id = "BCYIsFppq5izrGGzswxuH"
+uri = "file://artifacts/internet-gift/public/opengraph.jpg"
+type = "image"
+title = "카카오톡·SNS 공유 이미지 (OG)"
+description = "인터넷 가입 최대 사은품 혜택 / AI인터넷.com / 주식회사 이좋은사람들"
