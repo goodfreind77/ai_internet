@@ -78,3 +78,10 @@ uri = "file://attached_assets/ai%EC%9D%B8%ED%84%B0%EB%84%B7_QR%EC%BD%94%EB%93%9C
 type = "image"
 title = "AI인터넷.COM QR코드"
 description = "ai인터넷.com 바로가기 QR코드"
+
+[[outputs]]
+id = "37CUUvcN5kJh6ZR2KQzNW"
+uri = "file://attached_assets/ai%EC%9D%B8%ED%84%B0%EB%84%B7_QR%EC%BD%94%EB%93%9C_%EB%AA%85%ED%95%A8%EC%9A%A9.png"
+type = "image"
+title = "AI인터넷 QR코드 명함용"
+description = "QR코드 + ai인터넷.com + (주)이좋은사람들"
