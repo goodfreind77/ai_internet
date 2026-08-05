@@ -14,3 +14,38 @@ import * as zod from "zod";
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
+
+/**
+ * @summary Create a consultation request
+ */
+export const CreateConsultationBody = zod.object({
+  name: zod.string().describe("고객 이름"),
+  phone: zod.string().describe("고객 연락처"),
+});
+
+/**
+ * @summary Submit a full internet service application
+ */
+export const CreateApplicationBody = zod.object({
+  currentProvider: zod.string().optional(),
+  applyProvider: zod.string(),
+  internet: zod.string().optional(),
+  tv: zod.string().optional(),
+  customerType: zod.string().optional(),
+  paymentMethod: zod.string().optional(),
+  payBank: zod.string().optional(),
+  payAccount: zod.string().optional(),
+  payAccountHolder: zod.string().optional(),
+  cardCompany: zod.string().optional(),
+  cardNumber: zod.string().optional(),
+  cardExpiry: zod.string().optional(),
+  giftBank: zod.string().optional(),
+  giftAccount: zod.string().optional(),
+  giftAccountHolder: zod.string().optional(),
+  name: zod.string(),
+  phoneCarrier: zod.string().optional(),
+  phone: zod.string(),
+  email: zod.string().optional(),
+  address: zod.string().optional(),
+  memo: zod.string().optional(),
+});

@@ -8,3 +8,55 @@
 export interface HealthStatus {
   status: string;
 }
+
+export interface CreateConsultationRequest {
+  /** 고객 이름 */
+  name: string;
+  /** 고객 연락처 */
+  phone: string;
+}
+
+export interface ConsultationResponse {
+  id: number;
+  name: string;
+  phone: string;
+  status?: string;
+  createdAt?: string;
+}
+
+export interface CreateApplicationRequest {
+  currentProvider?: string;
+  applyProvider: string;
+  internet?: string;
+  tv?: string;
+  customerType?: string;
+  paymentMethod?: string;
+  payBank?: string;
+  payAccount?: string;
+  payAccountHolder?: string;
+  cardCompany?: string;
+  cardNumber?: string;
+  cardExpiry?: string;
+  giftBank?: string;
+  giftAccount?: string;
+  giftAccountHolder?: string;
+  name: string;
+  phoneCarrier?: string;
+  phone: string;
+  email?: string;
+  address?: string;
+  memo?: string;
+}
+
+export interface ApplicationResponse {
+  id: number;
+  name: string;
+  phone: string;
+  applyProvider: string;
+  status?: string;
+  createdAt?: string;
+}
+
+export interface ErrorResponse {
+  error: string;
+}

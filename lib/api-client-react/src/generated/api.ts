@@ -5,18 +5,28 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
+  MutationFunction,
   QueryFunction,
   QueryKey,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { HealthStatus } from "./api.schemas";
+import type {
+  ApplicationResponse,
+  ConsultationResponse,
+  CreateApplicationRequest,
+  CreateConsultationRequest,
+  ErrorResponse,
+  HealthStatus,
+} from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
-import type { ErrorType } from "../custom-fetch";
+import type { ErrorType, BodyType } from "../custom-fetch";
 
 type AwaitedInput<T> = PromiseLike<T> | T;
 
@@ -99,3 +109,176 @@ export function useHealthCheck<
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+/**
+ * @summary Create a consultation request
+ */
+export const getCreateConsultationUrl = () => {
+  return `/api/consultations`;
+};
+
+export const createConsultation = async (
+  createConsultationRequest: CreateConsultationRequest,
+  options?: RequestInit,
+): Promise<ConsultationResponse> => {
+  return customFetch<ConsultationResponse>(getCreateConsultationUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(createConsultationRequest),
+  });
+};
+
+export const getCreateConsultationMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createConsultation>>,
+    TError,
+    { data: BodyType<CreateConsultationRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createConsultation>>,
+  TError,
+  { data: BodyType<CreateConsultationRequest> },
+  TContext
+> => {
+  const mutationKey = ["createConsultation"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createConsultation>>,
+    { data: BodyType<CreateConsultationRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createConsultation(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateConsultationMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createConsultation>>
+>;
+export type CreateConsultationMutationBody =
+  BodyType<CreateConsultationRequest>;
+export type CreateConsultationMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Create a consultation request
+ */
+export const useCreateConsultation = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createConsultation>>,
+    TError,
+    { data: BodyType<CreateConsultationRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createConsultation>>,
+  TError,
+  { data: BodyType<CreateConsultationRequest> },
+  TContext
+> => {
+  return useMutation(getCreateConsultationMutationOptions(options));
+};
+
+/**
+ * @summary Submit a full internet service application
+ */
+export const getCreateApplicationUrl = () => {
+  return `/api/applications`;
+};
+
+export const createApplication = async (
+  createApplicationRequest: CreateApplicationRequest,
+  options?: RequestInit,
+): Promise<ApplicationResponse> => {
+  return customFetch<ApplicationResponse>(getCreateApplicationUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(createApplicationRequest),
+  });
+};
+
+export const getCreateApplicationMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createApplication>>,
+    TError,
+    { data: BodyType<CreateApplicationRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createApplication>>,
+  TError,
+  { data: BodyType<CreateApplicationRequest> },
+  TContext
+> => {
+  const mutationKey = ["createApplication"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createApplication>>,
+    { data: BodyType<CreateApplicationRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createApplication(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateApplicationMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createApplication>>
+>;
+export type CreateApplicationMutationBody = BodyType<CreateApplicationRequest>;
+export type CreateApplicationMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Submit a full internet service application
+ */
+export const useCreateApplication = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createApplication>>,
+    TError,
+    { data: BodyType<CreateApplicationRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createApplication>>,
+  TError,
+  { data: BodyType<CreateApplicationRequest> },
+  TContext
+> => {
+  return useMutation(getCreateApplicationMutationOptions(options));
+};

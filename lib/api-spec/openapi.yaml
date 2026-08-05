@@ -10,6 +10,10 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: consultations
+    description: Consultation request operations
+  - name: applications
+    description: Internet service application operations
 paths:
   /healthz:
     get:
@@ -24,6 +28,54 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /consultations:
+    post:
+      operationId: createConsultation
+      tags: [consultations]
+      summary: Create a consultation request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateConsultationRequest"
+      responses:
+        "201":
+          description: Consultation request created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConsultationResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /applications:
+    post:
+      operationId: createApplication
+      tags: [applications]
+      summary: Submit a full internet service application
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateApplicationRequest"
+      responses:
+        "201":
+          description: Application created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApplicationResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +85,108 @@ components:
           type: string
       required:
         - status
-
+    CreateConsultationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 고객 이름
+        phone:
+          type: string
+          description: 고객 연락처
+      required:
+        - name
+        - phone
+    ConsultationResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        phone:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - phone
+    CreateApplicationRequest:
+      type: object
+      properties:
+        currentProvider:
+          type: string
+        applyProvider:
+          type: string
+        internet:
+          type: string
+        tv:
+          type: string
+        customerType:
+          type: string
+        paymentMethod:
+          type: string
+        payBank:
+          type: string
+        payAccount:
+          type: string
+        payAccountHolder:
+          type: string
+        cardCompany:
+          type: string
+        cardNumber:
+          type: string
+        cardExpiry:
+          type: string
+        giftBank:
+          type: string
+        giftAccount:
+          type: string
+        giftAccountHolder:
+          type: string
+        name:
+          type: string
+        phoneCarrier:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        address:
+          type: string
+        memo:
+          type: string
+      required:
+        - name
+        - phone
+        - applyProvider
+    ApplicationResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        phone:
+          type: string
+        applyProvider:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - phone
+        - applyProvider
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
