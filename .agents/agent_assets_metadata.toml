@@ -71,3 +71,10 @@ id = "CRFkynY0U5KKdOyvl86UK"
 uri = "file://attached_assets/팝아트_비밀혜택.jpg"
 type = "image"
 title = "너만 몰랐던 비밀혜택 | AI인터넷.COM"
+
+[[outputs]]
+id = "p2vbAjszDrIKWyWcJtMha"
+uri = "file://attached_assets/ai%EC%9D%B8%ED%84%B0%EB%84%B7_QR%EC%BD%94%EB%93%9C.png"
+type = "image"
+title = "AI인터넷.COM QR코드"
+description = "ai인터넷.com 바로가기 QR코드"
