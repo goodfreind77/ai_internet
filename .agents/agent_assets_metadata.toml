@@ -90,8 +90,8 @@ description = "QR코드 + ai인터넷.com + (주)이좋은사람들"
 id = "fxs2i0ObTJX4zEPw2cQKC"
 uri = "file://attached_assets/ai%EC%9D%B8%ED%84%B0%EB%84%B7_QR%EC%BD%94%EB%93%9C_%EC%B5%9C%EC%A2%85.png"
 type = "image"
-title = "AI인터넷 QR코드"
-description = "AI인터넷.com (대문자 수정)"
+title = "AI인터넷 QR코드 (ai인터넷.com 링크)"
+description = "QR코드 스캔 시 ai인터넷.com으로 바로 접속"
 
 [[outputs]]
 id = "BCYIsFppq5izrGGzswxuH"
