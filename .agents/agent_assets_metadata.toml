@@ -99,3 +99,31 @@ uri = "file://artifacts/internet-gift/public/opengraph.jpg"
 type = "image"
 title = "카카오톡·SNS 공유 이미지 (QR코드 버전)"
 description = "인터넷 가입 최대 사은품 혜택 / AI인터넷.com QR코드"
+
+[[outputs]]
+id = "UGMw2AfFb6N1c2AMK1wN7"
+uri = "file://attached_assets/%EB%8B%B9%EA%B7%BC%EC%86%8C%EC%8B%9D%EC%A7%80_1.jpg"
+type = "image"
+title = "당근 소식지 1/4 - 표지"
+description = "통신사마다 사은품 금액이 다른 이유"
+
+[[outputs]]
+id = "GV06lLO53a4Xoa6xKidKI"
+uri = "file://attached_assets/%EB%8B%B9%EA%B7%BC%EC%86%8C%EC%8B%9D%EC%A7%80_2.jpg"
+type = "image"
+title = "당근 소식지 2/4 - 결합상품"
+description = "결합 상품이 사은품에 미치는 영향"
+
+[[outputs]]
+id = "jrW5AXGGpdL_-eNAJPveH"
+uri = "file://attached_assets/%EB%8B%B9%EA%B7%BC%EC%86%8C%EC%8B%9D%EC%A7%80_3.jpg"
+type = "image"
+title = "당근 소식지 3/4 - 약정/채널"
+description = "약정 기간·가입 채널 체크리스트"
+
+[[outputs]]
+id = "o68cbA1LWI3YyHLR0xqyM"
+uri = "file://attached_assets/%EB%8B%B9%EA%B7%BC%EC%86%8C%EC%8B%9D%EC%A7%80_4.jpg"
+type = "image"
+title = "당근 소식지 4/4 - 연락처"
+description = "무료 상담 안내 + 1666-3233 / ai인터넷.com"
