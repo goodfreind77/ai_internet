@@ -30,6 +30,11 @@ export function HeroSection() {
             인터넷 가입상담
           </h1>
 
+          <div className="mb-3 sm:mb-4">
+            <span className="text-3xl sm:text-4xl md:text-5xl font-black text-yellow-400">최대 47만원+@</span>
+            <span className="text-white text-xl sm:text-2xl font-black ml-2">현금 지급</span>
+          </div>
+
           <p className="text-gray-300 text-base sm:text-lg mb-4 sm:mb-6">전국 최대 사은품 지급하는 AI인터넷</p>
 
           <div className="bg-white/10 backdrop-blur-sm border border-white/20 p-3 sm:p-4 rounded-xl flex items-center gap-3">
