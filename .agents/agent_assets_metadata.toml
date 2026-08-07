@@ -97,8 +97,8 @@ description = "주식회사 이좋은사람들 텍스트 잘림 수정"
 id = "BCYIsFppq5izrGGzswxuH"
 uri = "file://artifacts/internet-gift/public/opengraph.jpg"
 type = "image"
-title = "카카오톡 공유 이미지 (실사 버전)"
-description = "실사 사진 + 최대 47만원+@ / 1666-3233 / ai인터넷.com"
+title = "카카오톡 공유 이미지 (깔끔한 버전)"
+description = "좌측 파란 텍스트 + 우측 실사 제품 사진"
 
 [[outputs]]
 id = "GV06lLO53a4Xoa6xKidKI"
