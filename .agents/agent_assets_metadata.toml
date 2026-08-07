@@ -97,8 +97,8 @@ description = "주식회사 이좋은사람들 텍스트 잘림 수정"
 id = "BCYIsFppq5izrGGzswxuH"
 uri = "file://artifacts/internet-gift/public/opengraph.jpg"
 type = "image"
-title = "카카오톡 공유 이미지 (장식 강화 버전)"
-description = "뱃지·별 장식 추가 + 대표번호 강조"
+title = "카카오톡 공유 이미지 (우측 상단 뱃지)"
+description = "1:1 맞춤상담 뱃지 우측 상단 끝으로 이동"
 
 [[outputs]]
 id = "GV06lLO53a4Xoa6xKidKI"
