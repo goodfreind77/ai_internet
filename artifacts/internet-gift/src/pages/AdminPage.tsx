@@ -411,6 +411,7 @@ export default function AdminPage() {
         ) : (
           <ApplicationsTable
             data={applications}
+            token={token}
             onStatusChange={updateApplicationStatus}
             onMemoSave={updateApplicationMemo}
             onHistoryAdd={addConsultationHistory}
@@ -482,6 +483,7 @@ function ConsultationsTable({
 
 function ApplicationsTable({
   data,
+  token,
   onStatusChange,
   onMemoSave,
   onHistoryAdd,
@@ -489,6 +491,7 @@ function ApplicationsTable({
   onNotify,
 }: {
   data: Application[];
+  token: string;
   onStatusChange: (id: number, status: Status) => void;
   onMemoSave: (id: number, memo: string) => Promise<void>;
   onHistoryAdd: (id: number, note: string) => Promise<boolean>;
@@ -659,7 +662,7 @@ function ApplicationsTable({
 
               <div className="border-t border-gray-100 px-6 py-5 space-y-6">
                 {row.consentedAt && (
-                  <ConsentPdfButton id={row.id} name={row.name} consentedAt={row.consentedAt} />
+                  <ConsentPdfButton id={row.id} name={row.name} consentedAt={row.consentedAt} token={token} />
                 )}
                 <KakaoNotifySection
                   id={row.id}
@@ -693,15 +696,40 @@ function ConsentPdfButton({
   id,
   name,
   consentedAt,
+  token,
 }: {
   id: number;
   name: string | null;
   consentedAt: string;
+  token: string;
 }) {
-  const handleDownload = () => {
-    const base = window.location.origin + import.meta.env.BASE_URL;
-    const url = `${base}consent/${id}?print=1`.replace(/([^:])\/\//g, '$1/');
-    window.open(url, '_blank');
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    setDownloading(true);
+    try {
+      const res = await fetch(`/api/consent/${id}/pdf`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error ?? 'PDF를 저장하지 못했습니다.');
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `사은품_지급_및_반환_동의서_${name ?? id}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : 'PDF를 저장하지 못했습니다.');
+    } finally {
+      setDownloading(false);
+    }
   };
 
   return (
@@ -714,10 +742,11 @@ function ConsentPdfButton({
       </div>
       <button
         onClick={handleDownload}
+          disabled={downloading}
         className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-green-600 text-white text-xs font-bold hover:bg-green-700 transition-colors"
       >
         <span>📄</span>
-        PDF 다운로드
+          {downloading ? '저장 중...' : 'PDF 저장'}
       </button>
     </div>
   );
