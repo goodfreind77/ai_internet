@@ -6,7 +6,7 @@ import {
   managedTipsTable,
 } from "@workspace/db";
 import { and, desc, eq } from "drizzle-orm";
-import { adminAuthMiddleware } from "./admin";
+import { adminAuthMiddleware, requirePermission } from "./admin";
 
 const router: IRouter = Router();
 
@@ -160,11 +160,11 @@ function mountCrud(
   table: any,
   kind: ContentKind,
 ) {
-  router.get(`/admin/${path}`, adminAuthMiddleware, async (req, res) => {
+  router.get(`/admin/${path}`, adminAuthMiddleware, requirePermission("content"), async (req, res) => {
     try { res.json(await db.select().from(table).orderBy(desc(table.createdAt))); }
     catch (err) { handleError(req, res, err); }
   });
-  router.post(`/admin/${path}`, adminAuthMiddleware, async (req, res) => {
+  router.post(`/admin/${path}`, adminAuthMiddleware, requirePermission("content"), async (req, res) => {
     const data = parseBody(kind, req.body, false, res);
     if (!data) return;
     try {
@@ -173,7 +173,7 @@ function mountCrud(
     }
     catch (err) { handleError(req, res, err); }
   });
-  router.patch(`/admin/${path}/:id`, adminAuthMiddleware, async (req, res) => {
+  router.patch(`/admin/${path}/:id`, adminAuthMiddleware, requirePermission("content"), async (req, res) => {
     const id = parseId(req, res);
     if (id === null) return;
     const data = parseBody(kind, req.body, true, res);
@@ -184,7 +184,7 @@ function mountCrud(
       res.json(updated);
     } catch (err) { handleError(req, res, err); }
   });
-  router.delete(`/admin/${path}/:id`, adminAuthMiddleware, async (req, res) => {
+  router.delete(`/admin/${path}/:id`, adminAuthMiddleware, requirePermission("content"), async (req, res) => {
     const id = parseId(req, res);
     if (id === null) return;
     try {

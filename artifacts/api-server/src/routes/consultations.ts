@@ -1,7 +1,7 @@
 import { Router, type IRouter } from "express";
 import { db, consultationRequestsTable, applicationsTable } from "@workspace/db";
 import { desc, eq } from "drizzle-orm";
-import { adminAuthMiddleware } from "./admin";
+import { adminAuthMiddleware, requirePermission } from "./admin";
 import { SolapiMessageService } from "solapi";
 import PDFDocument from "pdfkit";
 import { fileURLToPath } from "node:url";
@@ -58,7 +58,7 @@ router.post("/consultations", async (req, res) => {
   }
 });
 
-router.get("/consultations", adminAuthMiddleware, async (req, res) => {
+router.get("/consultations", adminAuthMiddleware, requirePermission("consultations"), async (req, res) => {
   try {
     const rows = await db
       .select()
@@ -71,7 +71,7 @@ router.get("/consultations", adminAuthMiddleware, async (req, res) => {
   }
 });
 
-router.patch("/consultations/:id/status", adminAuthMiddleware, async (req, res) => {
+router.patch("/consultations/:id/status", adminAuthMiddleware, requirePermission("consultations"), async (req, res) => {
   try {
     const id = parseInt(String(req.params.id), 10);
     const { status } = req.body;
@@ -144,7 +144,7 @@ router.post("/applications", async (req, res) => {
   }
 });
 
-router.get("/applications", adminAuthMiddleware, async (req, res) => {
+router.get("/applications", adminAuthMiddleware, requirePermission("applications"), async (req, res) => {
   try {
     const rows = await db
       .select()
@@ -157,7 +157,7 @@ router.get("/applications", adminAuthMiddleware, async (req, res) => {
   }
 });
 
-router.patch("/applications/:id/status", adminAuthMiddleware, async (req, res) => {
+router.patch("/applications/:id/status", adminAuthMiddleware, requirePermission("applications"), async (req, res) => {
   try {
     const id = parseInt(String(req.params.id), 10);
     const { status } = req.body;
@@ -218,7 +218,7 @@ router.patch("/applications/:id/status", adminAuthMiddleware, async (req, res) =
   }
 });
 
-router.patch("/applications/:id/memo", adminAuthMiddleware, async (req, res) => {
+router.patch("/applications/:id/memo", adminAuthMiddleware, requirePermission("applications"), async (req, res) => {
   try {
     const id = parseInt(String(req.params.id), 10);
     const { adminMemo } = req.body;
@@ -238,7 +238,7 @@ router.patch("/applications/:id/memo", adminAuthMiddleware, async (req, res) => 
   }
 });
 
-router.post("/applications/:id/history", adminAuthMiddleware, async (req, res) => {
+router.post("/applications/:id/history", adminAuthMiddleware, requirePermission("applications"), async (req, res) => {
   try {
     const id = parseInt(String(req.params.id), 10);
     const { note } = req.body;
@@ -272,7 +272,7 @@ router.post("/applications/:id/history", adminAuthMiddleware, async (req, res) =
   }
 });
 
-router.delete("/applications/:id/history/:index", adminAuthMiddleware, async (req, res) => {
+router.delete("/applications/:id/history/:index", adminAuthMiddleware, requirePermission("applications"), async (req, res) => {
   try {
     const id = parseInt(String(req.params.id), 10);
     const idx = parseInt(String(req.params.index), 10);
@@ -324,7 +324,7 @@ router.get("/consent/:id", async (req, res) => {
   }
 });
 
-router.get("/consent/:id/pdf", adminAuthMiddleware, async (req, res) => {
+router.get("/consent/:id/pdf", adminAuthMiddleware, requirePermission("applications"), async (req, res) => {
   try {
     const id = parseInt(String(req.params.id), 10);
     const [app] = await db
@@ -523,7 +523,7 @@ router.post("/consent/:id/agree", async (req, res) => {
   }
 });
 
-router.post("/applications/:id/notify", adminAuthMiddleware, async (req, res) => {
+router.post("/applications/:id/notify", adminAuthMiddleware, requirePermission("applications"), async (req, res) => {
   try {
     const id = parseInt(String(req.params.id), 10);
     const { variables } = req.body as { variables?: Record<string, string> };

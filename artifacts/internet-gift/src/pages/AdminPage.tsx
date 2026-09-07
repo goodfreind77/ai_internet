@@ -49,6 +49,39 @@ type AdminResource = { id: number; title: string; category: string; description:
 type ManagedReview = { id: number; title: string; author: string; content: string; thumbnail: string; views: number; isBest: boolean; isPublished: boolean; createdAt: string; updatedAt: string };
 type ManagedTip = { id: number; title: string; slug: string; category: string; content: string; thumbnail: string; views: number; isFeatured: boolean; isPublished: boolean; createdAt: string; updatedAt: string };
 
+type AdminRole = 'owner' | 'full' | 'limited';
+
+type AdminAccount = {
+  id: number;
+  username: string;
+  displayName: string;
+  role: AdminRole;
+  permissions: string[];
+  isActive?: boolean;
+  lastLoginAt?: string;
+  createdAt: string;
+  updatedAt?: string;
+};
+
+const PERMISSION_OPTIONS = [
+  { value: 'consultations', label: '문의 관리' },
+  { value: 'applications', label: '신청서 관리' },
+  { value: 'content', label: '콘텐츠 관리' },
+] as const;
+
+function permissionLabel(permission: string) {
+  return PERMISSION_OPTIONS.find(option => option.value === permission)?.label ?? permission;
+}
+
+const ALL_ADMIN_TABS = [
+  { id: 'consultations', label: '견적 문의', permission: 'consultations' },
+  { id: 'applications', label: '신청서', permission: 'applications' },
+  { id: 'resources', label: '관리자 자료', permission: 'content' },
+  { id: 'reviews', label: '후기 관리', permission: 'content' },
+  { id: 'tips', label: '꿀팁 관리', permission: 'content' },
+  { id: 'accounts', label: '관리자 관리', roles: ['owner', 'full'] },
+];
+
 function formatDate(iso: string) {
   const d = new Date(iso);
   return d.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
@@ -93,7 +126,8 @@ function clearStoredToken() {
   try { localStorage.removeItem(TOKEN_KEY); } catch {}
 }
 
-function AdminLoginForm({ onLogin }: { onLogin: (token: string) => void }) {
+function AdminLoginForm({ onLogin }: { onLogin: (token: string, admin: AdminAccount) => void }) {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -106,11 +140,11 @@ function AdminLoginForm({ onLogin }: { onLogin: (token: string) => void }) {
       const res = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify(username.trim() ? { username: username.trim(), password } : { password }),
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error ?? '로그인에 실패했습니다.'); return; }
-      onLogin(data.token);
+      onLogin(data.token, data.admin);
     } catch {
       setError('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
     } finally {
@@ -125,9 +159,21 @@ function AdminLoginForm({ onLogin }: { onLogin: (token: string) => void }) {
         <div className="w-full max-w-sm bg-white rounded-lg border border-gray-200 shadow-sm p-8">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-black text-gray-900">어드민 로그인</h1>
-            <p className="text-gray-500 text-sm mt-2">관리자 비밀번호를 입력해주세요.</p>
+            <p className="text-gray-500 text-sm mt-2">대표 관리자는 아이디를 비워두고 로그인할 수 있습니다.</p>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">관리자 아이디 <span className="text-gray-400 font-normal text-xs">(선택)</span></label>
+              <input
+                type="text"
+                autoComplete="username"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+                placeholder="아이디 입력 (대표 관리자는 비워두세요)"
+                className="w-full px-4 py-2.5 rounded-sm border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
+                autoFocus
+              />
+            </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1.5">비밀번호</label>
               <input
@@ -137,7 +183,6 @@ function AdminLoginForm({ onLogin }: { onLogin: (token: string) => void }) {
                 onChange={e => setPassword(e.target.value)}
                 placeholder="비밀번호 입력"
                 className="w-full px-4 py-2.5 rounded-sm border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
-                autoFocus
                 required
               />
             </div>
@@ -171,13 +216,16 @@ type FilterState = {
 
 export default function AdminPage() {
   const [token, setToken] = useState<string | null>(getStoredToken);
-  const [tab, setTab] = useState<'consultations' | 'applications' | 'resources' | 'reviews' | 'tips'>('consultations');
+  const [admin, setAdmin] = useState<AdminAccount | null>(null);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(!!getStoredToken());
+  const [tab, setTab] = useState<string>('');
 
   const [consultations, setConsultations] = useState<ConsultationRequest[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
   const [resources, setResources] = useState<AdminResource[]>([]);
   const [reviews, setReviews] = useState<ManagedReview[]>([]);
   const [tips, setTips] = useState<ManagedTip[]>([]);
+  const [accounts, setAccounts] = useState<AdminAccount[]>([]);
 
   const [loading, setLoading] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -199,7 +247,7 @@ export default function AdminPage() {
   const [searchDraft, setSearchDraft] = useState('');
 
   // Modals
-  const [activeModal, setActiveModal] = useState<{ type: 'resources'|'reviews'|'tips', item: any } | null>(null);
+  const [activeModal, setActiveModal] = useState<{ type: 'resources'|'reviews'|'tips'|'accounts', item: any } | null>(null);
 
   const pushToast = useCallback((message: string, kind: Toast['kind']) => {
     const id = Date.now() + Math.random();
@@ -207,36 +255,48 @@ export default function AdminPage() {
     setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 7000);
   }, []);
 
-  const handleLogin = (newToken: string) => {
+  const handleLogin = (newToken: string, adminData: AdminAccount) => {
     setStoredToken(newToken);
     setToken(newToken);
+    setAdmin(adminData);
   };
 
   const handleLogout = useCallback(() => {
     clearStoredToken();
     setToken(null);
+    setAdmin(null);
+    setIsCheckingAuth(false);
     setConsultations([]);
     setApplications([]);
     setResources([]);
     setReviews([]);
     setTips([]);
+    setAccounts([]);
   }, []);
 
   const load = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
     try {
       const headers = { Authorization: `Bearer ${token}` };
-      const [cRes, aRes, resRes, revRes, tipRes] = await Promise.all([
-        fetch('/api/consultations', { headers }),
-        fetch('/api/applications', { headers }),
-        fetch('/api/admin/resources', { headers }).catch(() => null),
-        fetch('/api/admin/reviews', { headers }).catch(() => null),
-        fetch('/api/admin/tips', { headers }).catch(() => null),
-      ]);
 
-      if (cRes.status === 401) { handleLogout(); return; }
+      const hasPerm = (p: string) => admin?.role === 'owner' || admin?.role === 'full' || admin?.permissions?.includes(p);
+      const hasRoleFull = () => admin?.role === 'owner' || admin?.role === 'full';
 
-      if (cRes.ok) {
+      const pC = hasPerm('문의 관리') ? fetch('/api/consultations', { headers }).catch(() => null) : Promise.resolve(null);
+      const pA = hasPerm('신청서 관리') ? fetch('/api/applications', { headers }).catch(() => null) : Promise.resolve(null);
+      const pRes = hasPerm('콘텐츠 관리') ? fetch('/api/admin/resources', { headers }).catch(() => null) : Promise.resolve(null);
+      const pRev = hasPerm('콘텐츠 관리') ? fetch('/api/admin/reviews', { headers }).catch(() => null) : Promise.resolve(null);
+      const pTip = hasPerm('콘텐츠 관리') ? fetch('/api/admin/tips', { headers }).catch(() => null) : Promise.resolve(null);
+      const pAcc = hasRoleFull() ? fetch('/api/admin/accounts', { headers }).catch(() => null) : Promise.resolve(null);
+
+      const [cRes, aRes, resRes, revRes, tipRes, accRes] = await Promise.all([pC, pA, pRes, pRev, pTip, pAcc]);
+
+      if ([cRes, aRes, resRes, revRes, tipRes, accRes].some(r => r?.status === 401)) {
+        handleLogout();
+        return;
+      }
+
+      if (cRes?.ok) {
         const cData: ConsultationRequest[] = await cRes.json();
         setConsultations(cData);
         if (!isFirst.current) {
@@ -251,7 +311,7 @@ export default function AdminPage() {
         knownCIds.current = new Set(cData.map(c => c.id));
       }
 
-      if (aRes.ok) {
+      if (aRes?.ok) {
         const aData: Application[] = await aRes.json();
         setApplications(aData);
         if (!isFirst.current) {
@@ -269,12 +329,13 @@ export default function AdminPage() {
       if (resRes?.ok) setResources(await resRes.json());
       if (revRes?.ok) setReviews(await revRes.json());
       if (tipRes?.ok) setTips(await tipRes.json());
+      if (accRes?.ok) setAccounts(await accRes.json());
 
       isFirst.current = false;
     } finally {
       if (!silent) setLoading(false);
     }
-  }, [token, handleLogout, pushToast]);
+  }, [token, handleLogout, pushToast, admin]);
 
   useEffect(() => {
     if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
@@ -283,12 +344,44 @@ export default function AdminPage() {
   }, []);
 
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      setIsCheckingAuth(false);
+      return;
+    }
+    const fetchMe = async () => {
+      try {
+        const res = await fetch('/api/admin/me', { headers: { Authorization: `Bearer ${token}` } });
+        if (!res.ok) { handleLogout(); return; }
+        const adminData = await res.json();
+        setAdmin(adminData);
+      } catch {
+        handleLogout();
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    };
+    fetchMe();
+  }, [token, handleLogout]);
+
+  useEffect(() => {
+    if (!admin) return;
+    const tabs = ALL_ADMIN_TABS.filter(t => {
+      if (admin.role === 'owner' || admin.role === 'full') return true;
+      if (t.roles) return false;
+      return admin.permissions?.includes(t.permission as string);
+    });
+    if (tabs.length > 0 && !tabs.find(t => t.id === tab)) {
+      setTab(tabs[0].id);
+    }
+  }, [admin, tab]);
+
+  useEffect(() => {
+    if (!token || isCheckingAuth || !admin) return;
     isFirst.current = true;
     load(false);
     const interval = setInterval(() => load(true), 30_000);
     return () => clearInterval(interval);
-  }, [token, load]);
+  }, [token, isCheckingAuth, admin, load]);
 
   const updateConsultationStatus = async (id: number, status: Status) => {
     if (!token) return;
@@ -384,10 +477,10 @@ export default function AdminPage() {
     }
   };
 
-  const handleCrud = async (type: 'resources'|'reviews'|'tips', action: 'save'|'delete', data?: any) => {
+  const handleCrud = async (type: 'resources'|'reviews'|'tips'|'accounts', action: 'save'|'delete', data?: any) => {
     if (!token) return false;
-    const isEdit = data?.id;
-    const url = `/api/admin/${type}${action === 'delete' || isEdit ? `/${data.id || data}` : ''}`;
+    const isEdit = action === 'save' && data && data.id !== undefined && data.id !== null;
+    const url = `/api/admin/${type}${action === 'delete' ? `/${data}` : isEdit ? `/${data.id}` : ''}`;
     const method = action === 'delete' ? 'DELETE' : (isEdit ? 'PATCH' : 'POST');
     const body = action === 'delete' ? undefined : JSON.stringify(data);
 
@@ -431,7 +524,15 @@ export default function AdminPage() {
     setFilter(f => ({ ...f, period, startDate: start, endDate: end }));
   };
 
-  if (!token) return <AdminLoginForm onLogin={handleLogin} />;
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center font-sans">
+        <div className="text-gray-500 font-semibold text-sm">로딩 중...</div>
+      </div>
+    );
+  }
+
+  if (!token || !admin) return <AdminLoginForm onLogin={handleLogin} />;
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
@@ -453,7 +554,19 @@ export default function AdminPage() {
       <Header />
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-black text-gray-900">통합 관리자</h1>
+          <div>
+            <h1 className="text-2xl font-black text-gray-900 flex items-center gap-3">
+              통합 관리자
+              {admin.role === 'limited' ? (
+                <span className="bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-sm font-bold">제한 권한</span>
+              ) : admin.role === 'owner' ? (
+                <span className="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded-sm font-bold">대표 권한</span>
+              ) : (
+                <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-sm font-bold">전체 권한</span>
+              )}
+            </h1>
+            <p className="text-sm text-gray-500 mt-1">{admin.displayName} 님, 환영합니다.</p>
+          </div>
           <button
             onClick={handleLogout}
             className="text-xs font-bold text-gray-500 hover:text-gray-900 transition-colors px-4 py-2 rounded-sm border border-gray-300 hover:bg-gray-100 bg-white"
@@ -577,21 +690,19 @@ export default function AdminPage() {
 
         {/* Tabs */}
         <div className="flex border-b border-gray-200 mb-6 overflow-x-auto no-scrollbar">
-          {[
-            { id: 'consultations', label: `견적 문의 (${consultations.length})` },
-            { id: 'applications', label: `신청서 (${applications.length})` },
-            { id: 'resources', label: '관리자 자료' },
-            { id: 'reviews', label: '후기 관리' },
-            { id: 'tips', label: '꿀팁 관리' },
-          ].map(t => (
+          {ALL_ADMIN_TABS.filter(t => {
+            if (admin.role === 'owner' || admin.role === 'full') return true;
+            if (t.roles) return false;
+            return admin.permissions?.includes(t.permission as string);
+          }).map(t => (
             <button
               key={t.id}
-              onClick={() => setTab(t.id as any)}
+              onClick={() => setTab(t.id)}
               className={`px-6 py-3 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${
                 tab === t.id ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300'
               }`}
             >
-              {t.label}
+              {t.label} {t.id === 'consultations' ? `(${consultations.length})` : t.id === 'applications' ? `(${applications.length})` : ''}
             </button>
           ))}
         </div>
@@ -643,6 +754,14 @@ export default function AdminPage() {
                 onCreate={() => setActiveModal({ type: 'tips', item: null })}
               />
             )}
+            {tab === 'accounts' && (
+              <AccountsTable
+                data={accounts}
+                onEdit={item => setActiveModal({ type: 'accounts', item })}
+                onDelete={id => handleCrud('accounts', 'delete', id)}
+                onCreate={() => setActiveModal({ type: 'accounts', item: null })}
+              />
+            )}
           </>
         )}
       </main>
@@ -656,6 +775,9 @@ export default function AdminPage() {
       )}
       {activeModal && activeModal.type === 'resources' && (
         <ResourceFormModal item={activeModal.item} onClose={() => setActiveModal(null)} onSave={d => handleCrud('resources', 'save', d)} />
+      )}
+      {activeModal && activeModal.type === 'accounts' && (
+        <AccountFormModal account={activeModal.item} onClose={() => setActiveModal(null)} onSave={d => handleCrud('accounts', 'save', d)} />
       )}
     </div>
   );
@@ -1364,6 +1486,175 @@ function ConsultationHistorySection({ id, history, onAdd, onDelete }: { id: numb
           기록
         </button>
       </form>
+    </div>
+  );
+}
+
+
+function AccountsTable({ data, onEdit, onDelete, onCreate }: { data: AdminAccount[], onEdit: (a: AdminAccount) => void, onDelete: (id: number) => void, onCreate: () => void }) {
+  return (
+    <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+      <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+        <h2 className="text-sm font-bold text-gray-800">관리자 목록</h2>
+        <button onClick={onCreate} className="bg-blue-600 text-white px-4 py-1.5 rounded-sm text-xs font-bold hover:bg-blue-700 transition-colors shadow-sm">
+          관리자 추가
+        </button>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-sm whitespace-nowrap">
+          <thead className="bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th className="px-4 py-3 font-semibold text-gray-600">이름</th>
+              <th className="px-4 py-3 font-semibold text-gray-600">아이디</th>
+              <th className="px-4 py-3 font-semibold text-gray-600">권한</th>
+              <th className="px-4 py-3 font-semibold text-gray-600">상태</th>
+              <th className="px-4 py-3 font-semibold text-gray-600">최근 로그인</th>
+              <th className="px-4 py-3 font-semibold text-gray-600">생성일</th>
+              <th className="px-4 py-3 font-semibold text-gray-600 w-24 text-center">관리</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {data.map(a => (
+              <tr key={a.id} className="hover:bg-gray-50 transition-colors">
+                <td className="px-4 py-3 font-medium text-gray-900">{a.displayName}</td>
+                <td className="px-4 py-3 text-gray-600">{a.username || '-'}</td>
+                <td className="px-4 py-3">
+                  {a.role === 'owner' && <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded-sm text-xs font-bold">대표 권한</span>}
+                  {a.role === 'full' && <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-sm text-xs font-bold">전체 권한</span>}
+                  {a.role === 'limited' && (
+                    <div className="flex flex-wrap gap-1">
+                      <span className="bg-gray-100 text-gray-700 px-2 py-0.5 rounded-sm text-[10px] font-bold">제한 권한</span>
+                      {a.permissions?.map(p => <span key={p} className="bg-green-100 text-green-700 px-1.5 py-0.5 rounded-sm text-[10px] font-semibold">{permissionLabel(p)}</span>)}
+                    </div>
+                  )}
+                </td>
+                <td className="px-4 py-3">
+                  {a.isActive === false ? <span className="text-red-500 font-semibold text-xs">비활성</span> : <span className="text-green-600 font-semibold text-xs">활성</span>}
+                </td>
+                <td className="px-4 py-3 text-gray-500 text-xs">{a.lastLoginAt ? formatDateOnly(a.lastLoginAt) : '-'}</td>
+                <td className="px-4 py-3 text-gray-500 text-xs">{formatDateOnly(a.createdAt)}</td>
+                <td className="px-4 py-3 text-center">
+                  {a.role !== 'owner' && (
+                    <div className="flex justify-center gap-2">
+                      <button onClick={() => onEdit(a)} className="text-blue-600 hover:text-blue-800 font-semibold text-xs">수정</button>
+                      <button onClick={() => {
+                        if (confirm('정말 삭제하시겠습니까?')) onDelete(a.id);
+                      }} className="text-red-600 hover:text-red-800 font-semibold text-xs">삭제</button>
+                    </div>
+                  )}
+                </td>
+              </tr>
+            ))}
+            {data.length === 0 && (
+              <tr>
+                <td colSpan={7} className="px-4 py-8 text-center text-gray-500 text-sm">등록된 관리자가 없습니다.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function AccountFormModal({ account, onClose, onSave }: { account: AdminAccount | null, onClose: () => void, onSave: (data: any) => Promise<boolean> }) {
+  const [displayName, setDisplayName] = useState(account?.displayName || '');
+  const [username, setUsername] = useState(account?.username || '');
+  const [password, setPassword] = useState('');
+  const [role, setRole] = useState<'full' | 'limited'>(account?.role === 'full' ? 'full' : 'limited');
+  const [permissions, setPermissions] = useState<string[]>(account?.permissions || []);
+  const [isActive, setIsActive] = useState(account?.isActive !== false);
+  const [saving, setSaving] = useState(false);
+
+  const isEdit = !!account;
+
+  const togglePerm = (p: string) => {
+    if (permissions.includes(p)) setPermissions(permissions.filter(x => x !== p));
+    else setPermissions([...permissions, p]);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!displayName || !username) {
+      alert('이름과 아이디를 입력해주세요.'); return;
+    }
+    if (!isEdit && !password) {
+      alert('비밀번호를 입력해주세요.'); return;
+    }
+    if (role === 'limited' && permissions.length === 0) {
+      alert('제한 권한인 경우 최소 하나의 권한을 선택해야 합니다.'); return;
+    }
+
+    setSaving(true);
+    const payload: any = {
+      displayName, username, role, permissions, isActive
+    };
+    if (password) payload.password = password;
+    if (isEdit) payload.id = account.id;
+
+    const ok = await onSave(payload);
+    if (ok) onClose();
+    else setSaving(false);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] flex flex-col">
+        <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+          <h2 className="text-lg font-bold text-gray-900">{isEdit ? '관리자 수정' : '관리자 추가'}</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">✕</button>
+        </div>
+        <form onSubmit={handleSubmit} className="p-4 overflow-y-auto space-y-4">
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">이름</label>
+            <input type="text" value={displayName} onChange={e => setDisplayName(e.target.value)} required className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-blue-500" placeholder="홍길동" />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">아이디</label>
+            <input type="text" value={username} onChange={e => setUsername(e.target.value)} required disabled={isEdit} className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-blue-500 disabled:bg-gray-100" placeholder="admin01" />
+            {isEdit && <p className="text-xs text-gray-500 mt-1">아이디는 수정할 수 없습니다.</p>}
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">비밀번호 {isEdit && <span className="text-gray-400 font-normal">(변경시에만 입력)</span>}</label>
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} required={!isEdit} className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-blue-500" placeholder={isEdit ? "변경할 비밀번호 입력" : "비밀번호 입력"} />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">권한 설정</label>
+            <div className="flex gap-4 mb-2">
+              <label className="flex items-center gap-1.5 text-sm cursor-pointer">
+                <input type="radio" name="role" value="full" checked={role === 'full'} onChange={() => setRole('full')} className="text-blue-600 focus:ring-blue-500" /> 전체 권한
+              </label>
+              <label className="flex items-center gap-1.5 text-sm cursor-pointer">
+                <input type="radio" name="role" value="limited" checked={role === 'limited'} onChange={() => setRole('limited')} className="text-blue-600 focus:ring-blue-500" /> 제한 권한
+              </label>
+            </div>
+            {role === 'limited' && (
+              <div className="bg-gray-50 p-3 rounded-sm border border-gray-200 flex flex-wrap gap-4">
+                {PERMISSION_OPTIONS.map(option => (
+                  <label key={option.value} className="flex items-center gap-1.5 text-sm cursor-pointer">
+                    <input type="checkbox" checked={permissions.includes(option.value)} onChange={() => togglePerm(option.value)} className="text-blue-600 rounded-sm focus:ring-blue-500" />
+                    {option.label}
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+          {isEdit && (
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">계정 상태</label>
+              <label className="flex items-center gap-1.5 text-sm cursor-pointer">
+                <input type="checkbox" checked={isActive} onChange={e => setIsActive(e.target.checked)} className="text-blue-600 rounded-sm focus:ring-blue-500" /> 활성화 (체크 해제 시 로그인 불가)
+              </label>
+            </div>
+          )}
+          <div className="pt-4 flex justify-end gap-2 border-t border-gray-200 mt-6">
+            <button type="button" onClick={onClose} className="px-4 py-2 border border-gray-300 rounded-sm text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">취소</button>
+            <button type="submit" disabled={saving} className="px-4 py-2 bg-blue-600 text-white rounded-sm text-sm font-bold hover:bg-blue-700 transition-colors disabled:opacity-50">
+              {saving ? '저장 중...' : '저장'}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

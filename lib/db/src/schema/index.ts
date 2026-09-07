@@ -52,6 +52,21 @@ export const insertApplicationSchema = createInsertSchema(
 export type InsertApplication = z.infer<typeof insertApplicationSchema>;
 export type Application = typeof applicationsTable.$inferSelect;
 
+export const adminAccountsTable = pgTable("admin_accounts", {
+  id: serial("id").primaryKey(),
+  username: varchar("username", { length: 30 }).notNull().unique(),
+  displayName: varchar("display_name", { length: 100 }).notNull(),
+  passwordHash: text("password_hash").notNull(),
+  role: varchar("role", { length: 20 }).notNull().default("limited"),
+  permissions: text("permissions").notNull().default("[]"),
+  isActive: boolean("is_active").notNull().default(true),
+  lastLoginAt: timestamp("last_login_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export type AdminAccount = typeof adminAccountsTable.$inferSelect;
+
 export const adminResourcesTable = pgTable("admin_resources", {
   id: serial("id").primaryKey(),
   title: varchar("title", { length: 200 }).notNull(),

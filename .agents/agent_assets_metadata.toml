@@ -174,3 +174,17 @@ mtime_ms = 1788768344992
 storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:df4dbe27-459d-4ebf-b875-7597b349780b/af63a6c6-f87d-4a83-a226-c82b7ed49150/a4f6c044-b41c-4c54-adf0-aed17cd67c59"
 storage_version_token = "1788768387652406"
 content_type = "image/png"
+
+[[outputs]]
+id = "L-NHqoli2wSJtSIf9Ojny"
+uri = "file://screenshots/multi-admin-login.jpg"
+type = "image"
+title = "바뀐 어드민 첫 화면"
+description = "대표 관리자는 아이디를 비우고 기존 비밀번호로 로그인하며, 추가 관리자는 개별 아이디와 비밀번호를 입력합니다."
+logical_id = "153c773c-2161-4a31-af9f-4e9de56a757c"
+content_hash = "sha256:43c95acc7ff6c175e432efdd6dc8eeb88a3ac35dcd0614da2e1f22d4c969ec4b"
+size = 72540
+mtime_ms = 1788772535659
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:df4dbe27-459d-4ebf-b875-7597b349780b/153c773c-2161-4a31-af9f-4e9de56a757c/67613e33-d5ba-4f0d-897e-87b2e37f872a"
+storage_version_token = "1788772596799613"
+content_type = "image/jpeg"
