@@ -830,7 +830,7 @@ function ApplicationsTable({ data, filter, token, onStatusChange, onMemoSave, on
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                           <div className="space-y-6">
                             {row.consentedAt && <ConsentPdfButton id={row.id} name={row.name} consentedAt={row.consentedAt} token={token} />}
-                            <KakaoNotifySection id={row.id} phone={row.phone} consentedAt={row.consentedAt} onNotify={onNotify} />
+                            <KakaoNotifySection id={row.id} phone={row.phone} onNotify={onNotify} />
                           </div>
                           <div className="space-y-6">
                             <AdminMemoSection id={row.id} initialMemo={row.adminMemo ?? ''} onSave={onMemoSave} />
@@ -1238,11 +1238,12 @@ function ConsentPdfButton({ id, name, consentedAt, token }: { id: number; name: 
   );
 }
 
-function KakaoNotifySection({ id, phone, consentedAt, onNotify }: { id: number; phone: string | null; consentedAt: string | null; onNotify: (id: number, vars: Record<string, string>) => Promise<{success: boolean; mock?: boolean; error?: string}> }) {
+function KakaoNotifySection({ id, phone, onNotify }: { id: number; phone: string | null; onNotify: (id: number, vars: Record<string, string>) => Promise<{success: boolean; mock?: boolean; error?: string}> }) {
   const [loading, setLoading] = useState(false);
+
   const handleSend = async (type: string) => {
     if (!phone) return alert('연락처가 없습니다.');
-    if (!confirm(`${type} 알림톡을 발송하시겠습니까?`)) return;
+    if (!confirm(`${type} 알림톡을 ${phone} 번호로 발송하시겠습니까?`)) return;
     setLoading(true);
     const res = await onNotify(id, { type });
     setLoading(false);
@@ -1255,31 +1256,24 @@ function KakaoNotifySection({ id, phone, consentedAt, onNotify }: { id: number; 
 
   return (
     <div className="rounded-md border border-gray-200 bg-white px-5 py-5 shadow-sm">
-      <div className="flex items-center justify-between mb-4 border-b border-gray-100 pb-3">
-        <h4 className="text-sm font-black text-gray-900">알림톡 발송</h4>
+      <div className="mb-4 border-b border-gray-100 pb-3">
+        <h4 className="text-sm font-black text-gray-900">수동 알림톡 발송</h4>
+        <p className="mt-1 text-xs text-gray-500">발송 대상: {phone ?? '연락처 없음'}</p>
       </div>
-      <div className="flex flex-col gap-3">
+      <div className="grid gap-3 sm:grid-cols-2">
         <button
           onClick={() => handleSend('접수완료')}
-          disabled={loading}
-          className="w-full text-left px-4 py-3 border border-gray-200 rounded-sm hover:border-blue-500 hover:bg-blue-50 group transition-colors"
+          disabled={loading || !phone}
+          className="rounded-sm border border-gray-200 px-4 py-3 text-left transition-colors hover:border-blue-500 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-bold text-gray-800 group-hover:text-blue-700">접수 안내톡</span>
-            <span className="text-xs text-gray-400 font-medium group-hover:text-blue-500">발송</span>
-          </div>
-          <p className="text-xs text-gray-500 mt-1.5 truncate">"접수가 완료되었습니다..."</p>
+          <span className="block text-sm font-bold text-gray-800">접수 안내톡 발송</span>
         </button>
         <button
           onClick={() => handleSend('개통완료')}
-          disabled={loading}
-          className="w-full text-left px-4 py-3 border border-gray-200 rounded-sm hover:border-blue-500 hover:bg-blue-50 group transition-colors"
+          disabled={loading || !phone}
+          className="rounded-sm border border-gray-200 px-4 py-3 text-left transition-colors hover:border-blue-500 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-bold text-gray-800 group-hover:text-blue-700">개통/지급 안내톡</span>
-            <span className="text-xs text-gray-400 font-medium group-hover:text-blue-500">발송</span>
-          </div>
-          <p className="text-xs text-gray-500 mt-1.5 truncate">"개통 및 사은품 지급이 완료되었습니다..."</p>
+          <span className="block text-sm font-bold text-gray-800">개통 완료톡 발송</span>
         </button>
       </div>
     </div>
