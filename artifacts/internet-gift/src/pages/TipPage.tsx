@@ -71,6 +71,38 @@ const ALL_TIPS = [
   },
 ];
 
+interface Tip {
+  id: string | number;
+  slug: string;
+  thumbnail: string;
+  title: string;
+  views: number;
+  date: string;
+}
+
+interface ManagedTip {
+  id: number;
+  title: string;
+  slug: string;
+  category: string;
+  content: string;
+  thumbnail: string | null;
+  views: number;
+  isFeatured: boolean;
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+const toTip = (tip: ManagedTip): Tip => ({
+  id: tip.id,
+  slug: tip.slug,
+  thumbnail: tip.thumbnail || '',
+  title: tip.title,
+  views: tip.views,
+  date: (tip.createdAt || tip.updatedAt || '').slice(0, 10),
+});
+
 const BANNER_FALLBACK_COLORS = ['#e74c3c', '#2ecc71', '#3498db', '#9b59b6'];
 const BANNER_FALLBACK_TEXTS = ['TV + 인터넷 결합할인', '당일 설치 당일 입금!', '꿀TIP으로 통신비 절약'];
 
@@ -134,7 +166,7 @@ function TipCard({
   tip,
   testIdPrefix,
 }: {
-  tip: { id: number; slug: string; thumbnail: string; title: string; views: number; date: string };
+  tip: Tip;
   testIdPrefix: string;
 }) {
   const [, setLocation] = useLocation();
@@ -173,6 +205,21 @@ function TipCard({
 
 export default function TipPage() {
   useEffect(() => { window.scrollTo(0, 0); }, []);
+  const [managedTips, setManagedTips] = React.useState<{ tip: Tip; isFeatured: boolean }[]>([]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch('/api/tips', { signal: controller.signal })
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error('꿀팁을 불러올 수 없습니다.')))
+      .then((tips: ManagedTip[]) => setManagedTips(Array.isArray(tips) ? tips.map((tip) => ({ tip: toTip(tip), isFeatured: tip.isFeatured })) : []))
+      .catch((error: unknown) => {
+        if ((error as Error).name !== 'AbortError') setManagedTips([]);
+      });
+    return () => controller.abort();
+  }, []);
+
+  const featuredTips = [...managedTips.filter(({ isFeatured }) => isFeatured).map(({ tip }) => tip), ...FEATURED_TIPS];
+  const allTips = [...managedTips.filter(({ isFeatured }) => !isFeatured).map(({ tip }) => tip), ...ALL_TIPS];
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -194,7 +241,7 @@ export default function TipPage() {
               필수 추천 꿀팁 !
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
-              {FEATURED_TIPS.map((tip) => (
+              {featuredTips.map((tip) => (
                 <TipCard key={tip.id} tip={tip} testIdPrefix="featured" />
               ))}
             </div>
@@ -208,7 +255,7 @@ export default function TipPage() {
               전체 꿀팁
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
-              {ALL_TIPS.map((tip) => (
+              {allTips.map((tip) => (
                 <TipCard key={tip.id} tip={tip} testIdPrefix="all" />
               ))}
             </div>

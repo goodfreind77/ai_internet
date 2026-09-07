@@ -284,8 +284,30 @@ export interface Review {
   isBest: boolean;
 }
 
-const BEST_REVIEWS = ALL_REVIEWS.filter((r) => r.isBest);
-const OTHER_REVIEWS = ALL_REVIEWS.filter((r) => !r.isBest);
+interface ManagedReview {
+  id: number;
+  title: string;
+  author: string;
+  content: string;
+  thumbnail: string | null;
+  views: number;
+  isBest: boolean;
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+const dateOnly = (value: string) => value ? value.slice(0, 10) : '';
+const toReview = (review: ManagedReview): Review => ({
+  id: String(review.id),
+  title: review.title,
+  author: review.author,
+  content: review.content,
+  thumbnail: review.thumbnail || DEFAULT_THUMB,
+  views: review.views,
+  date: dateOnly(review.createdAt || review.updatedAt),
+  isBest: review.isBest,
+});
 
 const PAGE_SIZE = 5;
 
@@ -446,11 +468,24 @@ export default function ReviewPage() {
   const [, setLocation] = useLocation();
   const [bestPage, setBestPage] = React.useState(1);
   const [allPage, setAllPage] = React.useState(1);
+  const [managedReviews, setManagedReviews] = React.useState<Review[]>([]);
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch('/api/reviews', { signal: controller.signal })
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error('후기를 불러올 수 없습니다.')))
+      .then((reviews: ManagedReview[]) => setManagedReviews(Array.isArray(reviews) ? reviews.map(toReview) : []))
+      .catch((error: unknown) => {
+        if ((error as Error).name !== 'AbortError') setManagedReviews([]);
+      });
+    return () => controller.abort();
+  }, []);
 
-  const bestSlice = BEST_REVIEWS.slice((bestPage - 1) * PAGE_SIZE, bestPage * PAGE_SIZE);
-  const allSlice = OTHER_REVIEWS.slice((allPage - 1) * PAGE_SIZE, allPage * PAGE_SIZE);
+  const bestReviews = [...managedReviews.filter((review) => review.isBest), ...ALL_REVIEWS.filter((review) => review.isBest)];
+  const otherReviews = [...managedReviews.filter((review) => !review.isBest), ...ALL_REVIEWS.filter((review) => !review.isBest)];
+  const bestSlice = bestReviews.slice((bestPage - 1) * PAGE_SIZE, bestPage * PAGE_SIZE);
+  const allSlice = otherReviews.slice((allPage - 1) * PAGE_SIZE, allPage * PAGE_SIZE);
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -473,7 +508,7 @@ export default function ReviewPage() {
               <div className="flex-1 h-0.5 bg-gradient-to-r from-primary/50 to-transparent" />
             </div>
 
-            {BEST_REVIEWS.length === 0 ? (
+            {bestReviews.length === 0 ? (
               <div className="text-center py-12 text-muted-foreground">
                 <p className="text-lg">아직 베스트 후기가 없습니다.</p>
               </div>
@@ -486,7 +521,7 @@ export default function ReviewPage() {
                 </div>
                 <Pagination
                   page={bestPage}
-                  total={BEST_REVIEWS.length}
+                  total={bestReviews.length}
                   pageSize={PAGE_SIZE}
                   onChange={setBestPage}
                   testId="button-best"
@@ -509,7 +544,7 @@ export default function ReviewPage() {
               </Button>
             </div>
 
-            {OTHER_REVIEWS.length === 0 ? (
+            {otherReviews.length === 0 ? (
               <div className="text-center py-12 text-muted-foreground">
                 <p className="text-lg">아직 등록된 후기가 없습니다.</p>
                 <p className="text-sm mt-2">첫 번째 후기를 작성해보세요!</p>
@@ -523,7 +558,7 @@ export default function ReviewPage() {
                 </div>
                 <Pagination
                   page={allPage}
-                  total={OTHER_REVIEWS.length}
+                  total={otherReviews.length}
                   pageSize={PAGE_SIZE}
                   onChange={setAllPage}
                   testId="button-all"

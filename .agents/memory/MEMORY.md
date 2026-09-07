@@ -1,0 +1,1 @@
+- [Managed content compatibility](managed-content-compatibility.md) — New admin content overlays legacy reviews and tips so rich existing pages remain intact during migration.

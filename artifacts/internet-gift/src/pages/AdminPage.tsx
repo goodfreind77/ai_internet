@@ -45,33 +45,34 @@ type Application = {
   createdAt: string;
 };
 
+type AdminResource = { id: number; title: string; category: string; description: string; fileUrl: string; previewUrl: string; isPublished: boolean; createdAt: string; updatedAt: string };
+type ManagedReview = { id: number; title: string; author: string; content: string; thumbnail: string; views: number; isBest: boolean; isPublished: boolean; createdAt: string; updatedAt: string };
+type ManagedTip = { id: number; title: string; slug: string; category: string; content: string; thumbnail: string; views: number; isFeatured: boolean; isPublished: boolean; createdAt: string; updatedAt: string };
+
 function formatDate(iso: string) {
   const d = new Date(iso);
   return d.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
 }
 
+function formatDateOnly(iso: string) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' });
+}
+
 const STATUS_STYLES: Record<Status, string> = {
-  '처리중':  'bg-yellow-100 text-yellow-700 border-yellow-200',
-  '접수완료': 'bg-green-100 text-green-700 border-green-200',
-  '개통완료': 'bg-blue-100 text-blue-700 border-blue-200',
-  '취소':    'bg-red-100 text-red-600 border-red-200',
+  '처리중':  'bg-white text-gray-700 border-gray-300',
+  '접수완료': 'bg-blue-50 text-blue-700 border-blue-200',
+  '개통완료': 'bg-green-50 text-green-700 border-green-200',
+  '취소':    'bg-red-50 text-red-600 border-red-200',
 };
 
-function StatusSelect({
-  value,
-  onChange,
-  loading,
-}: {
-  value: Status;
-  onChange: (s: Status) => void;
-  loading: boolean;
-}) {
+function StatusSelect({ value, onChange, loading }: { value: Status; onChange: (s: Status) => void; loading: boolean }) {
   return (
     <select
       value={value}
       disabled={loading}
       onChange={e => onChange(e.target.value as Status)}
-      className={`text-xs font-semibold px-2 py-1 rounded-full border cursor-pointer transition-colors disabled:opacity-60 ${STATUS_STYLES[value]}`}
+      className={`text-xs font-semibold px-2 py-1.5 rounded-sm border cursor-pointer transition-colors disabled:opacity-60 focus:outline-none focus:ring-1 focus:ring-blue-500 ${STATUS_STYLES[value]}`}
     >
       {STATUSES.map(s => (
         <option key={s} value={s}>{s}</option>
@@ -121,30 +122,30 @@ function AdminLoginForm({ onLogin }: { onLogin: (token: string) => void }) {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       <main className="flex-1 flex items-center justify-center px-4">
-        <div className="w-full max-w-sm bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
+        <div className="w-full max-w-sm bg-white rounded-lg border border-gray-200 shadow-sm p-8">
           <div className="text-center mb-8">
-            <div className="text-3xl mb-3">🔒</div>
             <h1 className="text-2xl font-black text-gray-900">어드민 로그인</h1>
-            <p className="text-gray-500 text-sm mt-1">관리자 비밀번호를 입력해주세요.</p>
+            <p className="text-gray-500 text-sm mt-2">관리자 비밀번호를 입력해주세요.</p>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1.5">비밀번호</label>
               <input
                 type="password"
+                autoComplete="current-password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 placeholder="비밀번호 입력"
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors text-sm"
+                className="w-full px-4 py-2.5 rounded-sm border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm"
                 autoFocus
                 required
               />
             </div>
-            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+            {error && <p className="text-red-600 text-sm text-center font-medium">{error}</p>}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-xl bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-colors disabled:opacity-60"
+              className="w-full py-2.5 rounded-sm bg-[#1e293b] text-white font-bold text-sm hover:bg-gray-800 transition-colors disabled:opacity-60 shadow-sm"
             >
               {loading ? '확인 중...' : '로그인'}
             </button>
@@ -158,16 +159,47 @@ function AdminLoginForm({ onLogin }: { onLogin: (token: string) => void }) {
 
 type Toast = { id: number; message: string; kind: 'consultation' | 'application' };
 
+type FilterState = {
+  period: 'today' | '7d' | '30d' | 'all';
+  startDate: string;
+  endDate: string;
+  status: string;
+  checked: string;
+  searchField: string;
+  searchQuery: string;
+};
+
 export default function AdminPage() {
   const [token, setToken] = useState<string | null>(getStoredToken);
-  const [tab, setTab] = useState<'consultations' | 'applications'>('consultations');
+  const [tab, setTab] = useState<'consultations' | 'applications' | 'resources' | 'reviews' | 'tips'>('consultations');
+
   const [consultations, setConsultations] = useState<ConsultationRequest[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
+  const [resources, setResources] = useState<AdminResource[]>([]);
+  const [reviews, setReviews] = useState<ManagedReview[]>([]);
+  const [tips, setTips] = useState<ManagedTip[]>([]);
+
   const [loading, setLoading] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
+
   const knownCIds = useRef<Set<number>>(new Set());
   const knownAIds = useRef<Set<number>>(new Set());
   const isFirst = useRef(true);
+
+  // Filters
+  const [filter, setFilter] = useState<FilterState>({
+    period: 'all',
+    startDate: '',
+    endDate: '',
+    status: '전체',
+    checked: '전체',
+    searchField: '전체',
+    searchQuery: '',
+  });
+  const [searchDraft, setSearchDraft] = useState('');
+
+  // Modals
+  const [activeModal, setActiveModal] = useState<{ type: 'resources'|'reviews'|'tips', item: any } | null>(null);
 
   const pushToast = useCallback((message: string, kind: Toast['kind']) => {
     const id = Date.now() + Math.random();
@@ -185,16 +217,23 @@ export default function AdminPage() {
     setToken(null);
     setConsultations([]);
     setApplications([]);
+    setResources([]);
+    setReviews([]);
+    setTips([]);
   }, []);
 
   const load = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
     try {
       const headers = { Authorization: `Bearer ${token}` };
-      const [cRes, aRes] = await Promise.all([
+      const [cRes, aRes, resRes, revRes, tipRes] = await Promise.all([
         fetch('/api/consultations', { headers }),
         fetch('/api/applications', { headers }),
+        fetch('/api/admin/resources', { headers }).catch(() => null),
+        fetch('/api/admin/reviews', { headers }).catch(() => null),
+        fetch('/api/admin/tips', { headers }).catch(() => null),
       ]);
+
       if (cRes.status === 401) { handleLogout(); return; }
 
       if (cRes.ok) {
@@ -202,12 +241,10 @@ export default function AdminPage() {
         setConsultations(cData);
         if (!isFirst.current) {
           for (const c of cData.filter(c => !knownCIds.current.has(c.id))) {
-            const msg = `📋 새 빠른견적 문의: ${c.name} (${c.phone})`;
+            const msg = `새 빠른견적 문의: ${c.name} (${c.phone})`;
             pushToast(msg, 'consultation');
             if (Notification.permission === 'granted') {
-              new Notification('AI인터넷 — 새 빠른견적 문의', {
-                body: `${c.name}님 (${c.phone})이 빠른견적을 문의했습니다.`,
-              });
+              new Notification('AI인터넷 — 새 빠른견적 문의', { body: `${c.name}님 (${c.phone})이 빠른견적을 문의했습니다.` });
             }
           }
         }
@@ -219,17 +256,19 @@ export default function AdminPage() {
         setApplications(aData);
         if (!isFirst.current) {
           for (const a of aData.filter(a => !knownAIds.current.has(a.id))) {
-            const msg = `📝 새 신청서: ${a.name ?? '이름없음'} (${a.phone ?? '-'})`;
+            const msg = `새 신청서: ${a.name ?? '이름없음'} (${a.phone ?? '-'})`;
             pushToast(msg, 'application');
             if (Notification.permission === 'granted') {
-              new Notification('AI인터넷 — 새 신청서 접수', {
-                body: `${a.name ?? '고객'}님이 신청서를 제출했습니다.`,
-              });
+              new Notification('AI인터넷 — 새 신청서 접수', { body: `${a.name ?? '고객'}님이 신청서를 제출했습니다.` });
             }
           }
         }
         knownAIds.current = new Set(aData.map(a => a.id));
       }
+
+      if (resRes?.ok) setResources(await resRes.json());
+      if (revRes?.ok) setReviews(await revRes.json());
+      if (tipRes?.ok) setTips(await tipRes.json());
 
       isFirst.current = false;
     } finally {
@@ -237,14 +276,12 @@ export default function AdminPage() {
     }
   }, [token, handleLogout, pushToast]);
 
-  // 브라우저 알림 권한 요청
   useEffect(() => {
     if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
       Notification.requestPermission();
     }
   }, []);
 
-  // 초기 로드 + 30초 폴링
   useEffect(() => {
     if (!token) return;
     isFirst.current = true;
@@ -347,646 +384,992 @@ export default function AdminPage() {
     }
   };
 
+  const handleCrud = async (type: 'resources'|'reviews'|'tips', action: 'save'|'delete', data?: any) => {
+    if (!token) return false;
+    const isEdit = data?.id;
+    const url = `/api/admin/${type}${action === 'delete' || isEdit ? `/${data.id || data}` : ''}`;
+    const method = action === 'delete' ? 'DELETE' : (isEdit ? 'PATCH' : 'POST');
+    const body = action === 'delete' ? undefined : JSON.stringify(data);
+
+    let errorMessage = '작업에 실패했습니다.';
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { ...(body ? {'Content-Type': 'application/json'} : {}), Authorization: `Bearer ${token}` },
+        body
+      });
+      if (res.ok) {
+        load(true);
+        setActiveModal(null);
+        return true;
+      }
+      const result = await res.json().catch(() => null);
+      if (result?.error) errorMessage = result.error;
+    } catch {}
+    alert(errorMessage);
+    return false;
+  };
+
+  const setPeriod = (period: FilterState['period']) => {
+    const today = new Date();
+    let start = '';
+    let end = '';
+    if (period === 'today') {
+      start = today.toISOString().split('T')[0];
+      end = start;
+    } else if (period === '7d') {
+      const d = new Date(today);
+      d.setDate(d.getDate() - 7);
+      start = d.toISOString().split('T')[0];
+      end = today.toISOString().split('T')[0];
+    } else if (period === '30d') {
+      const d = new Date(today);
+      d.setDate(d.getDate() - 30);
+      start = d.toISOString().split('T')[0];
+      end = today.toISOString().split('T')[0];
+    }
+    setFilter(f => ({ ...f, period, startDate: start, endDate: end }));
+  };
+
   if (!token) return <AdminLoginForm onLogin={handleLogin} />;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* 토스트 알림 */}
+    <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
       <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
         {toasts.map(t => (
           <div
             key={t.id}
-            className={`pointer-events-auto flex items-start gap-3 px-4 py-3 rounded-xl shadow-lg text-white text-sm font-semibold max-w-xs animate-bounce-in ${
-              t.kind === 'application' ? 'bg-primary' : 'bg-orange-500'
+            className={`pointer-events-auto flex items-start gap-3 px-5 py-4 rounded-md shadow-lg text-white text-sm font-semibold max-w-xs animate-bounce-in ${
+              t.kind === 'application' ? 'bg-blue-600' : 'bg-gray-800'
             }`}
           >
-            <span className="text-lg leading-none">{t.kind === 'application' ? '📝' : '📋'}</span>
             <div>
-              <p className="font-black text-xs mb-0.5">{t.kind === 'application' ? '새 신청서 접수!' : '새 빠른견적 문의!'}</p>
-              <p className="opacity-90 text-xs font-normal">{t.message.replace(/^[📋📝]\s*새\s*(빠른견적 문의|신청서):\s*/, '')}</p>
+              <p className="font-bold text-xs mb-1">{t.kind === 'application' ? '새 신청서 접수' : '새 빠른견적 문의'}</p>
+              <p className="opacity-90 text-xs font-normal leading-relaxed">{t.message}</p>
             </div>
           </div>
         ))}
       </div>
       <Header />
-      <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-10">
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-3xl font-black text-gray-900">어드민 페이지</h1>
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-8">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-2xl font-black text-gray-900">통합 관리자</h1>
           <button
             onClick={handleLogout}
-            className="text-sm text-gray-400 hover:text-red-500 transition-colors px-3 py-1.5 rounded-lg border border-gray-200 hover:border-red-200"
+            className="text-xs font-bold text-gray-500 hover:text-gray-900 transition-colors px-4 py-2 rounded-sm border border-gray-300 hover:bg-gray-100 bg-white"
           >
             로그아웃
           </button>
         </div>
-        <p className="text-gray-500 mb-8">빠른 견적 문의 및 신청서 제출 내역을 확인합니다.</p>
 
-        <div className="flex gap-2 mb-6">
-          <button
-            onClick={() => setTab('consultations')}
-            className={`px-6 py-2.5 rounded-full font-bold text-sm transition-colors ${
-              tab === 'consultations'
-                ? 'bg-primary text-white'
-                : 'bg-white text-gray-600 border border-gray-200 hover:border-primary hover:text-primary'
-            }`}
-          >
-            빠른 견적 문의 ({consultations.length})
-          </button>
-          <button
-            onClick={() => setTab('applications')}
-            className={`px-6 py-2.5 rounded-full font-bold text-sm transition-colors ${
-              tab === 'applications'
-                ? 'bg-primary text-white'
-                : 'bg-white text-gray-600 border border-gray-200 hover:border-primary hover:text-primary'
-            }`}
-          >
-            신청서 작성 ({applications.length})
-          </button>
+        {/* Filter Bar */}
+        <div className="bg-white rounded-lg border border-gray-200 mb-6 flex flex-col p-5 shadow-sm">
+          <div className="flex flex-wrap gap-x-6 gap-y-4 items-end">
+            <div className="space-y-2">
+              <div className="flex bg-white border border-gray-200 rounded-sm overflow-hidden h-9">
+                {[
+                  { id: 'today', label: '오늘' },
+                  { id: '7d', label: '지난 7일' },
+                  { id: '30d', label: '지난 30일' },
+                  { id: 'all', label: '전체' }
+                ].map(p => (
+                  <button
+                    key={p.id}
+                    onClick={() => setPeriod(p.id as any)}
+                    className={`px-4 py-1.5 text-xs font-bold border-r border-gray-200 last:border-0 transition-colors ${filter.period === p.id ? 'bg-gray-100 text-gray-900' : 'text-gray-500 hover:bg-gray-50'}`}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <div className="space-y-1.5 flex flex-col">
+                <label className="text-[11px] text-gray-500 font-bold px-1">시작일</label>
+                <input
+                  type="date"
+                  value={filter.startDate}
+                  onChange={e => setFilter(f => ({ ...f, startDate: e.target.value, period: 'all' }))}
+                  className="border border-gray-200 rounded-sm px-3 h-9 text-sm w-36 focus:outline-none focus:ring-1 focus:ring-blue-500 text-gray-700"
+                />
+              </div>
+              <span className="text-gray-300 mb-1">-</span>
+              <div className="space-y-1.5 flex flex-col">
+                <label className="text-[11px] text-gray-500 font-bold px-1">종료일</label>
+                <input
+                  type="date"
+                  value={filter.endDate}
+                  onChange={e => setFilter(f => ({ ...f, endDate: e.target.value, period: 'all' }))}
+                  className="border border-gray-200 rounded-sm px-3 h-9 text-sm w-36 focus:outline-none focus:ring-1 focus:ring-blue-500 text-gray-700"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1.5 flex flex-col">
+              <label className="text-[11px] text-gray-500 font-bold px-1">진행상태</label>
+              <select
+                value={filter.status}
+                onChange={e => setFilter(f => ({ ...f, status: e.target.value }))}
+                className="border border-gray-200 rounded-sm px-3 h-9 text-sm w-28 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 text-gray-700 font-medium"
+              >
+                <option value="전체">전체</option>
+                {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </div>
+
+            <div className="space-y-1.5 flex flex-col">
+              <label className="text-[11px] text-gray-500 font-bold px-1">확인여부</label>
+              <select
+                value={filter.checked}
+                onChange={e => setFilter(f => ({ ...f, checked: e.target.value }))}
+                className="border border-gray-200 rounded-sm px-3 h-9 text-sm w-28 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 text-gray-700 font-medium"
+              >
+                <option value="전체">전체</option>
+                <option value="확인">확인</option>
+                <option value="미확인">미확인</option>
+              </select>
+            </div>
+
+            <div className="space-y-1.5 flex flex-col flex-1 min-w-[320px]">
+              <label className="text-[11px] text-gray-500 font-bold px-1 flex justify-between">
+                <span>검색 항목</span>
+                <span>검색어</span>
+              </label>
+              <div className="flex gap-2">
+                <select
+                  value={filter.searchField}
+                  onChange={e => setFilter(f => ({ ...f, searchField: e.target.value }))}
+                  className="border border-gray-200 rounded-sm px-3 h-9 text-sm w-28 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 text-gray-700 shrink-0 font-medium"
+                >
+                  <option value="전체">전체</option>
+                  <option value="이름">이름</option>
+                  <option value="연락처">연락처</option>
+                  <option value="제목">제목</option>
+                </select>
+                <input
+                  type="text"
+                  placeholder="검색어 입력"
+                  value={searchDraft}
+                  onChange={e => setSearchDraft(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && setFilter(f => ({ ...f, searchQuery: searchDraft }))}
+                  className="border border-gray-200 rounded-sm px-3 h-9 text-sm flex-1 min-w-0 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+                <button
+                  onClick={() => setFilter(f => ({ ...f, searchQuery: searchDraft }))}
+                  className="bg-blue-600 text-white px-5 h-9 rounded-sm text-xs font-bold hover:bg-blue-700 transition-colors shrink-0 shadow-sm"
+                >
+                  검색
+                </button>
+                <button
+                  onClick={() => {
+                    setFilter({ period: 'all', startDate: '', endDate: '', status: '전체', checked: '전체', searchField: '전체', searchQuery: '' });
+                    setSearchDraft('');
+                  }}
+                  className="border border-gray-200 bg-white text-gray-600 px-4 h-9 rounded-sm text-xs font-bold hover:bg-gray-50 transition-colors shrink-0"
+                >
+                  전체 초기화
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
+        {/* Tabs */}
+        <div className="flex border-b border-gray-200 mb-6 overflow-x-auto no-scrollbar">
+          {[
+            { id: 'consultations', label: `견적 문의 (${consultations.length})` },
+            { id: 'applications', label: `신청서 (${applications.length})` },
+            { id: 'resources', label: '관리자 자료' },
+            { id: 'reviews', label: '후기 관리' },
+            { id: 'tips', label: '꿀팁 관리' },
+          ].map(t => (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id as any)}
+              className={`px-6 py-3 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${
+                tab === t.id ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300'
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Content */}
         {loading ? (
-          <div className="text-center py-20 text-gray-400">불러오는 중...</div>
-        ) : tab === 'consultations' ? (
-          <ConsultationsTable data={consultations} onStatusChange={updateConsultationStatus} />
+          <div className="text-center py-20 text-gray-400 font-semibold text-sm">불러오는 중...</div>
         ) : (
-          <ApplicationsTable
-            data={applications}
-            token={token}
-            onStatusChange={updateApplicationStatus}
-            onMemoSave={updateApplicationMemo}
-            onHistoryAdd={addConsultationHistory}
-            onHistoryDelete={deleteConsultationHistory}
-            onNotify={sendKakaoNotify}
-          />
+          <>
+            {tab === 'consultations' && (
+              <ConsultationsTable data={consultations} filter={filter} onStatusChange={updateConsultationStatus} />
+            )}
+            {tab === 'applications' && (
+              <ApplicationsTable
+                data={applications}
+                filter={filter}
+                token={token}
+                onStatusChange={updateApplicationStatus}
+                onMemoSave={updateApplicationMemo}
+                onHistoryAdd={addConsultationHistory}
+                onHistoryDelete={deleteConsultationHistory}
+                onNotify={sendKakaoNotify}
+              />
+            )}
+            {tab === 'resources' && (
+              <ResourcesTable
+                data={resources}
+                filter={filter}
+                onEdit={item => setActiveModal({ type: 'resources', item })}
+                onDelete={id => handleCrud('resources', 'delete', id)}
+                onCreate={() => setActiveModal({ type: 'resources', item: null })}
+              />
+            )}
+            {tab === 'reviews' && (
+              <ReviewsTable
+                data={reviews}
+                filter={filter}
+                onEdit={item => setActiveModal({ type: 'reviews', item })}
+                onDelete={id => handleCrud('reviews', 'delete', id)}
+                onCreate={() => setActiveModal({ type: 'reviews', item: null })}
+              />
+            )}
+            {tab === 'tips' && (
+              <TipsTable
+                data={tips}
+                filter={filter}
+                onEdit={item => setActiveModal({ type: 'tips', item })}
+                onDelete={id => handleCrud('tips', 'delete', id)}
+                onCreate={() => setActiveModal({ type: 'tips', item: null })}
+              />
+            )}
+          </>
         )}
       </main>
       <Footer />
-    </div>
-  );
-}
 
-function ConsultationsTable({
-  data,
-  onStatusChange,
-}: {
-  data: ConsultationRequest[];
-  onStatusChange: (id: number, status: Status) => void;
-}) {
-  const [updating, setUpdating] = useState<number | null>(null);
-
-  const handleChange = async (id: number, status: Status) => {
-    setUpdating(id);
-    await onStatusChange(id, status);
-    setUpdating(null);
-  };
-
-  if (data.length === 0) {
-    return (
-      <div className="bg-white rounded-2xl border border-gray-200 p-16 text-center text-gray-400">
-        아직 견적 문의가 없습니다.
-      </div>
-    );
-  }
-  return (
-    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
-      <table className="w-full text-sm">
-        <thead className="bg-gray-50 border-b border-gray-200">
-          <tr>
-            <th className="px-4 py-3 text-left font-bold text-gray-600 w-12">번호</th>
-            <th className="px-4 py-3 text-left font-bold text-gray-600">이름</th>
-            <th className="px-4 py-3 text-left font-bold text-gray-600">연락처</th>
-            <th className="px-4 py-3 text-left font-bold text-gray-600">상태</th>
-            <th className="px-4 py-3 text-left font-bold text-gray-600">접수일시</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, i) => (
-            <tr key={row.id} className={`border-b border-gray-100 hover:bg-gray-50 ${i % 2 === 0 ? '' : 'bg-gray-50/40'}`}>
-              <td className="px-4 py-3 text-gray-400">{row.id}</td>
-              <td className="px-4 py-3 font-semibold text-gray-900">{row.name}</td>
-              <td className="px-4 py-3 text-gray-700">{row.phone}</td>
-              <td className="px-4 py-3">
-                <StatusSelect
-                  value={row.status ?? '처리중'}
-                  onChange={s => handleChange(row.id, s)}
-                  loading={updating === row.id}
-                />
-              </td>
-              <td className="px-4 py-3 text-gray-500">{formatDate(row.createdAt)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-function ApplicationsTable({
-  data,
-  token,
-  onStatusChange,
-  onMemoSave,
-  onHistoryAdd,
-  onHistoryDelete,
-  onNotify,
-}: {
-  data: Application[];
-  token: string;
-  onStatusChange: (id: number, status: Status) => void;
-  onMemoSave: (id: number, memo: string) => Promise<void>;
-  onHistoryAdd: (id: number, note: string) => Promise<boolean>;
-  onHistoryDelete: (id: number, index: number) => Promise<void>;
-  onNotify: (id: number, variables: Record<string, string>) => Promise<{ success: boolean; mock?: boolean; error?: string }>;
-}) {
-  const [expanded, setExpanded] = useState<number | null>(null);
-  const [updating, setUpdating] = useState<number | null>(null);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-
-  const handleChange = async (id: number, status: Status) => {
-    setUpdating(id);
-    await onStatusChange(id, status);
-    setUpdating(null);
-  };
-
-  const filtered = data.filter((row) => {
-    const d = new Date(row.createdAt);
-    if (startDate) {
-      const start = new Date(startDate);
-      start.setHours(0, 0, 0, 0);
-      if (d < start) return false;
-    }
-    if (endDate) {
-      const end = new Date(endDate);
-      end.setHours(23, 59, 59, 999);
-      if (d > end) return false;
-    }
-    return true;
-  });
-
-  const hasFilter = startDate || endDate;
-
-  return (
-    <div className="space-y-4">
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-4">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          <div className="flex-1">
-            <h2 className="text-lg font-black text-gray-900">신청서 작성 리스트</h2>
-            <p className="text-xs text-gray-400 mt-0.5">
-              전체 {data.length}건
-              {hasFilter && (
-                <span className="ml-1.5 text-primary font-semibold">· 조회 결과 {filtered.length}건</span>
-              )}
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-1.5">
-              <label className="text-xs font-semibold text-gray-500 whitespace-nowrap">시작일</label>
-              <input
-                type="date"
-                value={startDate}
-                onChange={e => setStartDate(e.target.value)}
-                className="text-sm px-3 py-1.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
-              />
-            </div>
-            <span className="text-gray-300">~</span>
-            <div className="flex items-center gap-1.5">
-              <label className="text-xs font-semibold text-gray-500 whitespace-nowrap">종료일</label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={e => setEndDate(e.target.value)}
-                className="text-sm px-3 py-1.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
-              />
-            </div>
-            {hasFilter && (
-              <button
-                onClick={() => { setStartDate(''); setEndDate(''); }}
-                className="text-xs px-3 py-1.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-red-500 hover:border-red-200 transition-colors"
-              >
-                초기화
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {filtered.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-gray-200 p-16 text-center text-gray-400">
-          {hasFilter ? '조회된 신청서가 없습니다.' : '아직 신청서가 없습니다.'}
-        </div>
-      ) : (
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="flex items-center justify-between px-6 py-3 bg-gray-50 border-b border-gray-200">
-            <div className="flex-1 flex items-center gap-4 text-xs font-bold text-gray-500">
-              <span className="w-8 flex-shrink-0">번호</span>
-              <span className="w-24 flex-shrink-0">이름</span>
-              <span className="w-28 flex-shrink-0">가입 통신사</span>
-              <span className="w-24 flex-shrink-0">인터넷</span>
-              <span className="w-20 flex-shrink-0">동의여부</span>
-            </div>
-            <div className="flex items-center gap-4 flex-shrink-0">
-              <span className="text-xs font-bold text-gray-500 w-16 text-center">접수여부</span>
-              <span className="text-xs font-bold text-gray-500 w-36">접수일시</span>
-              <span className="w-4"></span>
-            </div>
-          </div>
-
-          {filtered.map((row) => (
-            <div key={row.id} className="border-b border-gray-100 last:border-b-0">
-              <div className="w-full flex items-center justify-between px-6 py-4">
-                <button
-                  className="flex-1 flex items-center gap-4 text-left hover:opacity-80 transition-opacity"
-                  onClick={() => setExpanded(expanded === row.id ? null : row.id)}
-                >
-                  <span className="text-gray-400 text-xs w-8 flex-shrink-0">#{row.id}</span>
-                  <span className="font-bold text-gray-900 w-24 flex-shrink-0 truncate">{row.name ?? '-'}</span>
-                  <span className="text-gray-500 text-sm w-28 flex-shrink-0 truncate">{row.applyProvider ?? '-'}</span>
-                  <span className="text-gray-500 text-sm w-24 flex-shrink-0 truncate">{row.internet ?? '-'}</span>
-                  {row.consentedAt ? (
-                    <span className="text-xs bg-green-100 text-green-700 border border-green-200 rounded-full px-2 py-0.5 font-semibold w-20 flex-shrink-0 text-center whitespace-nowrap">✓ 동의완료</span>
-                  ) : (
-                    <span className="text-xs bg-gray-100 text-gray-400 border border-gray-200 rounded-full px-2 py-0.5 w-20 flex-shrink-0 text-center whitespace-nowrap">동의대기</span>
-                  )}
-                </button>
-                <div className="flex items-center gap-4 flex-shrink-0">
-                  <div className="w-16 flex justify-center">
-                    <StatusSelect
-                      value={row.status ?? '처리중'}
-                      onChange={s => handleChange(row.id, s)}
-                      loading={updating === row.id}
-                    />
-                  </div>
-                  <span className="text-gray-400 text-xs w-36">{formatDate(row.createdAt)}</span>
-                  <button
-                    onClick={() => setExpanded(expanded === row.id ? null : row.id)}
-                    className="text-gray-400"
-                  >
-                    {expanded === row.id ? '▲' : '▼'}
-                  </button>
-                </div>
-              </div>
-
-              {expanded === row.id && (
-            <div className="border-t border-gray-100">
-              <div className="px-6 py-5 grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-                <Field label="기존 통신사" value={row.currentProvider} />
-                <Field label="가입신청 통신사" value={row.applyProvider} />
-                <Field label="인터넷" value={row.internet} />
-                <Field label="TV" value={row.tv} />
-                <Field label="고객유형" value={row.customerType} />
-                <Field label="납부방법" value={row.paymentMethod} />
-                <Field label="이름" value={row.name} />
-                <Field label="휴대폰" value={`${row.phoneCarrier ?? ''} ${row.phone ?? ''}`} />
-                <Field label="이메일" value={row.email} />
-                <Field label="설치주소" value={row.address} span />
-                {row.paymentMethod === '자동이체' && (
-                  <>
-                    <Field label="납부은행" value={row.payBank} />
-                    <Field label="계좌번호" value={row.payAccount} />
-                    <Field label="예금주" value={row.payAccountHolder} />
-                  </>
-                )}
-                {row.paymentMethod === '카드자동이체' && (
-                  <>
-                    <Field label="카드사" value={row.cardCompany} />
-                    <Field label="카드번호" value={row.cardNumber} />
-                    <Field label="유효기간" value={row.cardExpiry} />
-                  </>
-                )}
-                <Field label="사은품 은행" value={row.giftBank} />
-                <Field label="사은품 계좌" value={row.giftAccount} />
-                <Field label="사은품 예금주" value={row.giftAccountHolder} />
-                {row.memo && <Field label="신청 메모" value={row.memo} span />}
-              </div>
-
-              <div className="border-t border-gray-100 px-6 py-5 space-y-6">
-                {row.consentedAt && (
-                  <ConsentPdfButton id={row.id} name={row.name} consentedAt={row.consentedAt} token={token} />
-                )}
-                <KakaoNotifySection
-                  id={row.id}
-                  phone={row.phone}
-                  consentedAt={row.consentedAt}
-                  onNotify={onNotify}
-                />
-                <AdminMemoSection
-                  id={row.id}
-                  initialMemo={row.adminMemo ?? ''}
-                  onSave={onMemoSave}
-                />
-                <ConsultationHistorySection
-                  id={row.id}
-                  history={row.consultationHistory ? JSON.parse(row.consultationHistory) as HistoryEntry[] : []}
-                  onAdd={onHistoryAdd}
-                  onDelete={onHistoryDelete}
-                />
-              </div>
-            </div>
-          )}
-            </div>
-          ))}
-        </div>
+      {activeModal && activeModal.type === 'tips' && (
+        <TipFormModal tip={activeModal.item} onClose={() => setActiveModal(null)} onSave={d => handleCrud('tips', 'save', d)} />
+      )}
+      {activeModal && activeModal.type === 'reviews' && (
+        <ReviewFormModal item={activeModal.item} onClose={() => setActiveModal(null)} onSave={d => handleCrud('reviews', 'save', d)} />
+      )}
+      {activeModal && activeModal.type === 'resources' && (
+        <ResourceFormModal item={activeModal.item} onClose={() => setActiveModal(null)} onSave={d => handleCrud('resources', 'save', d)} />
       )}
     </div>
   );
 }
 
-function ConsentPdfButton({
-  id,
-  name,
-  consentedAt,
-  token,
-}: {
-  id: number;
-  name: string | null;
-  consentedAt: string;
-  token: string;
-}) {
-  const [downloading, setDownloading] = useState(false);
+function applyFilters<T extends { createdAt: string; status?: string; name?: string | null; phone?: string | null; title?: string; author?: string; category?: string; }>(data: T[], filter: FilterState): T[] {
+  return data.filter(row => {
+    const d = new Date(row.createdAt);
+    if (filter.startDate) {
+      const start = new Date(filter.startDate); start.setHours(0,0,0,0);
+      if (d < start) return false;
+    }
+    if (filter.endDate) {
+      const end = new Date(filter.endDate); end.setHours(23,59,59,999);
+      if (d > end) return false;
+    }
+    if (filter.status !== '전체' && row.status && row.status !== filter.status) return false;
 
+    if (filter.searchQuery) {
+      const q = filter.searchQuery.toLowerCase();
+      let match = false;
+      const searchableTexts = [
+        row.name, row.phone, row.title, row.author, row.category
+      ].filter(Boolean).map(s => String(s).toLowerCase());
+
+      if (filter.searchField === '전체') {
+        match = searchableTexts.some(t => t.includes(q));
+      } else {
+        if (filter.searchField === '이름') match = Boolean(row.name?.toLowerCase().includes(q) || row.author?.toLowerCase().includes(q));
+        if (filter.searchField === '연락처') match = Boolean(row.phone?.includes(q));
+        if (filter.searchField === '제목') match = Boolean(row.title?.toLowerCase().includes(q));
+      }
+      if (!match) return false;
+    }
+    return true;
+  });
+}
+
+function ConsultationsTable({ data, filter, onStatusChange }: { data: ConsultationRequest[]; filter: FilterState; onStatusChange: (id: number, status: Status) => void; }) {
+  const [updating, setUpdating] = useState<number | null>(null);
+  const filtered = applyFilters(data, filter);
+
+  const handleChange = async (id: number, status: Status) => {
+    setUpdating(id);
+    await onStatusChange(id, status);
+    setUpdating(null);
+  };
+
+  return (
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+      <div className="p-4 flex justify-between items-center bg-white border-b border-gray-200">
+        <h3 className="font-bold text-gray-900 text-base md:text-lg">견적 문의 목록</h3>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm text-left whitespace-nowrap">
+          <thead className="bg-[#1e293b] text-white">
+            <tr>
+              <th className="px-4 py-3 font-semibold text-center w-16">번호</th>
+              <th className="px-4 py-3 font-semibold text-center">이름</th>
+              <th className="px-4 py-3 font-semibold text-center">연락처</th>
+              <th className="px-4 py-3 font-semibold text-center w-32">상태</th>
+              <th className="px-4 py-3 font-semibold text-center w-40">접수일시</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {filtered.length === 0 ? (
+              <tr><td colSpan={5} className="text-center py-12 text-gray-400 font-semibold text-sm">데이터가 없습니다.</td></tr>
+            ) : filtered.map((row) => (
+              <tr key={row.id} className="hover:bg-gray-50">
+                <td className="px-4 py-4 text-center text-gray-500 font-medium">{row.id}</td>
+                <td className="px-4 py-4 text-center font-bold text-gray-900">{row.name}</td>
+                <td className="px-4 py-4 text-center text-gray-700 font-medium">{row.phone}</td>
+                <td className="px-4 py-4 text-center">
+                  <StatusSelect value={row.status ?? '처리중'} onChange={s => handleChange(row.id, s)} loading={updating === row.id} />
+                </td>
+                <td className="px-4 py-4 text-center text-gray-500 tabular-nums">{formatDate(row.createdAt)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function ApplicationsTable({ data, filter, token, onStatusChange, onMemoSave, onHistoryAdd, onHistoryDelete, onNotify }: { data: Application[]; filter: FilterState; token: string; onStatusChange: (id: number, status: Status) => void; onMemoSave: (id: number, memo: string) => Promise<void>; onHistoryAdd: (id: number, note: string) => Promise<boolean>; onHistoryDelete: (id: number, index: number) => Promise<void>; onNotify: (id: number, variables: Record<string, string>) => Promise<{ success: boolean; mock?: boolean; error?: string }>; }) {
+  const [expanded, setExpanded] = useState<number | null>(null);
+  const [updating, setUpdating] = useState<number | null>(null);
+  const filtered = applyFilters(data, filter);
+
+  const handleChange = async (id: number, status: Status) => {
+    setUpdating(id);
+    await onStatusChange(id, status);
+    setUpdating(null);
+  };
+
+  return (
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+      <div className="p-4 flex justify-between items-center bg-white border-b border-gray-200">
+        <h3 className="font-bold text-gray-900 text-base md:text-lg">신청서 목록</h3>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm text-left whitespace-nowrap">
+          <thead className="bg-[#1e293b] text-white">
+            <tr>
+              <th className="px-4 py-3 font-semibold text-center w-16">번호</th>
+              <th className="px-4 py-3 font-semibold text-center">이름</th>
+              <th className="px-4 py-3 font-semibold text-center">가입 통신사</th>
+              <th className="px-4 py-3 font-semibold text-center">인터넷</th>
+              <th className="px-4 py-3 font-semibold text-center w-28">동의여부</th>
+              <th className="px-4 py-3 font-semibold text-center w-32">상태</th>
+              <th className="px-4 py-3 font-semibold text-center w-40">접수일시</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {filtered.length === 0 ? (
+              <tr><td colSpan={7} className="text-center py-12 text-gray-400 font-semibold text-sm">데이터가 없습니다.</td></tr>
+            ) : filtered.map((row) => (
+              <React.Fragment key={row.id}>
+                <tr className="hover:bg-gray-50 cursor-pointer transition-colors" onClick={() => setExpanded(expanded === row.id ? null : row.id)}>
+                  <td className="px-4 py-4 text-center text-gray-500 font-medium">{row.id}</td>
+                  <td className="px-4 py-4 text-center font-bold text-gray-900">{row.name ?? '-'}</td>
+                  <td className="px-4 py-4 text-center text-gray-700">{row.applyProvider ?? '-'}</td>
+                  <td className="px-4 py-4 text-center text-gray-700">{row.internet ?? '-'}</td>
+                  <td className="px-4 py-4 text-center">
+                    {row.consentedAt ? (
+                      <span className="text-xs bg-green-50 text-green-700 border border-green-200 rounded-sm px-2.5 py-1 font-bold">동의완료</span>
+                    ) : (
+                      <span className="text-xs bg-gray-50 text-gray-500 border border-gray-200 rounded-sm px-2.5 py-1 font-bold">동의대기</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-4 text-center" onClick={e => e.stopPropagation()}>
+                    <StatusSelect value={row.status ?? '처리중'} onChange={s => handleChange(row.id, s)} loading={updating === row.id} />
+                  </td>
+                  <td className="px-4 py-4 text-center text-gray-500 tabular-nums">{formatDate(row.createdAt)}</td>
+                </tr>
+                {expanded === row.id && (
+                  <tr>
+                    <td colSpan={7} className="bg-gray-50/50 p-0 border-b-2 border-gray-200">
+                      <div className="min-w-full p-6 border-t border-gray-100">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-4 text-sm bg-white p-5 rounded-md border border-gray-200 mb-6">
+                          <Field label="기존 통신사" value={row.currentProvider} />
+                          <Field label="가입신청 통신사" value={row.applyProvider} />
+                          <Field label="인터넷" value={row.internet} />
+                          <Field label="TV" value={row.tv} />
+                          <Field label="고객유형" value={row.customerType} />
+                          <Field label="납부방법" value={row.paymentMethod} />
+                          <Field label="이름" value={row.name} />
+                          <Field label="휴대폰" value={`${row.phoneCarrier ?? ''} ${row.phone ?? ''}`} />
+                          <Field label="이메일" value={row.email} />
+                          <Field label="설치주소" value={row.address} span />
+                          {row.paymentMethod === '자동이체' && (
+                            <>
+                              <Field label="납부은행" value={row.payBank} />
+                              <Field label="계좌번호" value={row.payAccount} />
+                              <Field label="예금주" value={row.payAccountHolder} />
+                            </>
+                          )}
+                          {row.paymentMethod === '카드자동이체' && (
+                            <>
+                              <Field label="카드사" value={row.cardCompany} />
+                              <Field label="카드번호" value={row.cardNumber} />
+                              <Field label="유효기간" value={row.cardExpiry} />
+                            </>
+                          )}
+                          <Field label="사은품 은행" value={row.giftBank} />
+                          <Field label="사은품 계좌" value={row.giftAccount} />
+                          <Field label="사은품 예금주" value={row.giftAccountHolder} />
+                          {row.memo && <Field label="신청 메모" value={row.memo} span />}
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                          <div className="space-y-6">
+                            {row.consentedAt && <ConsentPdfButton id={row.id} name={row.name} consentedAt={row.consentedAt} token={token} />}
+                            <KakaoNotifySection id={row.id} phone={row.phone} consentedAt={row.consentedAt} onNotify={onNotify} />
+                          </div>
+                          <div className="space-y-6">
+                            <AdminMemoSection id={row.id} initialMemo={row.adminMemo ?? ''} onSave={onMemoSave} />
+                            <ConsultationHistorySection id={row.id} history={row.consultationHistory ? JSON.parse(row.consultationHistory) as HistoryEntry[] : []} onAdd={onHistoryAdd} onDelete={onHistoryDelete} />
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function ResourcesTable({ data, filter, onEdit, onDelete, onCreate }: { data: AdminResource[]; filter: FilterState; onEdit: (i: AdminResource) => void; onDelete: (id: number) => void; onCreate: () => void; }) {
+  const filtered = applyFilters(data, filter);
+  return (
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+      <div className="p-4 flex justify-between items-center bg-white border-b border-gray-200">
+        <h3 className="font-bold text-gray-900 text-base md:text-lg">관리자 자료 목록</h3>
+        <button onClick={onCreate} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-sm text-xs font-bold shadow-sm transition-colors">
+          + 자료 추가
+        </button>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm text-left whitespace-nowrap">
+          <thead className="bg-[#1e293b] text-white">
+            <tr>
+              <th className="px-4 py-3 font-semibold text-center w-28">작성일</th>
+              <th className="px-4 py-3 font-semibold text-center w-28">카테고리</th>
+              <th className="px-4 py-3 font-semibold">자료명</th>
+              <th className="px-4 py-3 font-semibold text-center w-20">상태</th>
+              <th className="px-4 py-3 font-semibold text-center w-32">관리</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {filtered.length === 0 ? (
+              <tr><td colSpan={5} className="text-center py-12 text-gray-400 font-semibold text-sm">데이터가 없습니다.</td></tr>
+            ) : filtered.map(row => (
+              <tr key={row.id} className="hover:bg-gray-50">
+                <td className="px-4 py-4 text-center text-gray-600 tabular-nums">{formatDateOnly(row.createdAt)}</td>
+                <td className="px-4 py-4 text-center">
+                  <span className="bg-gray-100 text-gray-600 px-2.5 py-1 rounded-sm text-xs font-semibold">{row.category || '-'}</span>
+                </td>
+                <td className="px-4 py-4 text-gray-900 font-bold truncate max-w-sm">{row.title}</td>
+                <td className="px-4 py-4 text-center">
+                   {row.isPublished ? (
+                    <span className="text-blue-600 text-xs font-bold">공개</span>
+                  ) : (
+                    <span className="text-gray-400 text-xs font-bold">비공개</span>
+                  )}
+                </td>
+                <td className="px-4 py-4 text-center">
+                  <div className="flex items-center justify-center gap-1.5">
+                    <button onClick={() => onEdit(row)} className="border border-gray-300 bg-white text-gray-600 px-2.5 py-1 rounded-sm text-[11px] font-bold hover:bg-gray-50 transition-colors">수정</button>
+                    <button onClick={() => { if(confirm('삭제하시겠습니까?')) onDelete(row.id) }} className="bg-[#dc2626] text-white px-2.5 py-1 rounded-sm text-[11px] font-bold hover:bg-red-700 transition-colors">삭제</button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function ReviewsTable({ data, filter, onEdit, onDelete, onCreate }: { data: ManagedReview[]; filter: FilterState; onEdit: (i: ManagedReview) => void; onDelete: (id: number) => void; onCreate: () => void; }) {
+  const filtered = applyFilters(data, filter);
+  return (
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+      <div className="p-4 flex justify-between items-center bg-white border-b border-gray-200">
+        <h3 className="font-bold text-gray-900 text-base md:text-lg">후기 관리</h3>
+        <button onClick={onCreate} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-sm text-xs font-bold shadow-sm transition-colors">
+          + 후기 작성
+        </button>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm text-left whitespace-nowrap">
+          <thead className="bg-[#1e293b] text-white">
+            <tr>
+              <th className="px-4 py-3 font-semibold text-center w-28">작성일</th>
+              <th className="px-4 py-3 font-semibold text-center w-28">작성자</th>
+              <th className="px-4 py-3 font-semibold">제목</th>
+              <th className="px-4 py-3 font-semibold text-center w-20">조회수</th>
+              <th className="px-4 py-3 font-semibold text-center w-20">분류</th>
+              <th className="px-4 py-3 font-semibold text-center w-20">상태</th>
+              <th className="px-4 py-3 font-semibold text-center w-32">관리</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {filtered.length === 0 ? (
+              <tr><td colSpan={7} className="text-center py-12 text-gray-400 font-semibold text-sm">데이터가 없습니다.</td></tr>
+            ) : filtered.map(row => (
+              <tr key={row.id} className="hover:bg-gray-50">
+                <td className="px-4 py-4 text-center text-gray-600 tabular-nums">{formatDateOnly(row.createdAt)}</td>
+                <td className="px-4 py-4 text-center font-medium text-gray-900">{row.author}</td>
+                <td className="px-4 py-4 text-gray-900 font-bold truncate max-w-sm">{row.title}</td>
+                <td className="px-4 py-4 text-center text-gray-600">{row.views}</td>
+                <td className="px-4 py-4 text-center">
+                  {row.isBest ? (
+                    <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded-sm text-[11px] font-bold border border-blue-200">베스트</span>
+                  ) : (
+                    <span className="bg-gray-50 text-gray-500 px-2 py-1 rounded-sm text-[11px] font-bold border border-gray-200">일반</span>
+                  )}
+                </td>
+                <td className="px-4 py-4 text-center">
+                   {row.isPublished ? (
+                    <span className="text-blue-600 text-[11px] font-bold">발행</span>
+                  ) : (
+                    <span className="text-gray-400 text-[11px] font-bold">숨김</span>
+                  )}
+                </td>
+                <td className="px-4 py-4 text-center">
+                  <div className="flex items-center justify-center gap-1.5">
+                    <button onClick={() => onEdit(row)} className="border border-gray-300 bg-white text-gray-600 px-2.5 py-1 rounded-sm text-[11px] font-bold hover:bg-gray-50 transition-colors">수정</button>
+                    <button onClick={() => { if(confirm('삭제하시겠습니까?')) onDelete(row.id) }} className="bg-[#dc2626] text-white px-2.5 py-1 rounded-sm text-[11px] font-bold hover:bg-red-700 transition-colors">삭제</button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function TipsTable({ data, filter, onEdit, onDelete, onCreate }: { data: ManagedTip[]; filter: FilterState; onEdit: (i: ManagedTip) => void; onDelete: (id: number) => void; onCreate: () => void; }) {
+  const filtered = applyFilters(data, filter);
+  return (
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+      <div className="p-4 flex justify-between items-center bg-white border-b border-gray-200">
+        <h3 className="font-bold text-gray-900 text-base md:text-lg">꿀팁 목록</h3>
+        <button onClick={onCreate} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-sm text-xs font-bold shadow-sm transition-colors">
+          + 꿀팁 작성
+        </button>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm text-left whitespace-nowrap">
+          <thead className="bg-[#1e293b] text-white">
+            <tr>
+              <th className="px-4 py-3 font-semibold text-center w-28">작성일</th>
+              <th className="px-4 py-3 font-semibold text-center w-28">카테고리</th>
+              <th className="px-4 py-3 font-semibold">제목</th>
+              <th className="px-4 py-3 font-semibold text-center w-20">조회수</th>
+              <th className="px-4 py-3 font-semibold text-center w-20">추천</th>
+              <th className="px-4 py-3 font-semibold text-center w-20">상태</th>
+              <th className="px-4 py-3 font-semibold text-center w-32">관리</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {filtered.length === 0 ? (
+              <tr><td colSpan={7} className="text-center py-12 text-gray-400 font-semibold text-sm">데이터가 없습니다.</td></tr>
+            ) : filtered.map(row => (
+              <tr key={row.id} className="hover:bg-gray-50">
+                <td className="px-4 py-4 text-center text-gray-600 tabular-nums">{formatDateOnly(row.createdAt)}</td>
+                <td className="px-4 py-4 text-center">
+                  <span className="bg-gray-100 text-gray-600 px-2.5 py-1 rounded-sm text-[11px] font-bold">{row.category || '일반'}</span>
+                </td>
+                <td className="px-4 py-4 text-gray-900 font-bold truncate max-w-[200px] md:max-w-md">{row.title}</td>
+                <td className="px-4 py-4 text-center text-gray-600">{row.views}</td>
+                <td className="px-4 py-4 text-center">
+                  {row.isFeatured ? (
+                    <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded-sm text-[11px] font-bold border border-blue-200">추천</span>
+                  ) : (
+                    <span className="bg-gray-50 text-gray-500 px-2 py-1 rounded-sm text-[11px] font-bold border border-gray-200">일반</span>
+                  )}
+                </td>
+                <td className="px-4 py-4 text-center">
+                   {row.isPublished ? (
+                    <span className="text-blue-600 text-[11px] font-bold">발행</span>
+                  ) : (
+                    <span className="text-gray-400 text-[11px] font-bold">숨김</span>
+                  )}
+                </td>
+                <td className="px-4 py-4 text-center">
+                  <div className="flex items-center justify-center gap-1.5">
+                    <button onClick={() => onEdit(row)} className="border border-gray-300 bg-white text-gray-600 px-2.5 py-1 rounded-sm text-[11px] font-bold hover:bg-gray-50 transition-colors">수정</button>
+                    <button onClick={() => { if(confirm('삭제하시겠습니까?')) onDelete(row.id) }} className="bg-[#dc2626] text-white px-2.5 py-1 rounded-sm text-[11px] font-bold hover:bg-red-700 transition-colors">삭제</button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function Modal({ title, onClose, children }: { title: string, onClose: () => void, children: React.ReactNode }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+      <div className="bg-white rounded-lg border border-gray-200 shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
+        <div className="flex justify-between items-center p-5 border-b border-gray-200 bg-gray-50/50">
+          <h2 className="text-lg font-black text-gray-900">{title}</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-900 text-xl font-bold transition-colors">&times;</button>
+        </div>
+        <div className="p-6 overflow-y-auto flex-1">
+          {children}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ResourceFormModal({ item, onClose, onSave }: { item?: AdminResource | null, onClose: () => void, onSave: (d: any) => void }) {
+  const [formData, setFormData] = useState<Partial<AdminResource>>(item || {
+    title: '', category: '', description: '', fileUrl: '', previewUrl: '', isPublished: true
+  });
+
+  return (
+    <Modal title={item ? '자료 수정' : '자료 추가'} onClose={onClose}>
+      <form onSubmit={e => { e.preventDefault(); onSave(formData); }} className="space-y-5">
+         <div>
+           <label className="block text-[11px] font-bold text-gray-500 mb-1.5">자료명</label>
+           <input required type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+         </div>
+         <div>
+           <label className="block text-[11px] font-bold text-gray-500 mb-1.5">카테고리</label>
+            <input required type="text" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+         </div>
+         <div>
+           <label className="block text-[11px] font-bold text-gray-500 mb-1.5">설명</label>
+            <textarea required rows={3} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"></textarea>
+         </div>
+         <div>
+           <label className="block text-[11px] font-bold text-gray-500 mb-1.5">파일 URL</label>
+            <input required type="text" value={formData.fileUrl} onChange={e => setFormData({...formData, fileUrl: e.target.value})} className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+         </div>
+         <div>
+           <label className="block text-[11px] font-bold text-gray-500 mb-1.5">미리보기 URL</label>
+           <input type="text" value={formData.previewUrl} onChange={e => setFormData({...formData, previewUrl: e.target.value})} className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+         </div>
+         <div className="py-2 border-t border-gray-100">
+            <label className="flex items-center gap-2 text-sm font-bold text-gray-900 cursor-pointer w-max">
+              <input type="checkbox" checked={formData.isPublished} onChange={e => setFormData({...formData, isPublished: e.target.checked})} className="rounded border-gray-300 w-4 h-4 text-blue-600 focus:ring-blue-500" />
+              자료 공개
+            </label>
+         </div>
+         <div className="pt-2 flex justify-end gap-2">
+           <button type="button" onClick={onClose} className="px-5 py-2 border border-gray-300 rounded-sm text-sm font-bold text-gray-600 hover:bg-gray-50 transition-colors">취소</button>
+           <button type="submit" className="px-5 py-2 bg-blue-600 text-white rounded-sm text-sm font-bold hover:bg-blue-700 transition-colors">저장</button>
+         </div>
+      </form>
+    </Modal>
+  )
+}
+
+function ReviewFormModal({ item, onClose, onSave }: { item?: ManagedReview | null, onClose: () => void, onSave: (d: any) => void }) {
+  const [formData, setFormData] = useState<Partial<ManagedReview>>(item || {
+    title: '', author: '', content: '', thumbnail: '', views: 0, isBest: false, isPublished: true
+  });
+
+  return (
+    <Modal title={item ? '후기 수정' : '후기 작성'} onClose={onClose}>
+      <form onSubmit={e => { e.preventDefault(); onSave(formData); }} className="space-y-5">
+         <div className="grid grid-cols-[1fr_120px] gap-4">
+           <div>
+             <label className="block text-[11px] font-bold text-gray-500 mb-1.5">제목</label>
+             <input required type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+           </div>
+           <div>
+             <label className="block text-[11px] font-bold text-gray-500 mb-1.5">작성자</label>
+             <input required type="text" value={formData.author} onChange={e => setFormData({...formData, author: e.target.value})} className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+           </div>
+         </div>
+         <div>
+           <label className="block text-[11px] font-bold text-gray-500 mb-1.5">내용</label>
+           <textarea required rows={6} value={formData.content} onChange={e => setFormData({...formData, content: e.target.value})} className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"></textarea>
+         </div>
+         <div>
+           <label className="block text-[11px] font-bold text-gray-500 mb-1.5">썸네일 URL</label>
+           <input type="text" value={formData.thumbnail} onChange={e => setFormData({...formData, thumbnail: e.target.value})} className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+         </div>
+         <div className="flex flex-wrap gap-x-8 gap-y-4 items-center py-4 border-t border-gray-100 mt-2">
+            <label className="flex items-center gap-2 text-sm font-bold text-gray-900 cursor-pointer">
+              <input type="checkbox" checked={formData.isBest} onChange={e => setFormData({...formData, isBest: e.target.checked})} className="rounded border-gray-300 w-4 h-4 text-blue-600 focus:ring-blue-500" />
+              베스트 후기 지정
+            </label>
+            <label className="flex items-center gap-2 text-sm font-bold text-gray-900 cursor-pointer">
+              <input type="checkbox" checked={formData.isPublished} onChange={e => setFormData({...formData, isPublished: e.target.checked})} className="rounded border-gray-300 w-4 h-4 text-blue-600 focus:ring-blue-500" />
+              발행 (공개)
+            </label>
+            <div className="ml-auto flex items-center gap-3">
+              <label className="text-[11px] font-bold text-gray-500">조회수</label>
+              <input type="number" value={formData.views} onChange={e => setFormData({...formData, views: parseInt(e.target.value) || 0})} className="w-24 border border-gray-300 rounded-sm px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+            </div>
+         </div>
+         <div className="pt-2 flex justify-end gap-2">
+           <button type="button" onClick={onClose} className="px-5 py-2 border border-gray-300 rounded-sm text-sm font-bold text-gray-600 hover:bg-gray-50 transition-colors">취소</button>
+           <button type="submit" className="px-5 py-2 bg-blue-600 text-white rounded-sm text-sm font-bold hover:bg-blue-700 transition-colors">저장</button>
+         </div>
+      </form>
+    </Modal>
+  )
+}
+
+function TipFormModal({ tip, onClose, onSave }: { tip?: ManagedTip | null, onClose: () => void, onSave: (d: any) => void }) {
+  const [formData, setFormData] = useState<Partial<ManagedTip>>(tip || {
+    title: '', slug: '', category: '', content: '', thumbnail: '', views: 0, isFeatured: false, isPublished: true
+  });
+
+  return (
+    <Modal title={tip ? '꿀팁 수정' : '꿀팁 작성'} onClose={onClose}>
+      <form onSubmit={e => { e.preventDefault(); onSave(formData); }} className="space-y-5">
+         <div>
+           <label className="block text-[11px] font-bold text-gray-500 mb-1.5">제목</label>
+           <input required type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+         </div>
+         <div className="grid grid-cols-2 gap-4">
+           <div>
+             <label className="block text-[11px] font-bold text-gray-500 mb-1.5">슬러그 (URL용)</label>
+              <input required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" title="영문 소문자, 숫자, 하이픈만 입력하세요." type="text" value={formData.slug} onChange={e => setFormData({...formData, slug: e.target.value})} className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+           </div>
+           <div>
+             <label className="block text-[11px] font-bold text-gray-500 mb-1.5">카테고리</label>
+              <input required type="text" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+           </div>
+         </div>
+         <div>
+           <label className="block text-[11px] font-bold text-gray-500 mb-1.5">썸네일 URL</label>
+           <input type="text" value={formData.thumbnail} onChange={e => setFormData({...formData, thumbnail: e.target.value})} className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+         </div>
+         <div>
+           <label className="block text-[11px] font-bold text-gray-500 mb-1.5">내용 (Markdown 등 지원 형태에 맞게 입력)</label>
+           <textarea required rows={8} value={formData.content} onChange={e => setFormData({...formData, content: e.target.value})} className="w-full border border-gray-300 rounded-sm px-3 py-2 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-blue-500"></textarea>
+         </div>
+         <div className="flex flex-wrap gap-x-8 gap-y-4 items-center py-4 border-t border-gray-100 mt-2">
+            <label className="flex items-center gap-2 text-sm font-bold text-gray-900 cursor-pointer">
+              <input type="checkbox" checked={formData.isFeatured} onChange={e => setFormData({...formData, isFeatured: e.target.checked})} className="rounded border-gray-300 w-4 h-4 text-blue-600 focus:ring-blue-500" />
+              추천 (Best) 표시
+            </label>
+            <label className="flex items-center gap-2 text-sm font-bold text-gray-900 cursor-pointer">
+              <input type="checkbox" checked={formData.isPublished} onChange={e => setFormData({...formData, isPublished: e.target.checked})} className="rounded border-gray-300 w-4 h-4 text-blue-600 focus:ring-blue-500" />
+              발행 (공개)
+            </label>
+            <div className="ml-auto flex items-center gap-3">
+              <label className="text-[11px] font-bold text-gray-500">조회수</label>
+              <input type="number" value={formData.views} onChange={e => setFormData({...formData, views: parseInt(e.target.value) || 0})} className="w-24 border border-gray-300 rounded-sm px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" />
+            </div>
+         </div>
+         <div className="pt-2 flex justify-end gap-2">
+           <button type="button" onClick={onClose} className="px-5 py-2 border border-gray-300 rounded-sm text-sm font-bold text-gray-600 hover:bg-gray-50 transition-colors">취소</button>
+           <button type="submit" className="px-5 py-2 bg-blue-600 text-white rounded-sm text-sm font-bold hover:bg-blue-700 transition-colors">저장</button>
+         </div>
+      </form>
+    </Modal>
+  )
+}
+
+function Field({ label, value, span }: { label: string; value: string | null; span?: boolean }) {
+  if (!value) return null;
+  return (
+    <div className={span ? 'col-span-full' : ''}>
+      <span className="block text-[11px] font-bold text-gray-400 mb-0.5">{label}</span>
+      <span className="block text-sm font-bold text-gray-900 break-words">{value}</span>
+    </div>
+  );
+}
+
+function ConsentPdfButton({ id, name, consentedAt, token }: { id: number; name: string | null; consentedAt: string; token: string; }) {
+  const [downloading, setDownloading] = useState(false);
   const handleDownload = async () => {
     setDownloading(true);
     try {
-      const res = await fetch(`/api/consent/${id}/pdf`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => null);
-        throw new Error(data?.error ?? 'PDF를 저장하지 못했습니다.');
-      }
-
+      const res = await fetch(`/api/consent/${id}/pdf`, { headers: { Authorization: `Bearer ${token}` } });
+      if (!res.ok) throw new Error('PDF 저장 실패');
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `사은품_지급_및_반환_동의서_${name ?? id}.pdf`;
+      link.download = `동의서_${name ?? id}.pdf`;
       document.body.appendChild(link);
       link.click();
       link.remove();
       URL.revokeObjectURL(url);
-    } catch (error) {
-      window.alert(error instanceof Error ? error.message : 'PDF를 저장하지 못했습니다.');
+    } catch {
+      alert('PDF 저장에 실패했습니다.');
     } finally {
       setDownloading(false);
     }
   };
 
   return (
-    <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 flex items-center justify-between">
+    <div className="rounded-md border border-gray-200 bg-gray-50 px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
-        <p className="text-sm font-bold text-green-800">✅ 동의 완료</p>
-        <p className="text-xs text-green-600 mt-0.5">
-          {name ?? '-'} · {formatDate(consentedAt)}
-        </p>
+        <p className="text-sm font-bold text-gray-900">개인정보 동의 완료</p>
+        <p className="text-xs text-gray-500 mt-1">{name ?? '-'} · {formatDate(consentedAt)}</p>
       </div>
       <button
         onClick={handleDownload}
-          disabled={downloading}
-        className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-green-600 text-white text-xs font-bold hover:bg-green-700 transition-colors"
+        disabled={downloading}
+        className="text-xs px-4 py-2 bg-white border border-gray-300 rounded-sm font-bold text-gray-700 hover:bg-gray-100 transition-colors disabled:opacity-50 whitespace-nowrap shadow-sm"
       >
-        <span>📄</span>
-          {downloading ? '저장 중...' : 'PDF 저장'}
+        {downloading ? '저장 중...' : 'PDF 저장'}
       </button>
     </div>
   );
 }
 
-function KakaoNotifySection({
-  id,
-  phone,
-  consentedAt,
-  onNotify,
-}: {
-  id: number;
-  phone: string | null;
-  consentedAt: string | null;
-  onNotify: (id: number, variables: Record<string, string>) => Promise<{ success: boolean; mock?: boolean; error?: string }>;
-}) {
-  const consentUrl = `${window.location.origin}${import.meta.env.BASE_URL}consent/${id}`.replace(/([^:])\/\//g, '$1/');
-  const [extraVars, setExtraVars] = useState('');
-  const [sending, setSending] = useState(false);
-  const [result, setResult] = useState<{ type: 'success' | 'mock' | 'error'; text: string } | null>(null);
-
-  const handleSend = async () => {
-    setSending(true);
-    setResult(null);
-    // 기본 변수 + 사용자 입력 추가 변수 병합
-    const variables: Record<string, string> = {};
-    if (extraVars.trim()) {
-      extraVars.split('\n').forEach(line => {
-        const [k, ...v] = line.split('=');
-        if (k && v.length) variables[k.trim()] = v.join('=').trim();
-      });
-    }
-    const res = await onNotify(id, variables);
-    setSending(false);
-    if (res.success && res.mock) {
-      setResult({ type: 'mock', text: 'API 키 미설정 — 실제 발송은 생략됐습니다. (테스트 성공)' });
-    } else if (res.success) {
-      setResult({ type: 'success', text: '알림톡이 성공적으로 발송됐습니다.' });
+function KakaoNotifySection({ id, phone, consentedAt, onNotify }: { id: number; phone: string | null; consentedAt: string | null; onNotify: (id: number, vars: Record<string, string>) => Promise<{success: boolean; mock?: boolean; error?: string}> }) {
+  const [loading, setLoading] = useState(false);
+  const handleSend = async (type: string) => {
+    if (!phone) return alert('연락처가 없습니다.');
+    if (!confirm(`${type} 알림톡을 발송하시겠습니까?`)) return;
+    setLoading(true);
+    const res = await onNotify(id, { type });
+    setLoading(false);
+    if (res.success) {
+      alert(res.mock ? `[테스트 모드] ${type} 발송 성공` : `${type} 발송이 완료되었습니다.`);
     } else {
-      setResult({ type: 'error', text: res.error ?? '발송에 실패했습니다.' });
+      alert(`발송 실패: ${res.error}`);
     }
-    setTimeout(() => setResult(null), 6000);
   };
 
   return (
-    <div className="rounded-xl border border-yellow-200 bg-yellow-50 px-4 py-4">
-      <div className="flex items-center gap-2 mb-3">
-        <span className="text-base">💬</span>
-        <h3 className="text-sm font-bold text-yellow-800">카카오 알림톡 발송</h3>
-        <div className="ml-auto flex items-center gap-2">
-          {consentedAt ? (
-            <span className="text-xs bg-green-100 text-green-700 border border-green-200 rounded-full px-2 py-0.5 font-semibold">✓ 동의완료 {formatDate(consentedAt)}</span>
-          ) : (
-            <span className="text-xs bg-gray-100 text-gray-500 border border-gray-200 rounded-full px-2 py-0.5">동의 미완료</span>
-          )}
-          {phone && <span className="text-xs text-yellow-600">수신: {phone}</span>}
-        </div>
+    <div className="rounded-md border border-gray-200 bg-white px-5 py-5 shadow-sm">
+      <div className="flex items-center justify-between mb-4 border-b border-gray-100 pb-3">
+        <h4 className="text-sm font-black text-gray-900">알림톡 발송</h4>
       </div>
-
-      {!phone && (
-        <p className="text-xs text-yellow-700 mb-2">휴대폰 번호가 없어 발송할 수 없습니다.</p>
-      )}
-
-      <div className="space-y-2">
-        {/* 자동 포함되는 기본 변수 안내 */}
-        <div className="bg-white border border-yellow-200 rounded-lg px-3 py-2 text-xs text-gray-500 space-y-1">
-          <p><span className="font-semibold text-yellow-700">자동 포함 변수:</span></p>
-          <p><code>{'#{name}'}</code> → 신청자 이름</p>
-          <p className="flex items-center gap-1">
-            <code>{'#{agreement_api}'}</code> → 동의서 링크
-            <button
-              type="button"
-              onClick={() => navigator.clipboard.writeText(consentUrl)}
-              className="underline text-yellow-600 hover:text-yellow-800 ml-1"
-            >
-              복사
-            </button>
-          </p>
-        </div>
-
-        {/* 추가 템플릿 변수 입력 */}
-        <div>
-          <label className="text-xs text-yellow-700 font-medium mb-1 block">
-            추가 변수 (선택, 한 줄에 하나씩: <code>{'#{변수명}=값'}</code>)
-          </label>
-          <textarea
-            value={extraVars}
-            onChange={e => setExtraVars(e.target.value)}
-            rows={2}
-            placeholder={'#{내용}=설치 일정을 안내드립니다.\n#{날짜}=2026-06-07'}
-            disabled={!phone}
-            className="w-full px-3 py-2 text-xs font-mono border border-yellow-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-yellow-300 transition-colors resize-none disabled:opacity-50"
-          />
-        </div>
-
-        <div className="flex items-center justify-between">
-          <div className="text-xs">
-            {result && (
-              <span className={result.type === 'error' ? 'text-red-500' : result.type === 'mock' ? 'text-blue-500' : 'text-green-600'}>
-                {result.type === 'error' ? '✗' : '✓'} {result.text}
-              </span>
-            )}
+      <div className="flex flex-col gap-3">
+        <button
+          onClick={() => handleSend('접수완료')}
+          disabled={loading}
+          className="w-full text-left px-4 py-3 border border-gray-200 rounded-sm hover:border-blue-500 hover:bg-blue-50 group transition-colors"
+        >
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-bold text-gray-800 group-hover:text-blue-700">접수 안내톡</span>
+            <span className="text-xs text-gray-400 font-medium group-hover:text-blue-500">발송</span>
           </div>
-          <button
-            onClick={handleSend}
-            disabled={sending || !phone}
-            className="px-4 py-1.5 rounded-lg bg-yellow-400 text-yellow-900 text-xs font-bold hover:bg-yellow-500 transition-colors disabled:opacity-40"
-          >
-            {sending ? '발송 중...' : '알림톡 발송'}
-          </button>
-        </div>
+          <p className="text-xs text-gray-500 mt-1.5 truncate">"접수가 완료되었습니다..."</p>
+        </button>
+        <button
+          onClick={() => handleSend('개통완료')}
+          disabled={loading}
+          className="w-full text-left px-4 py-3 border border-gray-200 rounded-sm hover:border-blue-500 hover:bg-blue-50 group transition-colors"
+        >
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-bold text-gray-800 group-hover:text-blue-700">개통/지급 안내톡</span>
+            <span className="text-xs text-gray-400 font-medium group-hover:text-blue-500">발송</span>
+          </div>
+          <p className="text-xs text-gray-500 mt-1.5 truncate">"개통 및 사은품 지급이 완료되었습니다..."</p>
+        </button>
       </div>
     </div>
   );
 }
 
-function AdminMemoSection({
-  id,
-  initialMemo,
-  onSave,
-}: {
-  id: number;
-  initialMemo: string;
-  onSave: (id: number, memo: string) => Promise<void>;
-}) {
+function AdminMemoSection({ id, initialMemo, onSave }: { id: number; initialMemo: string; onSave: (id: number, memo: string) => Promise<void> }) {
   const [memo, setMemo] = useState(initialMemo);
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
-
-  useEffect(() => { setMemo(initialMemo); }, [initialMemo]);
-
   const handleSave = async () => {
     setSaving(true);
     await onSave(id, memo);
     setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
   };
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-bold text-gray-700">📝 어드민 메모</h3>
+    <div className="rounded-md border border-gray-200 bg-white px-5 py-5 shadow-sm flex flex-col h-full min-h-[200px]">
+      <div className="flex items-center justify-between mb-3 border-b border-gray-100 pb-3">
+        <h4 className="text-sm font-black text-gray-900">관리자 메모</h4>
         <button
           onClick={handleSave}
-          disabled={saving}
-          className="text-xs px-3 py-1.5 rounded-lg bg-primary text-white font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60"
+          disabled={saving || memo === initialMemo}
+          className="text-xs px-3 py-1.5 bg-[#1e293b] text-white rounded-sm font-bold hover:bg-gray-800 transition-colors disabled:opacity-50 shadow-sm"
         >
-          {saving ? '저장 중...' : saved ? '✓ 저장됨' : '저장'}
+          {saving ? '저장 중' : '메모 저장'}
         </button>
       </div>
       <textarea
         value={memo}
         onChange={e => setMemo(e.target.value)}
-        rows={3}
-        placeholder="관리자 메모를 입력하세요..."
-        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors resize-none"
+        placeholder="이 신청건에 대한 관리자 전용 메모를 입력하세요."
+        className="w-full flex-1 min-h-[100px] border border-gray-200 rounded-sm p-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 resize-none font-medium"
       />
     </div>
   );
 }
 
-function ConsultationHistorySection({
-  id,
-  history,
-  onAdd,
-  onDelete,
-}: {
-  id: number;
-  history: HistoryEntry[];
-  onAdd: (id: number, note: string) => Promise<boolean>;
-  onDelete: (id: number, index: number) => Promise<void>;
-}) {
+function ConsultationHistorySection({ id, history, onAdd, onDelete }: { id: number; history: HistoryEntry[]; onAdd: (id: number, n: string) => Promise<boolean>; onDelete: (id: number, i: number) => Promise<void> }) {
   const [note, setNote] = useState('');
   const [adding, setAdding] = useState(false);
-
-  const handleAdd = async () => {
+  const handleAdd = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!note.trim()) return;
     setAdding(true);
-    const ok = await onAdd(id, note);
-    if (ok) setNote('');
+    if (await onAdd(id, note)) setNote('');
     setAdding(false);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) handleAdd();
-  };
-
   return (
-    <div>
-      <h3 className="text-sm font-bold text-gray-700 mb-3">📋 상담 이력</h3>
-
-      {history.length === 0 ? (
-        <p className="text-xs text-gray-400 mb-3">아직 상담 이력이 없습니다.</p>
-      ) : (
-        <div className="space-y-2 mb-3">
-          {history.map((entry, i) => (
-            <div key={i} className="flex items-start gap-3 bg-gray-50 rounded-lg px-3 py-2.5">
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-gray-400 mb-0.5">{formatDate(entry.date)}</p>
-                <p className="text-sm text-gray-800 whitespace-pre-wrap">{entry.note}</p>
+    <div className="rounded-md border border-gray-200 bg-white px-5 py-5 shadow-sm">
+      <div className="mb-4 border-b border-gray-100 pb-3">
+        <h4 className="text-sm font-black text-gray-900">상담 이력 ({history.length})</h4>
+      </div>
+      <div className="space-y-3 mb-5 max-h-48 overflow-y-auto pr-2">
+        {history.length === 0 ? (
+          <p className="text-xs text-gray-400 font-medium py-2 text-center border border-dashed border-gray-200 rounded-sm">이력이 없습니다.</p>
+        ) : (
+          history.map((h, i) => (
+            <div key={i} className="flex gap-3 group items-start">
+              <div className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 flex-shrink-0" />
+              <div className="flex-1">
+                <p className="text-xs font-bold text-gray-400 mb-0.5">{formatDate(h.date)}</p>
+                <p className="text-sm font-medium text-gray-800 break-words leading-snug">{h.note}</p>
               </div>
               <button
-                onClick={() => onDelete(id, i)}
-                className="text-gray-300 hover:text-red-400 transition-colors text-xs flex-shrink-0 mt-0.5"
-                title="삭제"
+                onClick={() => { if(confirm('삭제하시겠습니까?')) onDelete(id, i) }}
+                className="text-xs text-red-500 opacity-0 group-hover:opacity-100 hover:underline font-bold transition-opacity whitespace-nowrap"
               >
-                ✕
+                삭제
               </button>
             </div>
-          ))}
-        </div>
-      )}
-
-      <div className="flex gap-2">
-        <textarea
+          ))
+        )}
+      </div>
+      <form onSubmit={handleAdd} className="flex gap-2">
+        <input
+          type="text"
           value={note}
           onChange={e => setNote(e.target.value)}
-          onKeyDown={handleKeyDown}
-          rows={2}
-          placeholder="상담 내용을 입력하세요... (Ctrl+Enter로 추가)"
-          className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors resize-none"
+          placeholder="새로운 상담 이력 입력..."
+          className="flex-1 border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 font-medium"
         />
         <button
-          onClick={handleAdd}
+          type="submit"
           disabled={adding || !note.trim()}
-          className="px-4 py-2 rounded-lg bg-gray-800 text-white text-xs font-semibold hover:bg-gray-700 transition-colors disabled:opacity-40 self-end"
+          className="px-4 py-2 bg-[#1e293b] text-white rounded-sm text-sm font-bold hover:bg-gray-800 transition-colors disabled:opacity-50 whitespace-nowrap shadow-sm"
         >
-          {adding ? '추가 중...' : '추가'}
+          기록
         </button>
-      </div>
-    </div>
-  );
-}
-
-function Field({ label, value, span }: { label: string; value: string | null | undefined; span?: boolean }) {
-  return (
-    <div className={span ? 'col-span-2 md:col-span-3' : ''}>
-      <p className="text-xs text-gray-400 mb-0.5">{label}</p>
-      <p className="font-medium text-gray-800">{value || '-'}</p>
+      </form>
     </div>
   );
 }

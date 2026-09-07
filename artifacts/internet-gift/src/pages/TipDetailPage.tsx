@@ -1123,17 +1123,61 @@ const TIP_CONTENTS: Record<string, { title: string; subtitle: string; views: num
   },
 };
 
+interface ManagedTip {
+  id: number;
+  title: string;
+  slug: string;
+  category: string;
+  content: string;
+  thumbnail: string | null;
+  views: number;
+  isFeatured: boolean;
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 /* ──────────────────────────────────────────────
    메인 export
 ────────────────────────────────────────────── */
 export default function TipDetailPage({ slug }: { slug: string }) {
   const [, setLocation] = useLocation();
+  const isLegacyTip = Boolean(TIP_CONTENTS[slug]);
+  const [managedTip, setManagedTip] = React.useState<ManagedTip | null>(null);
+  const [loading, setLoading] = React.useState(!isLegacyTip);
 
   useEffect(() => { window.scrollTo(0, 0); }, [slug]);
+  useEffect(() => {
+    if (isLegacyTip) {
+      setLoading(false);
+      setManagedTip(null);
+      return;
+    }
+    const controller = new AbortController();
+    setLoading(true);
+    fetch(`/api/tips/${encodeURIComponent(slug)}`, { signal: controller.signal })
+      .then((response) => response.ok ? response.json() : null)
+      .then((tip: ManagedTip | null) => setManagedTip(tip))
+      .catch((error: unknown) => {
+        if ((error as Error).name !== 'AbortError') setManagedTip(null);
+      })
+      .finally(() => { if (!controller.signal.aborted) setLoading(false); });
+    return () => controller.abort();
+  }, [isLegacyTip, slug]);
 
   const info = TIP_CONTENTS[slug];
 
-  if (!info) {
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-white">
+        <Header /><ISPNav />
+        <main className="flex-1 bg-background"><div className="container mx-auto px-4 py-16 max-w-[900px] text-center text-muted-foreground">꿀팁을 불러오는 중입니다.</div></main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!info && !managedTip) {
     return (
       <div className="min-h-screen flex flex-col bg-white">
         <Header />
@@ -1142,6 +1186,38 @@ export default function TipDetailPage({ slug }: { slug: string }) {
           <div className="container mx-auto px-4 py-16 max-w-[900px] text-center">
             <p className="text-muted-foreground text-lg">꿀팁을 찾을 수 없습니다.</p>
             <Button className="mt-6" onClick={() => setLocation('/tip')}>목록으로</Button>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (managedTip) {
+    return (
+      <div className="min-h-screen flex flex-col bg-white">
+        <Header />
+        <ISPNav />
+        <main className="flex-1 bg-background">
+          <div className="container mx-auto px-4 py-8 max-w-[900px]">
+            <Button variant="ghost" className="mb-6" onClick={() => setLocation('/tip')} data-testid="button-back-to-list">
+              <ChevronLeft className="w-4 h-4 mr-2" />목록으로
+            </Button>
+            <article className="bg-white rounded-xl border border-border shadow-sm p-6 md:p-8">
+              <p className="text-sm font-semibold text-primary mb-3">{managedTip.category}</p>
+              <h1 className="text-2xl md:text-3xl font-bold mb-6" data-testid="text-tip-detail-title">{managedTip.title}</h1>
+              <div className="flex items-center gap-4 text-sm text-muted-foreground mb-6 pb-6 border-b">
+                <span>조회수 {managedTip.views}</span>
+                <span>{(managedTip.createdAt || managedTip.updatedAt || '').slice(0, 10)}</span>
+              </div>
+              {managedTip.thumbnail && <img src={managedTip.thumbnail} alt={managedTip.title} className="w-full rounded-lg mb-6" />}
+              <div className="whitespace-pre-wrap text-gray-700 leading-relaxed" data-testid="text-tip-detail-content">{managedTip.content}</div>
+            </article>
+            <div className="mt-10 flex justify-center">
+              <Button variant="outline" onClick={() => setLocation('/tip')} data-testid="button-back-to-list-bottom">
+                <ChevronLeft className="w-4 h-4 mr-2" />목록으로 돌아가기
+              </Button>
+            </div>
           </div>
         </main>
         <Footer />

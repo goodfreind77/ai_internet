@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
@@ -172,15 +172,47 @@ function PrivacyContent() {
   );
 }
 
+interface DocumentResource {
+  id: number;
+  title: string;
+  category: string;
+  description: string;
+  fileUrl: string;
+  previewUrl: string | null;
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 const DOCS = [
-  { label: '사업자등록증', file: '사업자등록증.pdf', image: '/doc-images/사업자등록증-1.png' },
-  { label: '사전승낙서', file: '사전승락서.pdf', image: '/doc-images/사전승락서-1.png' },
-  { label: '전화권유판매업신고증', file: '전화권유판매업신고증.pdf', image: '/doc-images/전화권유판매업신고증-1.png' },
-  { label: '통신판매업신고증', file: '통신판매업신고증.pdf', image: '/doc-images/통신판매업신고증-1.png' },
+  { label: '사업자등록증', fileUrl: '/docs/사업자등록증.pdf', previewUrl: '/doc-images/사업자등록증-1.png' },
+  { label: '사전승낙서', fileUrl: '/docs/사전승락서.pdf', previewUrl: '/doc-images/사전승락서-1.png' },
+  { label: '전화권유판매업신고증', fileUrl: '/docs/전화권유판매업신고증.pdf', previewUrl: '/doc-images/전화권유판매업신고증-1.png' },
+  { label: '통신판매업신고증', fileUrl: '/docs/통신판매업신고증.pdf', previewUrl: '/doc-images/통신판매업신고증-1.png' },
 ];
+
+const assetUrl = (url: string) => /^(?:https?:)?\/\//.test(url) || url.startsWith('/') ? url : `/${url}`;
 
 function DocsModal({ onClose }: { onClose: () => void }) {
   const [selected, setSelected] = useState(0);
+  const [resources, setResources] = useState<DocumentResource[]>([]);
+  const docs = resources.length > 0
+    ? resources.map((resource) => ({ label: resource.title, fileUrl: assetUrl(resource.fileUrl), previewUrl: assetUrl(resource.previewUrl || resource.fileUrl) }))
+    : DOCS;
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch('/api/resources', { signal: controller.signal })
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error('문서를 불러올 수 없습니다.')))
+      .then((items: DocumentResource[]) => {
+        if (Array.isArray(items) && items.length) setResources(items.filter((item) => item.isPublished));
+      })
+      .catch(() => undefined);
+    return () => controller.abort();
+  }, []);
+
+  useEffect(() => { setSelected(0); }, [resources]);
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
       <div
@@ -194,9 +226,9 @@ function DocsModal({ onClose }: { onClose: () => void }) {
         </div>
         <div className="flex flex-1 min-h-0">
           <div className="w-48 flex-shrink-0 border-r bg-gray-50 p-3 space-y-1">
-            {DOCS.map((doc, i) => (
+            {docs.map((doc, i) => (
               <button
-                key={doc.file}
+                key={doc.fileUrl}
                 onClick={() => setSelected(i)}
                 className={`w-full text-left px-3 py-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
                   selected === i
@@ -213,9 +245,9 @@ function DocsModal({ onClose }: { onClose: () => void }) {
           </div>
           <div className="flex-1 flex flex-col min-w-0">
             <div className="flex items-center justify-between px-4 py-2 border-b bg-gray-50 flex-shrink-0">
-              <span className="text-sm font-semibold text-gray-700">{DOCS[selected].label}</span>
+              <span className="text-sm font-semibold text-gray-700">{docs[selected].label}</span>
               <a
-                href={`/docs/${DOCS[selected].file}`}
+                href={docs[selected].fileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs text-blue-600 hover:underline flex items-center gap-1"
@@ -228,9 +260,9 @@ function DocsModal({ onClose }: { onClose: () => void }) {
             </div>
             <div className="flex-1 overflow-y-auto bg-gray-100 flex items-start justify-center p-4">
               <img
-                key={DOCS[selected].image}
-                src={DOCS[selected].image}
-                alt={DOCS[selected].label}
+                key={docs[selected].previewUrl}
+                src={docs[selected].previewUrl}
+                alt={docs[selected].label}
                 className="max-w-full shadow-lg rounded"
               />
             </div>

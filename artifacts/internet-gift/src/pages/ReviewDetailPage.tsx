@@ -5,14 +5,57 @@ import { ISPNav } from '@/components/ISPNav';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
-import { ALL_REVIEWS } from './ReviewPage';
+import { ALL_REVIEWS, type Review } from './ReviewPage';
+
+interface ManagedReview {
+  id: number;
+  title: string;
+  author: string;
+  content: string;
+  thumbnail: string | null;
+  views: number;
+  isBest: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+const toReview = (review: ManagedReview): Review => ({
+  ...review,
+  id: String(review.id),
+  thumbnail: review.thumbnail || `${import.meta.env.BASE_URL}images/home_screenshot.jpg`,
+  date: (review.createdAt || review.updatedAt || '').slice(0, 10),
+});
 
 export default function ReviewDetailPage({ reviewId }: { reviewId?: string }) {
   const [, setLocation] = useLocation();
+  const isManagedId = Boolean(reviewId && /^\d+$/.test(reviewId));
+  const [managedReview, setManagedReview] = React.useState<Review | null>(null);
+  const [loading, setLoading] = React.useState(isManagedId);
 
   useEffect(() => { window.scrollTo(0, 0); }, [reviewId]);
+  useEffect(() => {
+    if (!isManagedId || !reviewId) {
+      setLoading(false);
+      setManagedReview(null);
+      return;
+    }
+    const controller = new AbortController();
+    setLoading(true);
+    fetch(`/api/reviews/${encodeURIComponent(reviewId)}`, { signal: controller.signal })
+      .then((response) => response.ok ? response.json() : null)
+      .then((review: ManagedReview | null) => setManagedReview(review ? toReview(review) : null))
+      .catch((error: unknown) => {
+        if ((error as Error).name !== 'AbortError') setManagedReview(null);
+      })
+      .finally(() => { if (!controller.signal.aborted) setLoading(false); });
+    return () => controller.abort();
+  }, [isManagedId, reviewId]);
 
-  const review = ALL_REVIEWS.find((r) => r.id === reviewId);
+  const review = isManagedId ? managedReview : ALL_REVIEWS.find((r) => r.id === reviewId);
+
+  if (loading) {
+    return <div className="min-h-screen flex flex-col bg-white"><Header /><ISPNav /><main className="flex-1 bg-background"><div className="container mx-auto px-4 py-16 max-w-[800px] text-center text-muted-foreground">후기를 불러오는 중입니다.</div></main><Footer /></div>;
+  }
 
   if (!review) {
     return (
