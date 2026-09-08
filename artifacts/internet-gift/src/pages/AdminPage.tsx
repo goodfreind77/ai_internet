@@ -285,11 +285,11 @@ export default function AdminPage() {
       const hasPerm = (p: string) => admin?.role === 'owner' || admin?.role === 'full' || admin?.permissions?.includes(p);
       const hasRoleFull = () => admin?.role === 'owner' || admin?.role === 'full';
 
-      const pC = hasPerm('문의 관리') ? fetch('/api/consultations', { headers }).catch(() => null) : Promise.resolve(null);
-      const pA = hasPerm('신청서 관리') ? fetch('/api/applications', { headers }).catch(() => null) : Promise.resolve(null);
-      const pRes = hasPerm('콘텐츠 관리') ? fetch('/api/admin/resources', { headers }).catch(() => null) : Promise.resolve(null);
-      const pRev = hasPerm('콘텐츠 관리') ? fetch('/api/admin/reviews', { headers }).catch(() => null) : Promise.resolve(null);
-      const pTip = hasPerm('콘텐츠 관리') ? fetch('/api/admin/tips', { headers }).catch(() => null) : Promise.resolve(null);
+      const pC = hasPerm('consultations') ? fetch('/api/consultations', { headers }).catch(() => null) : Promise.resolve(null);
+      const pA = hasPerm('applications') ? fetch('/api/applications', { headers }).catch(() => null) : Promise.resolve(null);
+      const pRes = hasPerm('content') ? fetch('/api/admin/resources', { headers }).catch(() => null) : Promise.resolve(null);
+      const pRev = hasPerm('content') ? fetch('/api/admin/reviews', { headers }).catch(() => null) : Promise.resolve(null);
+      const pTip = hasPerm('content') ? fetch('/api/admin/tips', { headers }).catch(() => null) : Promise.resolve(null);
       const pAcc = hasRoleFull() ? fetch('/api/admin/accounts', { headers }).catch(() => null) : Promise.resolve(null);
 
       const [cRes, aRes, resRes, revRes, tipRes, accRes] = await Promise.all([pC, pA, pRes, pRev, pTip, pAcc]);

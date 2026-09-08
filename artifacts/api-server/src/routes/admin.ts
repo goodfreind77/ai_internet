@@ -65,9 +65,21 @@ function verifyJwt(token: string): { adminId: number } | null {
 function parsePermissions(value: string): AdminPermission[] {
   try {
     const permissions = JSON.parse(value);
-    return Array.isArray(permissions)
-      ? permissions.filter((permission): permission is AdminPermission => typeof permission === "string" && ALL_PERMISSIONS.includes(permission as AdminPermission))
-      : [];
+    if (!Array.isArray(permissions)) return [];
+    const aliases: Record<string, AdminPermission> = {
+      consultations: "consultations",
+      applications: "applications",
+      content: "content",
+      "문의 관리": "consultations",
+      "신청서 관리": "applications",
+      "콘텐츠 관리": "content",
+    };
+    return [...new Set(
+      permissions
+        .filter((permission): permission is string => typeof permission === "string")
+        .map(permission => aliases[permission])
+        .filter((permission): permission is AdminPermission => Boolean(permission)),
+    )];
   } catch {
     return [];
   }
