@@ -379,17 +379,20 @@ router.get("/consent/:id/pdf", adminAuthMiddleware, requirePermission("applicati
     doc.font("NanumGothic");
     doc.pipe(res);
 
+    const contentLeft = 48;
+    const contentWidth = doc.page.width - contentLeft * 2;
+
     const writeSection = (title: string, content: string[]) => {
       doc
         .fillColor("#111111")
         .fontSize(12)
-        .text(title, { lineGap: 3 });
+        .text(title, contentLeft, doc.y, { width: contentWidth, lineGap: 3 });
       doc.moveDown(0.25);
       content.forEach((line) => {
         doc
           .fillColor("#333333")
           .fontSize(9.5)
-          .text(line, { indent: 8, lineGap: 3 });
+          .text(line, contentLeft + 8, doc.y, { width: contentWidth - 8, lineGap: 3 });
         doc.moveDown(0.2);
       });
       doc.moveDown(0.65);
@@ -398,11 +401,11 @@ router.get("/consent/:id/pdf", adminAuthMiddleware, requirePermission("applicati
     doc
       .fillColor("#666666")
       .fontSize(9)
-      .text("주식회사이좋은사람들 (AI인터넷.com)", { align: "center" });
+      .text("주식회사이좋은사람들 (AI인터넷.com)", contentLeft, doc.y, { width: contentWidth, align: "center" });
     doc
       .fillColor("#111111")
       .fontSize(19)
-      .text("인터넷 가입 사은품 지급 및 반환 동의서", { align: "center" });
+      .text("인터넷 가입 사은품 지급 및 반환 동의서", contentLeft, doc.y, { width: contentWidth, align: "center" });
     doc.moveDown(1);
 
     doc
@@ -429,7 +432,9 @@ router.get("/consent/:id/pdf", adminAuthMiddleware, requirePermission("applicati
       .fontSize(10)
       .text(
         "주식회사이좋은사람들(AI인터넷.com)은 고객님의 통신 서비스 가입을 축하드리며, 사은품 지급과 관련하여 아래 내용에 대한 동의를 받고자 합니다. 아래 내용을 충분히 읽으신 후 동의해 주시기 바랍니다.",
-        { lineGap: 4 },
+        contentLeft,
+        doc.y,
+        { width: contentWidth, lineGap: 4 },
       );
     doc.moveDown(1);
 
@@ -486,7 +491,9 @@ router.get("/consent/:id/pdf", adminAuthMiddleware, requirePermission("applicati
       .fontSize(8)
       .text(
         `© AI인터넷(ai인터넷.com) | 주식회사이좋은사람들 | 문서번호: CONSENT-${app.id}`,
-        { align: "center" },
+        contentLeft,
+        doc.y,
+        { width: contentWidth, align: "center" },
       );
 
     doc.end();
