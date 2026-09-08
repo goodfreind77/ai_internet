@@ -916,8 +916,8 @@ function ApplicationsTable({ data, filter, token, onStatusChange, onMemoSave, on
                 </tr>
                 {expanded === row.id && (
                   <tr>
-                    <td colSpan={7} className="bg-gray-50/50 p-0 border-b-2 border-gray-200">
-                      <div className="min-w-full p-6 border-t border-gray-100">
+                    <td colSpan={7} className="bg-gray-50/50 p-0 border-b-2 border-gray-200 whitespace-normal">
+                      <div className="w-full min-w-0 p-6 border-t border-gray-100">
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-4 text-sm bg-white p-5 rounded-md border border-gray-200 mb-6">
                           <Field label="기존 통신사" value={row.currentProvider} />
                           <Field label="가입신청 통신사" value={row.applyProvider} />
@@ -949,16 +949,16 @@ function ApplicationsTable({ data, filter, token, onStatusChange, onMemoSave, on
                           {row.memo && <Field label="신청 메모" value={row.memo} span />}
                         </div>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                          <div className="space-y-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                          <div className="space-y-6 min-w-0">
                             {row.consentedAt && <ConsentPdfButton id={row.id} name={row.name} consentedAt={row.consentedAt} token={token} />}
                             <KakaoNotifySection id={row.id} phone={row.phone} onNotify={onNotify} />
                           </div>
-                          <div className="space-y-6">
+                          <div className="space-y-6 min-w-0">
                             <AdminMemoSection id={row.id} initialMemo={row.adminMemo ?? ''} onSave={onMemoSave} />
-                            <ConsultationHistorySection id={row.id} history={row.consultationHistory ? JSON.parse(row.consultationHistory) as HistoryEntry[] : []} onAdd={onHistoryAdd} onDelete={onHistoryDelete} />
                           </div>
                         </div>
+                        <ConsultationHistorySection id={row.id} history={row.consultationHistory ? JSON.parse(row.consultationHistory) as HistoryEntry[] : []} onAdd={onHistoryAdd} onDelete={onHistoryDelete} />
                       </div>
                     </td>
                   </tr>
@@ -1445,38 +1445,50 @@ function ConsultationHistorySection({ id, history, onAdd, onDelete }: { id: numb
   };
 
   return (
-    <div className="rounded-md border border-gray-200 bg-white px-5 py-5 shadow-sm">
+    <div className="w-full min-w-0 overflow-hidden rounded-md border border-gray-200 bg-white shadow-sm whitespace-normal">
       <div className="mb-4 border-b border-gray-100 pb-3">
-        <h4 className="text-sm font-black text-gray-900">상담 이력 ({history.length})</h4>
+        <h4 className="px-5 pt-5 text-sm font-black text-gray-900">상담 이력 ({history.length})</h4>
       </div>
-      <div className="space-y-3 mb-5 max-h-48 overflow-y-auto pr-2">
-        {history.length === 0 ? (
-          <p className="text-xs text-gray-400 font-medium py-2 text-center border border-dashed border-gray-200 rounded-sm">이력이 없습니다.</p>
-        ) : (
-          history.map((h, i) => (
-            <div key={i} className="flex gap-3 group items-start">
-              <div className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 flex-shrink-0" />
-              <div className="flex-1">
-                <p className="text-xs font-bold text-gray-400 mb-0.5">{formatDate(h.date)}</p>
-                <p className="text-sm font-medium text-gray-800 break-words leading-snug">{h.note}</p>
-              </div>
-              <button
-                onClick={() => { if(confirm('삭제하시겠습니까?')) onDelete(id, i) }}
-                className="text-xs text-red-500 opacity-0 group-hover:opacity-100 hover:underline font-bold transition-opacity whitespace-nowrap"
-              >
-                삭제
-              </button>
-            </div>
-          ))
-        )}
+      <div className="max-h-64 overflow-auto border-b border-gray-100">
+        <table className="w-full table-fixed text-sm">
+          <thead className="sticky top-0 bg-gray-50 text-gray-600">
+            <tr className="border-b border-gray-200">
+              <th className="w-44 px-4 py-3 text-left font-bold">일시</th>
+              <th className="px-4 py-3 text-left font-bold">상담 내용</th>
+              <th className="w-20 px-4 py-3 text-center font-bold">관리</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {history.length === 0 ? (
+              <tr>
+                <td colSpan={3} className="px-4 py-8 text-center text-xs font-medium text-gray-400">등록된 상담 이력이 없습니다.</td>
+              </tr>
+            ) : (
+              history.map((h, i) => (
+                <tr key={i} className="hover:bg-gray-50">
+                  <td className="px-4 py-3 align-top text-xs font-semibold text-gray-500 tabular-nums whitespace-nowrap">{formatDate(h.date)}</td>
+                  <td className="px-4 py-3 align-top font-medium leading-relaxed text-gray-800 break-words whitespace-normal">{h.note}</td>
+                  <td className="px-4 py-3 text-center align-top">
+                    <button
+                      onClick={() => { if(confirm('삭제하시겠습니까?')) onDelete(id, i) }}
+                      className="text-xs font-bold text-red-500 hover:text-red-700 hover:underline whitespace-nowrap"
+                    >
+                      삭제
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
-      <form onSubmit={handleAdd} className="flex gap-2">
+      <form onSubmit={handleAdd} className="flex flex-col gap-2 p-4 sm:flex-row">
         <input
           type="text"
           value={note}
           onChange={e => setNote(e.target.value)}
           placeholder="새로운 상담 이력 입력..."
-          className="flex-1 border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 font-medium"
+          className="min-w-0 flex-1 border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 font-medium"
         />
         <button
           type="submit"
