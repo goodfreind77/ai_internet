@@ -40,6 +40,8 @@ type Application = {
   adminMemo: string | null;
   consultationHistory: string | null;
   consentedAt: string | null;
+  receptionNotifiedAt: string | null;
+  completionNotifiedAt: string | null;
   phoneCarrier: string | null;
   status: Status;
   createdAt: string;
@@ -461,7 +463,7 @@ export default function AdminPage() {
     } catch {}
   };
 
-  const sendKakaoNotify = async (id: number, variables: Record<string, string>): Promise<{ success: boolean; mock?: boolean; error?: string }> => {
+  const sendKakaoNotify = async (id: number, variables: Record<string, string>): Promise<{ success: boolean; mock?: boolean; error?: string; sentAt?: string; type?: string }> => {
     if (!token) return { success: false, error: '인증 오류' };
     try {
       const res = await fetch(`/api/applications/${id}/notify`, {
@@ -471,7 +473,15 @@ export default function AdminPage() {
       });
       const data = await res.json();
       if (!res.ok) return { success: false, error: data.error ?? '발송 실패' };
-      return { success: true, mock: data.mock };
+      if (!data.mock && data.sentAt) {
+        setApplications(prev => prev.map(application => application.id === id ? {
+          ...application,
+          ...(data.type === '접수완료'
+            ? { receptionNotifiedAt: data.sentAt }
+            : { completionNotifiedAt: data.sentAt }),
+        } : application));
+      }
+      return { success: true, mock: data.mock, sentAt: data.sentAt, type: data.type };
     } catch {
       return { success: false, error: '네트워크 오류' };
     }
@@ -952,7 +962,13 @@ function ApplicationsTable({ data, filter, token, onStatusChange, onMemoSave, on
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                           <div className="space-y-6 min-w-0">
                             {row.consentedAt && <ConsentPdfButton id={row.id} name={row.name} consentedAt={row.consentedAt} token={token} />}
-                            <KakaoNotifySection id={row.id} phone={row.phone} onNotify={onNotify} />
+                            <KakaoNotifySection
+                              id={row.id}
+                              phone={row.phone}
+                              receptionNotifiedAt={row.receptionNotifiedAt}
+                              completionNotifiedAt={row.completionNotifiedAt}
+                              onNotify={onNotify}
+                            />
                           </div>
                           <div className="space-y-6 min-w-0">
                             <AdminMemoSection id={row.id} initialMemo={row.adminMemo ?? ''} onSave={onMemoSave} />
@@ -1360,7 +1376,7 @@ function ConsentPdfButton({ id, name, consentedAt, token }: { id: number; name: 
   );
 }
 
-function KakaoNotifySection({ id, phone, onNotify }: { id: number; phone: string | null; onNotify: (id: number, vars: Record<string, string>) => Promise<{success: boolean; mock?: boolean; error?: string}> }) {
+function KakaoNotifySection({ id, phone, receptionNotifiedAt, completionNotifiedAt, onNotify }: { id: number; phone: string | null; receptionNotifiedAt: string | null; completionNotifiedAt: string | null; onNotify: (id: number, vars: Record<string, string>) => Promise<{success: boolean; mock?: boolean; error?: string; sentAt?: string; type?: string}> }) {
   const [loading, setLoading] = useState(false);
 
   const handleSend = async (type: string) => {
@@ -1388,14 +1404,20 @@ function KakaoNotifySection({ id, phone, onNotify }: { id: number; phone: string
           disabled={loading || !phone}
           className="rounded-sm border border-gray-200 px-4 py-3 text-left transition-colors hover:border-blue-500 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <span className="block text-sm font-bold text-gray-800">접수 안내톡 발송</span>
+          <span className="flex items-center gap-2 text-sm font-bold text-gray-800">
+            접수 안내톡 발송
+            {receptionNotifiedAt && <span className="text-green-600" title={`발송 완료: ${formatDate(receptionNotifiedAt)}`}>✓</span>}
+          </span>
         </button>
         <button
           onClick={() => handleSend('개통완료')}
           disabled={loading || !phone}
           className="rounded-sm border border-gray-200 px-4 py-3 text-left transition-colors hover:border-blue-500 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <span className="block text-sm font-bold text-gray-800">개통 완료톡 발송</span>
+          <span className="flex items-center gap-2 text-sm font-bold text-gray-800">
+            개통 완료톡 발송
+            {completionNotifiedAt && <span className="text-green-600" title={`발송 완료: ${formatDate(completionNotifiedAt)}`}>✓</span>}
+          </span>
         </button>
       </div>
     </div>

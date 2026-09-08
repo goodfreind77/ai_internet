@@ -175,6 +175,8 @@ router.patch("/applications/:id/status", adminAuthMiddleware, requirePermission(
       return;
     }
 
+    let responseApplication = updated;
+
     // 개통완료 상태로 변경 시 카카오 알림톡 자동 발송 (기존 동의서 템플릿 사용)
     if (status === "개통완료" && updated.phone) {
       const apiKey = process.env.SOLAPI_API_KEY;
@@ -202,6 +204,12 @@ router.patch("/applications/:id/status", adminAuthMiddleware, requirePermission(
               },
             },
           });
+          const [notified] = await db
+            .update(applicationsTable)
+            .set({ completionNotifiedAt: new Date() })
+            .where(eq(applicationsTable.id, id))
+            .returning();
+          if (notified) responseApplication = notified;
           req.log.info({ id, phone: phoneNormalized }, "개통완료 카카오 알림톡 발송 성공");
         } catch (notifyErr) {
           req.log.error({ id, notifyErr }, "개통완료 알림톡 발송 실패 (상태 변경은 완료)");
@@ -211,7 +219,7 @@ router.patch("/applications/:id/status", adminAuthMiddleware, requirePermission(
       }
     }
 
-    res.json(updated);
+    res.json(responseApplication);
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "서버 오류가 발생했습니다." });
@@ -527,6 +535,11 @@ router.post("/applications/:id/notify", adminAuthMiddleware, requirePermission("
   try {
     const id = parseInt(String(req.params.id), 10);
     const { variables } = req.body as { variables?: Record<string, string> };
+    const type = variables?.type;
+    if (type !== "접수완료" && type !== "개통완료") {
+      res.status(400).json({ error: "유효하지 않은 알림톡 유형입니다." });
+      return;
+    }
 
     const [app] = await db
       .select({ phone: applicationsTable.phone, name: applicationsTable.name })
@@ -582,7 +595,12 @@ router.post("/applications/:id/notify", adminAuthMiddleware, requirePermission("
     });
 
     req.log.info({ id, phone: phoneNormalized, result }, "카카오 알림톡 발송 성공");
-    res.json({ success: true, result });
+    const sentAt = new Date();
+    await db
+      .update(applicationsTable)
+      .set(type === "접수완료" ? { receptionNotifiedAt: sentAt } : { completionNotifiedAt: sentAt })
+      .where(eq(applicationsTable.id, id));
+    res.json({ success: true, result, type, sentAt });
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "서버 오류가 발생했습니다." });

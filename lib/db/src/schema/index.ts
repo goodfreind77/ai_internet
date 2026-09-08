@@ -43,6 +43,8 @@ export const applicationsTable = pgTable("applications", {
   consultationHistory: text("consultation_history"),
   status: varchar("status", { length: 20 }).default("처리중").notNull(),
   consentedAt: timestamp("consented_at"),
+  receptionNotifiedAt: timestamp("reception_notified_at"),
+  completionNotifiedAt: timestamp("completion_notified_at"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
