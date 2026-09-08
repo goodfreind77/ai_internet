@@ -42,6 +42,7 @@ export default function ConsentPage({ id }: { id: string }) {
   const [confirmation, setConfirmation] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const [consentFailed, setConsentFailed] = useState(false);
   const [agreed, setAgreed] = useState(false);
   const [agreedAt, setAgreedAt] = useState<string | null>(null);
 
@@ -82,6 +83,7 @@ export default function ConsentPage({ id }: { id: string }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError('');
+    setConsentFailed(false);
     if (confirmation !== '동의합니다.') {
       setSubmitError("'동의합니다.'를 정확히 입력해주세요.");
       return;
@@ -95,12 +97,14 @@ export default function ConsentPage({ id }: { id: string }) {
       });
       const d = await res.json();
       if (!res.ok) {
+        setConsentFailed(d.consentStatus === 'failed');
         setSubmitError(d.error ?? '동의 처리에 실패했습니다.');
         return;
       }
       setAgreed(true);
       setAgreedAt(d.consentedAt);
     } catch {
+      setConsentFailed(true);
       setSubmitError('서버 오류가 발생했습니다.');
     } finally {
       setSubmitting(false);
@@ -345,9 +349,15 @@ export default function ConsentPage({ id }: { id: string }) {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit}>
-                  <div className="rounded-xl bg-amber-50 border border-amber-200 px-6 py-5">
-                    <p className="text-sm font-semibold text-amber-800 mb-1">전자 서명 (동의 완료)</p>
-                    <p className="text-xs text-amber-700 mb-4">
+                  <div className={`rounded-xl border px-6 py-5 ${consentFailed ? 'bg-red-50 border-red-300' : 'bg-amber-50 border-amber-200'}`}>
+                    {consentFailed && (
+                      <div className="mb-4 rounded-lg border border-red-200 bg-white px-4 py-3 text-center">
+                        <p className="font-bold text-red-700">동의 실패</p>
+                        <p className="mt-1 text-xs text-red-600">PDF 저장에 실패하여 동의가 완료되지 않았습니다.</p>
+                      </div>
+                    )}
+                    <p className={`text-sm font-semibold mb-1 ${consentFailed ? 'text-red-800' : 'text-amber-800'}`}>전자 서명 (동의 완료)</p>
+                    <p className={`text-xs mb-4 ${consentFailed ? 'text-red-700' : 'text-amber-700'}`}>
                       위 동의서의 모든 내용을 확인하셨다면 아래 입력란에{' '}
                       <strong className="text-amber-900">"동의합니다."</strong>를 입력해주세요.
                       <br />
@@ -359,7 +369,7 @@ export default function ConsentPage({ id }: { id: string }) {
                         value={confirmation}
                         onChange={e => setConfirmation(e.target.value)}
                         placeholder="동의합니다."
-                        className="flex-1 px-4 py-3 rounded-lg border border-amber-300 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 text-sm transition-colors"
+                        className={`flex-1 px-4 py-3 rounded-lg border bg-white focus:outline-none focus:ring-2 text-sm transition-colors ${consentFailed ? 'border-red-300 focus:ring-red-400 focus:border-red-400' : 'border-amber-300 focus:ring-amber-400 focus:border-amber-400'}`}
                         autoComplete="off"
                       />
                       <button
@@ -371,7 +381,7 @@ export default function ConsentPage({ id }: { id: string }) {
                       </button>
                     </div>
                     {submitError && (
-                      <p className="text-red-500 text-xs mt-2">{submitError}</p>
+                      <p className="text-red-600 text-xs font-semibold mt-2">{submitError}</p>
                     )}
                   </div>
                 </form>

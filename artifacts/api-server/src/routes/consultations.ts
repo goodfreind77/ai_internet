@@ -683,7 +683,16 @@ router.post("/consent/:id/agree", async (req, res) => {
       consentedAt,
     };
     const pdf = await consentPdfBuffer(consentApplication);
-    await uploadConsentPdfToDrive(consentApplication, pdf);
+    try {
+      await uploadConsentPdfToDrive(consentApplication, pdf);
+    } catch (uploadError) {
+      req.log.error({ err: uploadError, applicationId: id }, "동의서 Google Drive 업로드 실패");
+      res.status(502).json({
+        error: "PDF 저장에 실패하여 동의가 완료되지 않았습니다. 잠시 후 다시 시도해주세요.",
+        consentStatus: "failed",
+      });
+      return;
+    }
     const [updated] = await db
       .update(applicationsTable)
       .set({ consentedAt })
