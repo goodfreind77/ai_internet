@@ -5,7 +5,7 @@ import { Footer } from '@/components/Footer';
 type Status = '처리중' | '접수완료' | '개통완료' | '취소';
 const STATUSES: Status[] = ['처리중', '접수완료', '개통완료', '취소'];
 
-type HistoryEntry = { date: string; note: string };
+type HistoryEntry = { date: string; note: string; adminName?: string };
 
 type ConsultationRequest = {
   id: number;
@@ -1480,6 +1480,7 @@ function ConsultationHistorySection({ id, history, onAdd, onDelete }: { id: numb
           <thead className="sticky top-0 bg-gray-50 text-gray-600">
             <tr className="border-b border-gray-200">
               <th className="w-44 px-4 py-3 text-left font-bold">일시</th>
+              <th className="w-32 px-4 py-3 text-left font-bold">입력 관리자</th>
               <th className="px-4 py-3 text-left font-bold">상담 내용</th>
               <th className="w-20 px-4 py-3 text-center font-bold">관리</th>
             </tr>
@@ -1487,12 +1488,13 @@ function ConsultationHistorySection({ id, history, onAdd, onDelete }: { id: numb
           <tbody className="divide-y divide-gray-100">
             {history.length === 0 ? (
               <tr>
-                <td colSpan={3} className="px-4 py-8 text-center text-xs font-medium text-gray-400">등록된 상담 이력이 없습니다.</td>
+                <td colSpan={4} className="px-4 py-8 text-center text-xs font-medium text-gray-400">등록된 상담 이력이 없습니다.</td>
               </tr>
             ) : (
               history.map((h, i) => (
                 <tr key={i} className="hover:bg-gray-50">
                   <td className="px-4 py-3 align-top text-xs font-semibold text-gray-500 tabular-nums whitespace-nowrap">{formatDate(h.date)}</td>
+                  <td className="px-4 py-3 align-top text-xs font-bold text-gray-700 break-words">{h.adminName ?? '기록 없음'}</td>
                   <td className="px-4 py-3 align-top font-medium leading-relaxed text-gray-800 break-words whitespace-normal">{h.note}</td>
                   <td className="px-4 py-3 text-center align-top">
                     <button

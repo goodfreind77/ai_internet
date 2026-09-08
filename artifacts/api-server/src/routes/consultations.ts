@@ -268,11 +268,18 @@ router.post("/applications/:id/history", adminAuthMiddleware, requirePermission(
       res.status(404).json({ error: "항목을 찾을 수 없습니다." });
       return;
     }
-    type HistoryEntry = { date: string; note: string };
+    type HistoryEntry = { date: string; note: string; adminName?: string };
     const existing: HistoryEntry[] = current.consultationHistory
       ? JSON.parse(current.consultationHistory)
       : [];
-    const newEntry: HistoryEntry = { date: new Date().toISOString(), note: note.trim() };
+    const adminName = req.admin?.kind === "owner"
+      ? "대표 관리자"
+      : req.admin?.displayName ?? "관리자";
+    const newEntry: HistoryEntry = {
+      date: new Date().toISOString(),
+      note: note.trim(),
+      adminName,
+    };
     const updated_history = JSON.stringify([...existing, newEntry]);
     const [updated] = await db
       .update(applicationsTable)
@@ -298,7 +305,7 @@ router.delete("/applications/:id/history/:index", adminAuthMiddleware, requirePe
       res.status(404).json({ error: "항목을 찾을 수 없습니다." });
       return;
     }
-    type HistoryEntry = { date: string; note: string };
+    type HistoryEntry = { date: string; note: string; adminName?: string };
     const existing: HistoryEntry[] = current.consultationHistory
       ? JSON.parse(current.consultationHistory)
       : [];
