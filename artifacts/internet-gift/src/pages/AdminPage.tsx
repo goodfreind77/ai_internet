@@ -54,6 +54,7 @@ type ManagedTip = { id: number; title: string; slug: string; category: string; c
 type AdminRole = 'owner' | 'full' | 'limited';
 
 type AdminAccount = {
+  kind?: 'owner' | 'account';
   id: number;
   username: string;
   displayName: string;
@@ -730,6 +731,7 @@ export default function AdminPage() {
                 data={applications}
                 filter={filter}
                 token={token}
+                canManageMemo={admin.kind === 'owner' || admin.role === 'owner'}
                 onStatusChange={updateApplicationStatus}
                 onMemoSave={updateApplicationMemo}
                 onHistoryAdd={addConsultationHistory}
@@ -873,7 +875,7 @@ function ConsultationsTable({ data, filter, onStatusChange }: { data: Consultati
   );
 }
 
-function ApplicationsTable({ data, filter, token, onStatusChange, onMemoSave, onHistoryAdd, onHistoryDelete, onNotify }: { data: Application[]; filter: FilterState; token: string; onStatusChange: (id: number, status: Status) => void; onMemoSave: (id: number, memo: string) => Promise<void>; onHistoryAdd: (id: number, note: string) => Promise<boolean>; onHistoryDelete: (id: number, index: number) => Promise<void>; onNotify: (id: number, variables: Record<string, string>) => Promise<{ success: boolean; mock?: boolean; error?: string }>; }) {
+function ApplicationsTable({ data, filter, token, canManageMemo, onStatusChange, onMemoSave, onHistoryAdd, onHistoryDelete, onNotify }: { data: Application[]; filter: FilterState; token: string; canManageMemo: boolean; onStatusChange: (id: number, status: Status) => void; onMemoSave: (id: number, memo: string) => Promise<void>; onHistoryAdd: (id: number, note: string) => Promise<boolean>; onHistoryDelete: (id: number, index: number) => Promise<void>; onNotify: (id: number, variables: Record<string, string>) => Promise<{ success: boolean; mock?: boolean; error?: string }>; }) {
   const [expanded, setExpanded] = useState<number | null>(null);
   const [updating, setUpdating] = useState<number | null>(null);
   const filtered = applyFilters(data, filter);
@@ -970,9 +972,11 @@ function ApplicationsTable({ data, filter, token, onStatusChange, onMemoSave, on
                               onNotify={onNotify}
                             />
                           </div>
-                          <div className="space-y-6 min-w-0">
-                            <AdminMemoSection id={row.id} initialMemo={row.adminMemo ?? ''} onSave={onMemoSave} />
-                          </div>
+                          {canManageMemo && (
+                            <div className="space-y-6 min-w-0">
+                              <AdminMemoSection id={row.id} initialMemo={row.adminMemo ?? ''} onSave={onMemoSave} />
+                            </div>
+                          )}
                         </div>
                         <ConsultationHistorySection id={row.id} history={row.consultationHistory ? JSON.parse(row.consultationHistory) as HistoryEntry[] : []} onAdd={onHistoryAdd} onDelete={onHistoryDelete} />
                       </div>

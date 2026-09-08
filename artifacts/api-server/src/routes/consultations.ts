@@ -1,7 +1,7 @@
-import { Router, type IRouter } from "express";
+import { Router, type IRouter, type Request } from "express";
 import { db, consultationRequestsTable, applicationsTable } from "@workspace/db";
 import { desc, eq } from "drizzle-orm";
-import { adminAuthMiddleware, requirePermission } from "./admin";
+import { adminAuthMiddleware, requireOwnerAdmin, requirePermission } from "./admin";
 import { SolapiMessageService } from "solapi";
 import PDFDocument from "pdfkit";
 import { fileURLToPath } from "node:url";
@@ -36,6 +36,12 @@ async function sendTelegram(text: string) {
 }
 
 const STATUSES = ["처리중", "접수완료", "개통완료", "취소"] as const;
+
+function applicationResponse(req: Request, application: typeof applicationsTable.$inferSelect) {
+  if (req.admin?.kind === "owner") return application;
+  const { adminMemo: _adminMemo, ...safeApplication } = application;
+  return safeApplication;
+}
 
 router.post("/consultations", async (req, res) => {
   try {
@@ -150,7 +156,7 @@ router.get("/applications", adminAuthMiddleware, requirePermission("applications
       .select()
       .from(applicationsTable)
       .orderBy(desc(applicationsTable.createdAt));
-    res.json(rows);
+    res.json(rows.map(row => applicationResponse(req, row)));
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "서버 오류가 발생했습니다." });
@@ -219,14 +225,14 @@ router.patch("/applications/:id/status", adminAuthMiddleware, requirePermission(
       }
     }
 
-    res.json(responseApplication);
+    res.json(applicationResponse(req, responseApplication));
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "서버 오류가 발생했습니다." });
   }
 });
 
-router.patch("/applications/:id/memo", adminAuthMiddleware, requirePermission("applications"), async (req, res) => {
+router.patch("/applications/:id/memo", adminAuthMiddleware, requireOwnerAdmin, async (req, res) => {
   try {
     const id = parseInt(String(req.params.id), 10);
     const { adminMemo } = req.body;
@@ -239,7 +245,7 @@ router.patch("/applications/:id/memo", adminAuthMiddleware, requirePermission("a
       res.status(404).json({ error: "항목을 찾을 수 없습니다." });
       return;
     }
-    res.json(updated);
+    res.json(applicationResponse(req, updated));
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "서버 오류가 발생했습니다." });
@@ -273,7 +279,7 @@ router.post("/applications/:id/history", adminAuthMiddleware, requirePermission(
       .set({ consultationHistory: updated_history })
       .where(eq(applicationsTable.id, id))
       .returning();
-    res.json(updated);
+    res.json(applicationResponse(req, updated));
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "서버 오류가 발생했습니다." });
@@ -302,7 +308,7 @@ router.delete("/applications/:id/history/:index", adminAuthMiddleware, requirePe
       .set({ consultationHistory: JSON.stringify(existing) })
       .where(eq(applicationsTable.id, id))
       .returning();
-    res.json(updated);
+    res.json(applicationResponse(req, updated));
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "서버 오류가 발생했습니다." });

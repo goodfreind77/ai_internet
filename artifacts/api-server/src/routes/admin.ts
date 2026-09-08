@@ -157,6 +157,12 @@ export function requireFullAdmin(req: Request, res: Response, next: NextFunction
   res.status(403).json({ error: "전체 관리자 권한이 필요합니다." });
 }
 
+export function requireOwnerAdmin(req: Request, res: Response, next: NextFunction): void {
+  if (!req.admin) return void res.status(401).json({ error: "인증이 필요합니다." });
+  if (req.admin.kind === "owner") return next();
+  res.status(403).json({ error: "대표 관리자만 수행할 수 있는 작업입니다." });
+}
+
 function parseAccountInput(body: unknown, isPatch: boolean): { username?: string; displayName?: string; password?: string; role?: "full" | "limited"; permissions?: AdminPermission[]; isActive?: boolean } | null {
   if (!body || typeof body !== "object" || Array.isArray(body)) return null;
   const input = body as Record<string, unknown>;
