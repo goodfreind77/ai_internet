@@ -5,11 +5,147 @@ import { adminAuthMiddleware, requireOwnerAdmin, requirePermission } from "./adm
 import { SolapiMessageService } from "solapi";
 import PDFDocument from "pdfkit";
 import { fileURLToPath } from "node:url";
+import { PassThrough } from "node:stream";
+import { ReplitConnectors } from "@replit/connectors-sdk";
 
 const router: IRouter = Router();
 const consentPdfFontPath = fileURLToPath(
   new URL("./NanumGothicBold.ttf", import.meta.url),
 );
+const connectors = new ReplitConnectors();
+const DRIVE_FOLDER_NAME = "AI인터넷 전자동의서";
+
+type ConsentPdfApplication = {
+  id: number;
+  name: string | null;
+  phone: string | null;
+  consentedAt: Date;
+};
+
+function createConsentPdf(app: ConsentPdfApplication) {
+  const doc = new PDFDocument({
+    size: "A4",
+    margin: 48,
+    info: {
+      Title: "인터넷 가입 사은품 지급 및 반환 동의서",
+      Author: "주식회사이좋은사람들 (AI인터넷.com)",
+    },
+  });
+  doc.registerFont("NanumGothic", consentPdfFontPath);
+  doc.font("NanumGothic");
+
+  const contentLeft = 48;
+  const contentWidth = doc.page.width - contentLeft * 2;
+  const writeSection = (title: string, content: string[]) => {
+    doc.fillColor("#111111").fontSize(12).text(title, contentLeft, doc.y, { width: contentWidth, lineGap: 3 });
+    doc.moveDown(0.25);
+    content.forEach((line) => {
+      doc.fillColor("#333333").fontSize(9.5).text(line, contentLeft + 8, doc.y, { width: contentWidth - 8, lineGap: 3 });
+      doc.moveDown(0.2);
+    });
+    doc.moveDown(0.65);
+  };
+
+  doc.fillColor("#666666").fontSize(9).text("주식회사이좋은사람들 (AI인터넷.com)", contentLeft, doc.y, { width: contentWidth, align: "center" });
+  doc.fillColor("#111111").fontSize(19).text("인터넷 가입 사은품 지급 및 반환 동의서", contentLeft, doc.y, { width: contentWidth, align: "center" });
+  doc.moveDown(1);
+  doc.roundedRect(48, doc.y, 499, 78, 7).fillAndStroke("#F8FAFC", "#D9E1EA");
+  const infoTop = doc.y + 13;
+  doc.fillColor("#666666").fontSize(9).text("고객명", 64, infoTop).text("연락처", 64, infoTop + 20).text("동의일시", 64, infoTop + 40);
+  doc.fillColor("#111111").fontSize(10).text(app.name ?? "-", 140, infoTop).text(app.phone ?? "-", 140, infoTop + 20).text(formatConsentDate(app.consentedAt), 140, infoTop + 40);
+  doc.y = infoTop + 75;
+  doc.moveDown(1);
+  doc.fillColor("#333333").fontSize(10).text(
+    "주식회사이좋은사람들(AI인터넷.com)은 고객님의 통신 서비스 가입을 축하드리며, 사은품 지급과 관련하여 아래 내용에 대한 동의를 받고자 합니다. 아래 내용을 충분히 읽으신 후 동의해 주시기 바랍니다.",
+    contentLeft, doc.y, { width: contentWidth, lineGap: 4 },
+  );
+  doc.moveDown(1);
+  writeSection("제1조 (사은품 지급 조건)", [
+    "회사는 아래 두 가지 조건이 모두 충족된 경우에 한하여 고객님께 사은품을 현금으로 지급합니다.",
+    "1호: 고객님이 가입하신 통신 서비스(인터넷, TV, 전화, CCTV 등 가입 상품 전체)의 정상 개통이 완료된 경우",
+    "2호: 고객님의 본 동의서의 전체 항목에 동의한 경우",
+    "사은품 금액은 가입하신 통신사, 가입 상품 구성 및 고객별 조건에 따라 전화 상담 시 약속된 금액으로 확정됩니다.",
+  ]);
+  writeSection("제2조 (사은품 반환 의무)", [
+    "고객님은 가입 상품 개통 완료 처리일(개통일 당일 포함)로부터 1년(12개월) 이내에 아래 각 호에 해당하는 행위를 하는 경우, 지급받은 사은품 전액 또는 일부를 회사에 반환하여야 합니다.",
+    "1호: 가입 상품(인터넷/TV/전화/CCTV 등) 중 1개 이상의 서비스 해지",
+    "2호: 가입 상품 중 1개 이상의 서비스 일시정지",
+    "3호: 가입 당시 계약한 상품의 임의 변경(상위 상품으로의 변경 제외)",
+    "4호: 가입 상품 전체 또는 일부의 명의 변경(회사의 동의를 통해 명의변경 하는 경우 제외)",
+    "가입 상품 일부만 해지·정지·변경하는 경우에도 사은품 전액 또는 일부 반환 의무가 동일하게 적용됩니다.",
+    "반환 의무 기산일은 통신사 개통 완료 처리일을 기준으로 하며, 개통일 당일을 포함하여 산정합니다.",
+  ]);
+  writeSection("제3조 (반환 방법 및 기한)", [
+    "사은품 반환은 고객님이 해지·정지·변경 신청을 한 즉시 회사가 지정하는 계좌로 현금 이체하는 방법으로 이루어집니다. 반환 계좌 정보는 반환 사유 발생 시 회사에서 별도 안내드립니다.",
+  ]);
+  writeSection("제4조 (반환 불이행 시 조치)", [
+    "고객님이 정당한 사유 없이 사은품 반환을 거부하거나 기한 내 이행하지 않을 경우, 회사는 민사상 청구 등 법적 절차를 진행할 수 있습니다.",
+  ]);
+  writeSection("제5조 (개인정보 활용 동의)", [
+    "본 동의서 작성 및 보관을 위해 고객님의 성명, 연락처, 가입 정보가 활용됩니다. 수집된 개인정보는 사은품 지급 및 반환 관리 목적으로만 사용되며, 관련 법령에 따라 보관됩니다.",
+  ]);
+  doc.roundedRect(48, doc.y, 499, 70, 7).fillAndStroke("#F0F7FF", "#C3D9F0");
+  const agreementTop = doc.y + 12;
+  doc.fillColor("#1A5276").fontSize(10).text("전자 동의 완료", 64, agreementTop)
+    .fillColor("#333333").fontSize(9)
+    .text('위 서명자는 본 동의서의 전체 내용을 확인하고 "동의합니다."를 입력하여 전자적으로 동의하였습니다.', 64, agreementTop + 20, { width: 466, lineGap: 3 })
+    .text(`동의일시: ${formatConsentDate(app.consentedAt)}`, 64, agreementTop + 42);
+  doc.y = agreementTop + 75;
+  doc.moveDown(1);
+  doc.fillColor("#999999").fontSize(8).text(
+    `© AI인터넷(ai인터넷.com) | 주식회사이좋은사람들 | 문서번호: CONSENT-${app.id}`,
+    contentLeft, doc.y, { width: contentWidth, align: "center" },
+  );
+  return doc;
+}
+
+async function consentPdfBuffer(app: ConsentPdfApplication): Promise<Buffer> {
+  const stream = new PassThrough();
+  const chunks: Buffer[] = [];
+  stream.on("data", (chunk: Buffer) => chunks.push(chunk));
+  const completed = new Promise<Buffer>((resolve, reject) => {
+    stream.on("end", () => resolve(Buffer.concat(chunks)));
+    stream.on("error", reject);
+  });
+  const doc = createConsentPdf(app);
+  doc.pipe(stream);
+  doc.end();
+  return completed;
+}
+
+async function uploadConsentPdfToDrive(app: ConsentPdfApplication, pdf: Buffer): Promise<void> {
+  const folderQuery = encodeURIComponent(`name = '${DRIVE_FOLDER_NAME}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false`);
+  const folderResponse = await connectors.proxy("google-drive", `/drive/v3/files?q=${folderQuery}&fields=files(id,name)&pageSize=1`, { method: "GET" });
+  if (!folderResponse.ok) throw new Error(`Google Drive 폴더 조회 실패 (${folderResponse.status})`);
+  const folders = await folderResponse.json() as { files?: Array<{ id: string }> };
+  let folderId = folders.files?.[0]?.id;
+  if (!folderId) {
+    const createResponse = await connectors.proxy("google-drive", "/drive/v3/files?fields=id", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: DRIVE_FOLDER_NAME, mimeType: "application/vnd.google-apps.folder" }),
+    });
+    if (!createResponse.ok) throw new Error(`Google Drive 폴더 생성 실패 (${createResponse.status})`);
+    folderId = ((await createResponse.json()) as { id: string }).id;
+  }
+
+  const safeName = (app.name ?? `신청서-${app.id}`).replace(/[\\/:*?"<>|]/g, "_");
+  const fileName = `동의서_${safeName}_${formatConsentDate(app.consentedAt).replace(/[. :]/g, "-")}.pdf`;
+  const boundary = `consent-${app.id}-${Date.now()}`;
+  const metadata = JSON.stringify({ name: fileName, parents: [folderId] });
+  const body = Buffer.concat([
+    Buffer.from(`--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${metadata}\r\n`),
+    Buffer.from(`--${boundary}\r\nContent-Type: application/pdf\r\n\r\n`),
+    pdf,
+    Buffer.from(`\r\n--${boundary}--`),
+  ]);
+  const uploadResponse = await connectors.proxy("google-drive", "/upload/drive/v3/files?uploadType=multipart&fields=id", {
+    method: "POST",
+    headers: { "Content-Type": `multipart/related; boundary=${boundary}` },
+    body,
+  });
+  if (!uploadResponse.ok) throw new Error(`Google Drive PDF 업로드 실패 (${uploadResponse.status})`);
+}
 
 function formatConsentDate(value: Date): string {
   return new Intl.DateTimeFormat("ko-KR", {
@@ -523,7 +659,12 @@ router.post("/consent/:id/agree", async (req, res) => {
       return;
     }
     const [current] = await db
-      .select({ consentedAt: applicationsTable.consentedAt })
+      .select({
+        id: applicationsTable.id,
+        name: applicationsTable.name,
+        phone: applicationsTable.phone,
+        consentedAt: applicationsTable.consentedAt,
+      })
       .from(applicationsTable)
       .where(eq(applicationsTable.id, id));
     if (!current) {
@@ -534,9 +675,18 @@ router.post("/consent/:id/agree", async (req, res) => {
       res.status(409).json({ error: "이미 동의가 완료된 동의서입니다." });
       return;
     }
+    const consentedAt = new Date();
+    const consentApplication: ConsentPdfApplication = {
+      id: current.id,
+      name: current.name,
+      phone: current.phone,
+      consentedAt,
+    };
+    const pdf = await consentPdfBuffer(consentApplication);
+    await uploadConsentPdfToDrive(consentApplication, pdf);
     const [updated] = await db
       .update(applicationsTable)
-      .set({ consentedAt: new Date() })
+      .set({ consentedAt })
       .where(eq(applicationsTable.id, id))
       .returning({
         id: applicationsTable.id,
