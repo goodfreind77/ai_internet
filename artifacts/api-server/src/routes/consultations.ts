@@ -682,17 +682,6 @@ router.post("/consent/:id/agree", async (req, res) => {
       phone: current.phone,
       consentedAt,
     };
-    const pdf = await consentPdfBuffer(consentApplication);
-    try {
-      await uploadConsentPdfToDrive(consentApplication, pdf);
-    } catch (uploadError) {
-      req.log.error({ err: uploadError, applicationId: id }, "동의서 Google Drive 업로드 실패");
-      res.status(502).json({
-        error: "PDF 저장에 실패하여 동의가 완료되지 않았습니다. 잠시 후 다시 시도해주세요.",
-        consentStatus: "failed",
-      });
-      return;
-    }
     const [updated] = await db
       .update(applicationsTable)
       .set({ consentedAt })
@@ -703,7 +692,20 @@ router.post("/consent/:id/agree", async (req, res) => {
         phone: applicationsTable.phone,
         consentedAt: applicationsTable.consentedAt,
       });
-    res.json(updated);
+
+    let driveSaved = false;
+    try {
+      const pdf = await consentPdfBuffer(consentApplication);
+      await uploadConsentPdfToDrive(consentApplication, pdf);
+      driveSaved = true;
+    } catch (uploadError) {
+      req.log.warn(
+        { err: uploadError, applicationId: id },
+        "동의는 완료되었지만 Google Drive 업로드에 실패했습니다. 관리자 PDF 다운로드를 사용합니다.",
+      );
+    }
+
+    res.json({ ...updated, driveSaved });
   } catch (err) {
     req.log.error(err);
     res.status(500).json({ error: "서버 오류가 발생했습니다." });
