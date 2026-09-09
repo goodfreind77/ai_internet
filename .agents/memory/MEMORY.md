@@ -1,2 +1,2 @@
 - [Managed content compatibility](managed-content-compatibility.md) — New admin content overlays legacy reviews and tips so rich existing pages remain intact during migration.
-- [Connector production binding](connector-production-binding.md) — After adding an OAuth connector, republish before expecting the deployed app to authenticate through it.
+- [Connector production identity](connector-production-binding.md) — A connector may work in development yet reject an autoscale deployment identity; republishing alone may not repair the mapping.
