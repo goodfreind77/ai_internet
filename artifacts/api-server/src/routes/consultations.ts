@@ -712,6 +712,57 @@ router.post("/consent/:id/agree", async (req, res) => {
   }
 });
 
+router.post("/applications/notify/manual", adminAuthMiddleware, requirePermission("applications"), async (req, res) => {
+  try {
+    const name = typeof req.body?.name === "string" ? req.body.name.trim() : "";
+    const phoneNormalized = typeof req.body?.phone === "string" ? req.body.phone.replace(/\D/g, "") : "";
+
+    if (!name) {
+      res.status(400).json({ error: "고객명을 입력해주세요." });
+      return;
+    }
+    if (!/^01\d{8,9}$/.test(phoneNormalized)) {
+      res.status(400).json({ error: "올바른 휴대폰 번호를 입력해주세요." });
+      return;
+    }
+
+    const apiKey = process.env.SOLAPI_API_KEY;
+    const apiSecret = process.env.SOLAPI_API_SECRET;
+    const pfId = process.env.SOLAPI_KAKAO_PF_ID;
+    const templateId = process.env.SOLAPI_KAKAO_TEMPLATE_ID;
+    const from = process.env.SOLAPI_SENDER;
+
+    if (!apiKey || !apiSecret || !pfId || !templateId || !from) {
+      res.status(503).json({ error: "알림톡 발송 설정이 완료되지 않았습니다." });
+      return;
+    }
+
+    const siteUrl = process.env.REPLIT_DOMAINS?.split(",")[0]
+      ? `https://${process.env.REPLIT_DOMAINS.split(",")[0]}${process.env.BASE_PATH ?? ""}`
+      : "";
+    const client = new SolapiMessageService(apiKey, apiSecret);
+    const result = await client.send({
+      to: phoneNormalized,
+      from,
+      kakaoOptions: {
+        pfId,
+        templateId,
+        variables: {
+          "#{name}": name,
+          "#{agreement_api}": siteUrl,
+          type: "개통완료",
+        },
+      },
+    });
+
+    req.log.info({ phone: phoneNormalized, result }, "직접 입력 개통완료 알림톡 발송 성공");
+    res.json({ success: true, sentAt: new Date(), result });
+  } catch (err) {
+    req.log.error(err, "직접 입력 개통완료 알림톡 발송 실패");
+    res.status(500).json({ error: "알림톡 발송에 실패했습니다." });
+  }
+});
+
 router.post("/applications/:id/notify", adminAuthMiddleware, requirePermission("applications"), async (req, res) => {
   try {
     const id = parseInt(String(req.params.id), 10);

@@ -727,17 +727,20 @@ export default function AdminPage() {
               <ConsultationsTable data={consultations} filter={filter} onStatusChange={updateConsultationStatus} />
             )}
             {tab === 'applications' && (
-              <ApplicationsTable
-                data={applications}
-                filter={filter}
-                token={token}
-                canManageMemo={admin.kind === 'owner' || admin.role === 'owner'}
-                onStatusChange={updateApplicationStatus}
-                onMemoSave={updateApplicationMemo}
-                onHistoryAdd={addConsultationHistory}
-                onHistoryDelete={deleteConsultationHistory}
-                onNotify={sendKakaoNotify}
-              />
+              <div className="space-y-6">
+                <StandaloneCompletionNotify token={token} />
+                <ApplicationsTable
+                  data={applications}
+                  filter={filter}
+                  token={token}
+                  canManageMemo={admin.kind === 'owner' || admin.role === 'owner'}
+                  onStatusChange={updateApplicationStatus}
+                  onMemoSave={updateApplicationMemo}
+                  onHistoryAdd={addConsultationHistory}
+                  onHistoryDelete={deleteConsultationHistory}
+                  onNotify={sendKakaoNotify}
+                />
+              </div>
             )}
             {tab === 'resources' && (
               <ResourcesTable
@@ -1425,6 +1428,81 @@ function KakaoNotifySection({ id, phone, receptionNotifiedAt, completionNotified
         </button>
       </div>
     </div>
+  );
+}
+
+function StandaloneCompletionNotify({ token }: { token: string }) {
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSend = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmedName = name.trim();
+    const normalizedPhone = phone.replace(/\D/g, '');
+    if (!trimmedName) return alert('고객명을 입력해주세요.');
+    if (!/^01\d{8,9}$/.test(normalizedPhone)) return alert('올바른 휴대폰 번호를 입력해주세요.');
+    if (!confirm(`${trimmedName} 고객님(${phone})에게 개통완료 톡을 발송하시겠습니까?`)) return;
+
+    setLoading(true);
+    try {
+      const res = await fetch('/api/applications/notify/manual', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ name: trimmedName, phone: normalizedPhone }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(`발송 실패: ${data.error ?? '알림톡 발송에 실패했습니다.'}`);
+        return;
+      }
+      alert('개통완료 톡 발송이 완료되었습니다.');
+      setName('');
+      setPhone('');
+    } catch {
+      alert('발송 실패: 네트워크 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSend} className="rounded-lg border border-blue-200 bg-blue-50/60 p-5 shadow-sm">
+      <div className="mb-4">
+        <h3 className="text-base font-black text-gray-900">개통완료 톡 직접 발송</h3>
+        <p className="mt-1 text-xs text-gray-600">신청서에 없는 고객도 고객명과 전화번호를 직접 입력해 발송할 수 있습니다.</p>
+      </div>
+      <div className="grid gap-3 md:grid-cols-[1fr_1fr_auto] md:items-end">
+        <label className="space-y-1.5">
+          <span className="block text-xs font-bold text-gray-700">고객명</span>
+          <input
+            value={name}
+            onChange={e => setName(e.target.value)}
+            placeholder="홍길동"
+            maxLength={30}
+            className="h-10 w-full rounded-sm border border-gray-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          />
+        </label>
+        <label className="space-y-1.5">
+          <span className="block text-xs font-bold text-gray-700">전화번호</span>
+          <input
+            value={phone}
+            onChange={e => setPhone(e.target.value)}
+            placeholder="010-1234-5678"
+            inputMode="tel"
+            maxLength={13}
+            className="h-10 w-full rounded-sm border border-gray-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          />
+        </label>
+        <button
+          type="submit"
+          disabled={loading}
+          className="h-10 rounded-sm bg-blue-600 px-6 text-sm font-bold text-white shadow-sm transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {loading ? '발송 중...' : '개통완료 톡 발송'}
+        </button>
+      </div>
+    </form>
   );
 }
 
