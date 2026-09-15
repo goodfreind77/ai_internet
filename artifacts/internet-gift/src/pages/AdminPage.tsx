@@ -728,7 +728,10 @@ export default function AdminPage() {
             )}
             {tab === 'applications' && (
               <div className="space-y-6">
-                <StandaloneCompletionNotify token={token} />
+                <StandaloneCompletionNotify
+                  token={token}
+                  onCreated={application => setApplications(prev => [application, ...prev])}
+                />
                 <ApplicationsTable
                   data={applications}
                   filter={filter}
@@ -1431,7 +1434,7 @@ function KakaoNotifySection({ id, phone, receptionNotifiedAt, completionNotified
   );
 }
 
-function StandaloneCompletionNotify({ token }: { token: string }) {
+function StandaloneCompletionNotify({ token, onCreated }: { token: string; onCreated: (application: Application) => void }) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
@@ -1456,6 +1459,7 @@ function StandaloneCompletionNotify({ token }: { token: string }) {
         alert(`발송 실패: ${data.error ?? '알림톡 발송에 실패했습니다.'}`);
         return;
       }
+      if (data.application) onCreated(data.application as Application);
       alert('개통완료 톡 발송이 완료되었습니다.');
       setName('');
       setPhone('');

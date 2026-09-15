@@ -737,26 +737,53 @@ router.post("/applications/notify/manual", adminAuthMiddleware, requirePermissio
       return;
     }
 
+    const [created] = await db
+      .insert(applicationsTable)
+      .values({
+        name,
+        phone: phoneNormalized,
+        status: "개통완료",
+        memo: "관리자 직접 발송 고객",
+      })
+      .returning();
     const siteUrl = process.env.REPLIT_DOMAINS?.split(",")[0]
       ? `https://${process.env.REPLIT_DOMAINS.split(",")[0]}${process.env.BASE_PATH ?? ""}`
       : "";
+    const consentUrl = `${siteUrl}/consent/${created.id}`;
     const client = new SolapiMessageService(apiKey, apiSecret);
-    const result = await client.send({
-      to: phoneNormalized,
-      from,
-      kakaoOptions: {
-        pfId,
-        templateId,
-        variables: {
-          "#{name}": name,
-          "#{agreement_api}": siteUrl,
-          type: "개통완료",
+    let result;
+    try {
+      result = await client.send({
+        to: phoneNormalized,
+        from,
+        kakaoOptions: {
+          pfId,
+          templateId,
+          variables: {
+            "#{name}": name,
+            "#{agreement_api}": consentUrl,
+            type: "개통완료",
+          },
         },
-      },
-    });
+      });
+    } catch (sendError) {
+      await db.delete(applicationsTable).where(eq(applicationsTable.id, created.id));
+      throw sendError;
+    }
 
-    req.log.info({ phone: phoneNormalized, result }, "직접 입력 개통완료 알림톡 발송 성공");
-    res.json({ success: true, sentAt: new Date(), result });
+    const sentAt = new Date();
+    const [updated] = await db
+      .update(applicationsTable)
+      .set({ completionNotifiedAt: sentAt })
+      .where(eq(applicationsTable.id, created.id))
+      .returning();
+    req.log.info({ applicationId: created.id, phone: phoneNormalized, result }, "직접 입력 개통완료 알림톡 발송 성공");
+    res.json({
+      success: true,
+      sentAt,
+      result,
+      application: applicationResponse(req, updated ?? created),
+    });
   } catch (err) {
     req.log.error(err, "직접 입력 개통완료 알림톡 발송 실패");
     res.status(500).json({ error: "알림톡 발송에 실패했습니다." });
