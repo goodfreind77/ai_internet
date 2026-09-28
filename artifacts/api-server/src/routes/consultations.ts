@@ -1,6 +1,6 @@
 import { Router, type IRouter, type Request } from "express";
 import { db, consultationRequestsTable, applicationsTable } from "@workspace/db";
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, gte, isNull, sql } from "drizzle-orm";
 import { adminAuthMiddleware, requireOwnerAdmin, requirePermission } from "./admin";
 import { SolapiMessageService } from "solapi";
 import PDFDocument from "pdfkit";
@@ -172,6 +172,9 @@ async function sendTelegram(text: string) {
 }
 
 const STATUSES = ["처리중", "접수완료", "개통완료", "취소"] as const;
+const DUPLICATE_WINDOW_MS = 10 * 60 * 1000;
+const normalizePhone = (value: string) => value.replace(/[\s-]/g, "");
+const validMobilePhone = (value: string) => /^01[016789]\d{7,8}$/.test(value);
 
 function applicationResponse(req: Request, application: typeof applicationsTable.$inferSelect) {
   if (req.admin?.kind === "owner") return application;
@@ -181,15 +184,30 @@ function applicationResponse(req: Request, application: typeof applicationsTable
 
 router.post("/consultations", async (req, res) => {
   try {
-    const { name, phone } = req.body;
-    if (!name || !phone) {
-      res.status(400).json({ error: "이름과 연락처는 필수입니다." });
+    const body = req.body;
+    const name = typeof body?.name === "string" ? body.name.trim() : "";
+    const phone = typeof body?.phone === "string" ? normalizePhone(body.phone) : "";
+    if (!name || !validMobilePhone(phone)) {
+      res.status(400).json({ error: "이름과 올바른 휴대폰 번호를 입력해주세요." });
       return;
     }
-    const [created] = await db
-      .insert(consultationRequestsTable)
-      .values({ name, phone })
-      .returning();
+    const created = await db.transaction(async (tx) => {
+      await tx.execute(sql`SELECT pg_advisory_xact_lock(hashtext(${"consultation:" + phone}))`);
+      const [recent] = await tx.select({ id: consultationRequestsTable.id })
+        .from(consultationRequestsTable)
+        .where(and(
+          isNull(consultationRequestsTable.landingSlug),
+          gte(consultationRequestsTable.createdAt, new Date(Date.now() - DUPLICATE_WINDOW_MS)),
+          sql`regexp_replace(${consultationRequestsTable.phone}, '[^0-9]', '', 'g') = ${phone}`,
+        )).limit(1);
+      if (recent) return null;
+      const [row] = await tx.insert(consultationRequestsTable).values({ name, phone }).returning();
+      return row;
+    });
+    if (!created) {
+      res.status(409).json({ error: "이미 접수된 견적 문의입니다. 10분 후 다시 시도해 주세요." });
+      return;
+    }
     res.status(201).json(created);
     sendTelegram(
       `📞 <b>빠른 견적 문의</b>\n👤 이름: ${name}\n📱 연락처: ${phone}\n🕐 시간: ${new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" })}`
@@ -240,12 +258,29 @@ router.patch("/consultations/:id/status", adminAuthMiddleware, requirePermission
 router.post("/applications", async (req, res) => {
   try {
     const data = req.body;
-    const [created] = await db
-      .insert(applicationsTable)
-      .values(data)
-      .returning();
+    const phone = typeof data?.phone === "string" ? normalizePhone(data.phone) : "";
+    if (!validMobilePhone(phone)) {
+      res.status(400).json({ error: "올바른 휴대폰 번호를 입력해주세요." });
+      return;
+    }
+    const created = await db.transaction(async (tx) => {
+      await tx.execute(sql`SELECT pg_advisory_xact_lock(hashtext(${"application:" + phone}))`);
+      const [recent] = await tx.select({ id: applicationsTable.id })
+        .from(applicationsTable)
+        .where(and(
+          gte(applicationsTable.createdAt, new Date(Date.now() - DUPLICATE_WINDOW_MS)),
+          sql`regexp_replace(${applicationsTable.phone}, '[^0-9]', '', 'g') = ${phone}`,
+        )).limit(1);
+      if (recent) return null;
+      const [row] = await tx.insert(applicationsTable).values({ ...data, phone }).returning();
+      return row;
+    });
+    if (!created) {
+      res.status(409).json({ error: "이미 접수된 신청서입니다. 10분 후 다시 시도해 주세요." });
+      return;
+    }
     res.status(201).json(created);
-    const d = data as Record<string, string>;
+    const d = { ...data, phone } as Record<string, string>;
     const v = (val: string | undefined) => val || "-";
     const lines = [
       `📋 <b>신청서 접수 #${created.id}</b>`,

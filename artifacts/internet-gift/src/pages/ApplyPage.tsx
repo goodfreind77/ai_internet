@@ -179,12 +179,15 @@ export default function ApplyPage() {
           memo,
         }),
       });
-      if (!res.ok) throw new Error('서버 오류');
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(typeof data?.error === 'string' ? data.error : '잠시 후 다시 시도해주세요.');
+      }
       toast({ title: '신청이 완료되었습니다!', description: '빠른 시일 내에 연락 드리겠습니다.' });
       setLocation('/');
       window.scrollTo(0, 0);
-    } catch {
-      toast({ variant: 'destructive', title: '오류가 발생했습니다.', description: '잠시 후 다시 시도해주세요.' });
+    } catch (error) {
+      toast({ variant: 'destructive', title: '신청서를 접수하지 못했습니다.', description: error instanceof Error ? error.message : '잠시 후 다시 시도해주세요.' });
     } finally {
       setSubmitting(false);
     }

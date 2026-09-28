@@ -2,3 +2,4 @@
 - [Connector production identity](connector-production-binding.md) — A connector may work in development yet reject an autoscale deployment identity; republishing alone may not repair the mapping.
 - [Workspace package installation](pnpm-package-helper.md) — Package helper may target the pnpm root despite a leaf-package directory argument.
 - [Landing consultation privacy](landing-lead-privacy.md) — Keep landing inquiry contact details in the protected inbox, not third-party alerts without updated notice.
+- [Duplicate submission scope](lead-duplicate-scope.md) — Ten-minute phone deduplication stays separate by inquiry, landing page, and signup flow.

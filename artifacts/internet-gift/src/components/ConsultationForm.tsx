@@ -37,7 +37,10 @@ export function ConsultationForm({ onSuccess }: ConsultationFormProps = {}) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: values.name, phone: values.phone }),
       });
-      if (!res.ok) throw new Error('서버 오류');
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(typeof data?.error === 'string' ? data.error : '잠시 후 다시 시도해주세요.');
+      }
       toast({
         title: "폼 제출 완료",
         description: "최대 지원금을 확인 중입니다. 곧 연락드리겠습니다.",
@@ -45,10 +48,10 @@ export function ConsultationForm({ onSuccess }: ConsultationFormProps = {}) {
       });
       form.reset();
       onSuccess?.();
-    } catch {
+    } catch (error) {
       toast({
         title: "오류 발생",
-        description: "잠시 후 다시 시도해주세요.",
+        description: error instanceof Error ? error.message : "잠시 후 다시 시도해주세요.",
         variant: "destructive",
       });
     }
@@ -146,8 +149,8 @@ export function ConsultationForm({ onSuccess }: ConsultationFormProps = {}) {
 
             <p className="text-xs text-red-500 font-medium text-center">※ 미성년자 시 가입이 불가할 수 있습니다.</p>
 
-            <Button type="submit" className="w-full h-14 text-lg font-black bg-gradient-to-r from-primary to-[#ff6b6b] hover:opacity-90 transition-opacity">
-              최대 지원금 확인!
+            <Button type="submit" disabled={form.formState.isSubmitting} className="w-full h-14 text-lg font-black bg-gradient-to-r from-primary to-[#ff6b6b] hover:opacity-90 transition-opacity">
+              {form.formState.isSubmitting ? '접수 중...' : '최대 지원금 확인!'}
             </Button>
           </form>
         </Form>

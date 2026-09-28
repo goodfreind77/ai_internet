@@ -169,6 +169,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: The same phone number already submitted a homepage consultation within 10 minutes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /applications:
     post:
       operationId: createApplication
@@ -189,6 +195,12 @@ paths:
                 $ref: "#/components/schemas/ApplicationResponse"
         "400":
           description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: The same phone number already submitted an application within 10 minutes
           content:
             application/json:
               schema:
