@@ -569,7 +569,7 @@ export default function AdminPage() {
       </div>
       <Header />
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-2xl font-black text-gray-900 flex items-center gap-3">
               통합 관리자
@@ -583,12 +583,24 @@ export default function AdminPage() {
             </h1>
             <p className="text-sm text-gray-500 mt-1">{admin.displayName} 님, 환영합니다.</p>
           </div>
-          <button
-            onClick={handleLogout}
-            className="text-xs font-bold text-gray-500 hover:text-gray-900 transition-colors px-4 py-2 rounded-sm border border-gray-300 hover:bg-gray-100 bg-white"
-          >
-            로그아웃
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            {(admin.role === 'owner' || admin.role === 'full' || admin.permissions?.includes('content')) && (
+              <button
+                type="button"
+                data-testid="button-admin-landing-management"
+                onClick={() => setTab('landing-pages')}
+                className="rounded-lg bg-[#234c83] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#173b70] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#234c83]"
+              >
+                랜딩페이지 관리
+              </button>
+            )}
+            <button
+              onClick={handleLogout}
+              className="text-xs font-bold text-gray-500 hover:text-gray-900 transition-colors px-4 py-2 rounded-sm border border-gray-300 hover:bg-white"
+            >
+              로그아웃
+            </button>
+          </div>
         </div>
 
         {/* Filter Bar */}
@@ -705,7 +717,7 @@ export default function AdminPage() {
         </div>}
 
         {/* Tabs */}
-        <div className="flex border-b border-gray-200 mb-6 overflow-x-auto no-scrollbar">
+        <div className="flex flex-wrap border-b border-gray-200 mb-6">
           {ALL_ADMIN_TABS.filter(t => {
             if (admin.role === 'owner' || admin.role === 'full') return true;
             if (t.roles) return false;
