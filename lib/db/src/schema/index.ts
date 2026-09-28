@@ -8,6 +8,9 @@ export const consultationRequestsTable = pgTable("consultation_requests", {
   name: varchar("name", { length: 100 }).notNull(),
   phone: varchar("phone", { length: 20 }).notNull(),
   status: varchar("status", { length: 20 }).default("처리중").notNull(),
+  landingSlug: varchar("landing_slug", { length: 100 }),
+  preferredProvider: varchar("preferred_provider", { length: 20 }),
+  consentedAt: timestamp("consented_at"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

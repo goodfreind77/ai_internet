@@ -3,9 +3,9 @@ import { Copy, ExternalLink, Eye, FilePlus2, Pencil, Plus, Search, Trash2, X } f
 import { LandingContent, safeCtaUrl, safeImageUrl, type LandingPage } from './LandingPage';
 
 type Category = LandingPage['category'];
-type Fields = Pick<LandingPage, 'slug' | 'title' | 'category' | 'eyebrow' | 'headline' | 'description' | 'benefits' | 'ctaLabel' | 'ctaUrl' | 'imageUrl' | 'isPublished'>;
+type Fields = Pick<LandingPage, 'slug' | 'title' | 'category' | 'eyebrow' | 'headline' | 'description' | 'benefits' | 'comparison' | 'faqs' | 'galleryImages' | 'ctaLabel' | 'ctaUrl' | 'imageUrl' | 'isPublished'>;
 const categories: Category[] = ['당근마켓', '구글광고', '일반/기타'];
-const blank: Fields = { slug: '', title: '', category: '일반/기타', eyebrow: '', headline: '', description: '', benefits: '', ctaLabel: '무료 상담 신청하기', ctaUrl: '/apply', imageUrl: null, isPublished: false };
+const blank: Fields = { slug: '', title: '', category: '일반/기타', eyebrow: '', headline: '', description: '', benefits: '', comparison: '', faqs: '', galleryImages: '', ctaLabel: '상담 신청하기', ctaUrl: '#landing-consultation', imageUrl: null, isPublished: false };
 
 async function adminRequest<T>(url: string, token: string, options: RequestInit = {}): Promise<T> {
   const res = await fetch(url, { ...options, headers: { Authorization: `Bearer ${token}`, ...(options.body ? { 'Content-Type': 'application/json' } : {}) } });
@@ -24,8 +24,12 @@ function validate(fields: Fields): string | null {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(fields.slug.trim())) return '주소는 영문 소문자, 숫자, 하이픈만 사용할 수 있습니다.';
   if (!fields.headline.trim()) return '메인 문구를 입력해 주세요.';
   if (!fields.ctaLabel.trim()) return '버튼 문구를 입력해 주세요.';
-  if (!safeCtaUrl(fields.ctaUrl)) return '버튼 주소는 /로 시작하는 내부 경로 또는 https:// 주소여야 합니다.';
+  if (!safeCtaUrl(fields.ctaUrl)) return '버튼 주소는 #landing-consultation, /로 시작하는 내부 경로 또는 https:// 주소여야 합니다.';
   if (fields.imageUrl?.trim() && !safeImageUrl(fields.imageUrl)) return '이미지 주소는 /로 시작하는 내부 경로 또는 https:// 주소여야 합니다.';
+  const gallery = fields.galleryImages.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+  if (gallery.some(url => !safeImageUrl(url))) return '추가 이미지 주소는 각각 /로 시작하는 내부 경로 또는 https:// 주소여야 합니다.';
+  if (fields.comparison.split(/\r?\n/).some(line => line.trim() && (line.split('|').length !== 4 || line.split('|').some(part => !part.trim())))) return '상품 비교는 한 줄마다 통신사|상품|월 요금|주요 내용 순서로 입력해 주세요.';
+  if (fields.faqs.split(/\r?\n/).some(line => line.trim() && (line.split('|').length !== 2 || line.split('|').some(part => !part.trim())))) return '자주 묻는 질문은 한 줄마다 질문|답변 순서로 입력해 주세요.';
   return null;
 }
 
@@ -33,6 +37,7 @@ function Editor({ initial, saving, error, onClose, onSave }: { initial: LandingP
   const [form, setForm] = useState<Fields>(initial ? {
     slug: initial.slug, title: initial.title, category: initial.category, eyebrow: initial.eyebrow,
     headline: initial.headline, description: initial.description, benefits: initial.benefits,
+    comparison: initial.comparison ?? '', faqs: initial.faqs ?? '', galleryImages: initial.galleryImages ?? '',
     ctaLabel: initial.ctaLabel, ctaUrl: initial.ctaUrl, imageUrl: initial.imageUrl, isPublished: initial.isPublished,
   } : blank);
   const [validation, setValidation] = useState('');
@@ -60,8 +65,13 @@ function Editor({ initial, saving, error, onClose, onSave }: { initial: LandingP
           <div><label htmlFor="landing-description" className={label}>소개 문구</label><textarea data-testid="input-landing-description" id="landing-description" className={input} rows={3} value={form.description} onChange={e => update('description', e.target.value)} placeholder="고객에게 전할 내용을 입력하세요." /></div>
           <div><label htmlFor="landing-benefits" className={label}>혜택 항목</label><textarea data-testid="input-landing-benefits" id="landing-benefits" className={input} rows={4} value={form.benefits} onChange={e => update('benefits', e.target.value)} placeholder={'혜택 한 줄씩 입력\n가입 전 요금 비교\n설치 일정 안내'} /><p className="text-[11px] text-[#8190a4] mt-1.5">줄바꿈으로 항목을 구분합니다.</p></div>
           <div><label htmlFor="landing-image" className={label}>대표 이미지 URL (선택)</label><input data-testid="input-landing-image" id="landing-image" type="text" className={input} value={form.imageUrl || ''} onChange={e => update('imageUrl', e.target.value)} placeholder="https:// 또는 /images/..." /></div>
+          <div><label htmlFor="landing-gallery" className={label}>추가 이미지 URL (선택)</label><textarea data-testid="input-landing-gallery" id="landing-gallery" className={input} rows={3} value={form.galleryImages} onChange={e => update('galleryImages', e.target.value)} placeholder={'https://example.com/image-one.jpg\n/images/image-two.jpg'} /><p className="text-[11px] text-[#8190a4] mt-1.5">한 줄에 하나씩 입력합니다. /로 시작하는 내부 주소 또는 https:// 주소만 허용됩니다.</p></div>
         </div>
-        <div className="border-t border-[#dce4ed] pt-6 grid md:grid-cols-2 gap-4"><div className="md:col-span-2 text-xs font-black tracking-widest text-[#214875]">행동 버튼</div><div><label htmlFor="landing-cta-label" className={label}>버튼 문구 <span className="text-[#cf5f44]">*</span></label><input data-testid="input-landing-cta-label" id="landing-cta-label" className={input} value={form.ctaLabel} onChange={e => update('ctaLabel', e.target.value)} required /></div><div><label htmlFor="landing-cta-url" className={label}>이동 주소 <span className="text-[#cf5f44]">*</span></label><input data-testid="input-landing-cta-url" id="landing-cta-url" className={input} value={form.ctaUrl} onChange={e => update('ctaUrl', e.target.value)} placeholder="/apply 또는 https://..." required /></div></div>
+        <div className="border-t border-[#dce4ed] pt-6 space-y-4"><p className="text-xs font-black tracking-widest text-[#214875]">상품 정보와 질문 (선택)</p>
+          <div><label htmlFor="landing-comparison" className={label}>통신사 상품 비교</label><textarea data-testid="input-landing-comparison" id="landing-comparison" className={input} rows={4} value={form.comparison} onChange={e => update('comparison', e.target.value)} placeholder={'KT|인터넷 상품명|실제 월 요금|확인된 조건\nSK|인터넷 상품명|실제 월 요금|확인된 조건'} /><p className="text-[11px] text-[#8190a4] mt-1.5">한 줄마다 통신사|상품|월 요금|주요 내용 순서. 확인된 실제 조건만 기재해 주세요. 비워두면 비교 섹션은 표시되지 않습니다.</p></div>
+          <div><label htmlFor="landing-faqs" className={label}>자주 묻는 질문</label><textarea data-testid="input-landing-faqs" id="landing-faqs" className={input} rows={4} value={form.faqs} onChange={e => update('faqs', e.target.value)} placeholder={'질문을 입력하세요|확인된 답변을 입력하세요'} /><p className="text-[11px] text-[#8190a4] mt-1.5">한 줄마다 질문|답변 순서. 비워두면 질문 섹션은 표시되지 않습니다.</p></div>
+        </div>
+        <div className="border-t border-[#dce4ed] pt-6 grid md:grid-cols-2 gap-4"><div className="md:col-span-2 text-xs font-black tracking-widest text-[#214875]">행동 버튼</div><div><label htmlFor="landing-cta-label" className={label}>버튼 문구 <span className="text-[#cf5f44]">*</span></label><input data-testid="input-landing-cta-label" id="landing-cta-label" className={input} value={form.ctaLabel} onChange={e => update('ctaLabel', e.target.value)} required /></div><div><label htmlFor="landing-cta-url" className={label}>이동 주소 <span className="text-[#cf5f44]">*</span></label><input data-testid="input-landing-cta-url" id="landing-cta-url" className={input} value={form.ctaUrl} onChange={e => update('ctaUrl', e.target.value)} placeholder="#landing-consultation" required /><p className="text-[11px] text-[#8190a4] mt-1.5">새 페이지는 아래 상담 신청 폼으로 이동합니다. 기존 외부/내부 이동 주소도 사용할 수 있습니다.</p></div></div>
         <label className="flex gap-3 items-center border border-[#d6dfeb] bg-white p-4 rounded-lg cursor-pointer"><input data-testid="checkbox-landing-published" type="checkbox" checked={form.isPublished} onChange={e => update('isPublished', e.target.checked)} className="accent-[#284f82] w-4 h-4" /><span><strong className="block text-sm text-[#172a4b]">바로 공개하기</strong><small className="text-[#75839a]">끄면 초안으로 저장됩니다. 관리자 미리보기에서만 확인할 수 있습니다.</small></span></label>
         {(validation || error) && <p data-testid="error-landing-editor" role="alert" className="text-sm font-bold text-[#b43f35] bg-[#fff0ed] p-3 rounded-lg">{validation || error}</p>}
       </form>}

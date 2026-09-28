@@ -22,11 +22,39 @@ export interface LandingPageInput {
   headline: string;
   description: string;
   benefits: string;
+  /** One provider|plan|price|benefit per line */
+  comparison: string;
+  /** One question|answer per line */
+  faqs: string;
+  /** One image URL per line */
+  galleryImages: string;
   ctaLabel: string;
   ctaUrl: string;
   /** @nullable */
   imageUrl: string | null;
   isPublished: boolean;
+}
+
+export type LandingLeadInputPreferredProvider =
+  (typeof LandingLeadInputPreferredProvider)[keyof typeof LandingLeadInputPreferredProvider];
+
+export const LandingLeadInputPreferredProvider = {
+  KT: "KT",
+  SK: "SK",
+  LG: "LG",
+  미정: "미정",
+} as const;
+
+export interface LandingLeadInput {
+  name: string;
+  phone: string;
+  preferredProvider?: LandingLeadInputPreferredProvider;
+  /** Explicit consultation privacy consent */
+  consent: boolean;
+}
+
+export interface LandingLeadReceipt {
+  id: number;
 }
 
 export type LandingPage = LandingPageInput & {

@@ -15,6 +15,12 @@ export interface LandingPageInput {
   headline: string;
   description: string;
   benefits: string;
+  /** One provider|plan|price|benefit per line */
+  comparison: string;
+  /** One question|answer per line */
+  faqs: string;
+  /** One image URL per line */
+  galleryImages: string;
   ctaLabel: string;
   ctaUrl: string;
   /** @nullable */

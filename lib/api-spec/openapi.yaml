@@ -35,6 +35,31 @@ paths:
               schema: { $ref: "#/components/schemas/LandingPage" }
         "404":
           description: Not found or not published
+  /landing-pages/{slug}/leads:
+    post:
+      operationId: createLandingLead
+      tags: [landing-pages]
+      summary: Submit a consultation request from a published landing page
+      parameters:
+        - in: path
+          name: slug
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LandingLeadInput" }
+      responses:
+        "201":
+          description: Request received
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/LandingLeadReceipt" }
+        "400":
+          description: Invalid submission or consent missing
+        "404":
+          description: Page not published
   /admin/landing-pages:
     get:
       operationId: listLandingPages
@@ -180,11 +205,27 @@ components:
         headline: { type: string }
         description: { type: string }
         benefits: { type: string }
+        comparison: { type: string, description: "One provider|plan|price|benefit per line" }
+        faqs: { type: string, description: "One question|answer per line" }
+        galleryImages: { type: string, description: "One image URL per line" }
         ctaLabel: { type: string }
         ctaUrl: { type: string }
         imageUrl: { type: ["string", "null"] }
         isPublished: { type: boolean }
-      required: [slug, title, category, eyebrow, headline, description, benefits, ctaLabel, ctaUrl, imageUrl, isPublished]
+      required: [slug, title, category, eyebrow, headline, description, benefits, comparison, faqs, galleryImages, ctaLabel, ctaUrl, imageUrl, isPublished]
+    LandingLeadInput:
+      type: object
+      properties:
+        name: { type: string }
+        phone: { type: string }
+        preferredProvider: { type: string, enum: ["KT", "SK", "LG", "미정"] }
+        consent: { type: boolean, description: "Explicit consultation privacy consent" }
+      required: [name, phone, consent]
+    LandingLeadReceipt:
+      type: object
+      properties:
+        id: { type: integer }
+      required: [id]
     LandingPage:
       allOf:
         - $ref: "#/components/schemas/LandingPageInput"

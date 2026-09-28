@@ -23,6 +23,8 @@ import type {
   CreateConsultationRequest,
   ErrorResponse,
   HealthStatus,
+  LandingLeadInput,
+  LandingLeadReceipt,
   LandingPage,
   LandingPageInput,
 } from "./api.schemas";
@@ -124,6 +126,93 @@ export function useGetPublishedLandingPage<
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+/**
+ * @summary Submit a consultation request from a published landing page
+ */
+export const getCreateLandingLeadUrl = (slug: string) => {
+  return `/api/landing-pages/${slug}/leads`;
+};
+
+export const createLandingLead = async (
+  slug: string,
+  landingLeadInput: LandingLeadInput,
+  options?: RequestInit,
+): Promise<LandingLeadReceipt> => {
+  return customFetch<LandingLeadReceipt>(getCreateLandingLeadUrl(slug), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(landingLeadInput),
+  });
+};
+
+export const getCreateLandingLeadMutationOptions = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createLandingLead>>,
+    TError,
+    { slug: string; data: BodyType<LandingLeadInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createLandingLead>>,
+  TError,
+  { slug: string; data: BodyType<LandingLeadInput> },
+  TContext
+> => {
+  const mutationKey = ["createLandingLead"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createLandingLead>>,
+    { slug: string; data: BodyType<LandingLeadInput> }
+  > = (props) => {
+    const { slug, data } = props ?? {};
+
+    return createLandingLead(slug, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateLandingLeadMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createLandingLead>>
+>;
+export type CreateLandingLeadMutationBody = BodyType<LandingLeadInput>;
+export type CreateLandingLeadMutationError = ErrorType<void>;
+
+/**
+ * @summary Submit a consultation request from a published landing page
+ */
+export const useCreateLandingLead = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createLandingLead>>,
+    TError,
+    { slug: string; data: BodyType<LandingLeadInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createLandingLead>>,
+  TError,
+  { slug: string; data: BodyType<LandingLeadInput> },
+  TContext
+> => {
+  return useMutation(getCreateLandingLeadMutationOptions(options));
+};
 
 /**
  * @summary List pages for authorized content administrators

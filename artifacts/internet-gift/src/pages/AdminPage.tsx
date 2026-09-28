@@ -12,6 +12,9 @@ type ConsultationRequest = {
   id: number;
   name: string;
   phone: string;
+  landingSlug: string | null;
+  preferredProvider: string | null;
+  consentedAt: string | null;
   status: Status;
   createdAt: string;
 };
@@ -859,18 +862,20 @@ function ConsultationsTable({ data, filter, onStatusChange }: { data: Consultati
               <th className="px-4 py-3 font-semibold text-center w-16">번호</th>
               <th className="px-4 py-3 font-semibold text-center">이름</th>
               <th className="px-4 py-3 font-semibold text-center">연락처</th>
+              <th className="px-4 py-3 font-semibold text-center">접수 경로 · 희망 통신사</th>
               <th className="px-4 py-3 font-semibold text-center w-32">상태</th>
               <th className="px-4 py-3 font-semibold text-center w-40">접수일시</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {filtered.length === 0 ? (
-              <tr><td colSpan={5} className="text-center py-12 text-gray-400 font-semibold text-sm">데이터가 없습니다.</td></tr>
+              <tr><td colSpan={6} className="text-center py-12 text-gray-400 font-semibold text-sm">데이터가 없습니다.</td></tr>
             ) : filtered.map((row) => (
               <tr key={row.id} className="hover:bg-gray-50">
                 <td className="px-4 py-4 text-center text-gray-500 font-medium">{row.id}</td>
                 <td className="px-4 py-4 text-center font-bold text-gray-900">{row.name}</td>
                 <td className="px-4 py-4 text-center text-gray-700 font-medium">{row.phone}</td>
+                <td className="px-4 py-4 text-center text-gray-700">{row.landingSlug ? `랜딩: ${row.landingSlug}` : '홈페이지'}{row.preferredProvider && row.preferredProvider !== '미정' ? ` · ${row.preferredProvider}` : ''}</td>
                 <td className="px-4 py-4 text-center">
                   <StatusSelect value={row.status ?? '처리중'} onChange={s => handleChange(row.id, s)} loading={updating === row.id} />
                 </td>

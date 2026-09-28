@@ -23,6 +23,11 @@ export const GetPublishedLandingPageResponse = zod
     headline: zod.string(),
     description: zod.string(),
     benefits: zod.string(),
+    comparison: zod
+      .string()
+      .describe("One provider|plan|price|benefit per line"),
+    faqs: zod.string().describe("One question|answer per line"),
+    galleryImages: zod.string().describe("One image URL per line"),
     ctaLabel: zod.string(),
     ctaUrl: zod.string(),
     imageUrl: zod.string().nullable(),
@@ -37,6 +42,20 @@ export const GetPublishedLandingPageResponse = zod
   );
 
 /**
+ * @summary Submit a consultation request from a published landing page
+ */
+export const CreateLandingLeadParams = zod.object({
+  slug: zod.coerce.string(),
+});
+
+export const CreateLandingLeadBody = zod.object({
+  name: zod.string(),
+  phone: zod.string(),
+  preferredProvider: zod.enum(["KT", "SK", "LG", "미정"]).optional(),
+  consent: zod.boolean().describe("Explicit consultation privacy consent"),
+});
+
+/**
  * @summary List pages for authorized content administrators
  */
 export const ListLandingPagesResponseItem = zod
@@ -48,6 +67,11 @@ export const ListLandingPagesResponseItem = zod
     headline: zod.string(),
     description: zod.string(),
     benefits: zod.string(),
+    comparison: zod
+      .string()
+      .describe("One provider|plan|price|benefit per line"),
+    faqs: zod.string().describe("One question|answer per line"),
+    galleryImages: zod.string().describe("One image URL per line"),
     ctaLabel: zod.string(),
     ctaUrl: zod.string(),
     imageUrl: zod.string().nullable(),
@@ -73,6 +97,9 @@ export const CreateLandingPageBody = zod.object({
   headline: zod.string(),
   description: zod.string(),
   benefits: zod.string(),
+  comparison: zod.string().describe("One provider|plan|price|benefit per line"),
+  faqs: zod.string().describe("One question|answer per line"),
+  galleryImages: zod.string().describe("One image URL per line"),
   ctaLabel: zod.string(),
   ctaUrl: zod.string(),
   imageUrl: zod.string().nullable(),
@@ -94,6 +121,9 @@ export const UpdateLandingPageBody = zod.object({
   headline: zod.string(),
   description: zod.string(),
   benefits: zod.string(),
+  comparison: zod.string().describe("One provider|plan|price|benefit per line"),
+  faqs: zod.string().describe("One question|answer per line"),
+  galleryImages: zod.string().describe("One image URL per line"),
   ctaLabel: zod.string(),
   ctaUrl: zod.string(),
   imageUrl: zod.string().nullable(),
@@ -109,6 +139,11 @@ export const UpdateLandingPageResponse = zod
     headline: zod.string(),
     description: zod.string(),
     benefits: zod.string(),
+    comparison: zod
+      .string()
+      .describe("One provider|plan|price|benefit per line"),
+    faqs: zod.string().describe("One question|answer per line"),
+    galleryImages: zod.string().describe("One image URL per line"),
     ctaLabel: zod.string(),
     ctaUrl: zod.string(),
     imageUrl: zod.string().nullable(),
