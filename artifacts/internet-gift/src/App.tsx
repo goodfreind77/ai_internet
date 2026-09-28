@@ -15,6 +15,7 @@ import ReviewDetailPage from "@/pages/ReviewDetailPage";
 import ReviewWritePage from "@/pages/ReviewWritePage";
 import ApplyPage from "@/pages/ApplyPage";
 import AdminPage from "@/pages/AdminPage";
+import PublicLandingPage from "@/pages/LandingPage";
 import ConsentPage from "@/pages/ConsentPage";
 import AiQuotePage from "@/pages/AiQuotePage";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
@@ -68,6 +69,9 @@ function Router() {
       </Route>
       <Route path="/admin">
         {() => <AdminPage />}
+      </Route>
+      <Route path="/landing/:slug">
+        {(params) => <PublicLandingPage slug={params.slug} />}
       </Route>
       <Route path="/consent/:id">
         {(params) => <ConsentPage id={params.id} />}

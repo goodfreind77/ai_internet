@@ -1,6 +1,7 @@
 import { boolean, integer, pgTable, serial, varchar, text, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
+export * from "./landing-pages";
 
 export const consultationRequestsTable = pgTable("consultation_requests", {
   id: serial("id").primaryKey(),

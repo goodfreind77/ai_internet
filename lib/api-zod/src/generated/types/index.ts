@@ -12,3 +12,6 @@ export * from "./createApplicationRequest";
 export * from "./createConsultationRequest";
 export * from "./errorResponse";
 export * from "./healthStatus";
+export * from "./landingPage";
+export * from "./landingPageInput";
+export * from "./landingPageInputCategory";

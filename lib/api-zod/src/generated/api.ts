@@ -8,6 +8,135 @@
 import * as zod from "zod";
 
 /**
+ * @summary View a published landing page
+ */
+export const GetPublishedLandingPageParams = zod.object({
+  slug: zod.coerce.string(),
+});
+
+export const GetPublishedLandingPageResponse = zod
+  .object({
+    slug: zod.string(),
+    title: zod.string(),
+    category: zod.enum(["당근마켓", "구글광고", "일반/기타"]),
+    eyebrow: zod.string(),
+    headline: zod.string(),
+    description: zod.string(),
+    benefits: zod.string(),
+    ctaLabel: zod.string(),
+    ctaUrl: zod.string(),
+    imageUrl: zod.string().nullable(),
+    isPublished: zod.boolean(),
+  })
+  .and(
+    zod.object({
+      id: zod.number(),
+      createdAt: zod.coerce.date(),
+      updatedAt: zod.coerce.date(),
+    }),
+  );
+
+/**
+ * @summary List pages for authorized content administrators
+ */
+export const ListLandingPagesResponseItem = zod
+  .object({
+    slug: zod.string(),
+    title: zod.string(),
+    category: zod.enum(["당근마켓", "구글광고", "일반/기타"]),
+    eyebrow: zod.string(),
+    headline: zod.string(),
+    description: zod.string(),
+    benefits: zod.string(),
+    ctaLabel: zod.string(),
+    ctaUrl: zod.string(),
+    imageUrl: zod.string().nullable(),
+    isPublished: zod.boolean(),
+  })
+  .and(
+    zod.object({
+      id: zod.number(),
+      createdAt: zod.coerce.date(),
+      updatedAt: zod.coerce.date(),
+    }),
+  );
+export const ListLandingPagesResponse = zod.array(ListLandingPagesResponseItem);
+
+/**
+ * @summary Create a landing page
+ */
+export const CreateLandingPageBody = zod.object({
+  slug: zod.string(),
+  title: zod.string(),
+  category: zod.enum(["당근마켓", "구글광고", "일반/기타"]),
+  eyebrow: zod.string(),
+  headline: zod.string(),
+  description: zod.string(),
+  benefits: zod.string(),
+  ctaLabel: zod.string(),
+  ctaUrl: zod.string(),
+  imageUrl: zod.string().nullable(),
+  isPublished: zod.boolean(),
+});
+
+/**
+ * @summary Update a landing page
+ */
+export const UpdateLandingPageParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateLandingPageBody = zod.object({
+  slug: zod.string(),
+  title: zod.string(),
+  category: zod.enum(["당근마켓", "구글광고", "일반/기타"]),
+  eyebrow: zod.string(),
+  headline: zod.string(),
+  description: zod.string(),
+  benefits: zod.string(),
+  ctaLabel: zod.string(),
+  ctaUrl: zod.string(),
+  imageUrl: zod.string().nullable(),
+  isPublished: zod.boolean(),
+});
+
+export const UpdateLandingPageResponse = zod
+  .object({
+    slug: zod.string(),
+    title: zod.string(),
+    category: zod.enum(["당근마켓", "구글광고", "일반/기타"]),
+    eyebrow: zod.string(),
+    headline: zod.string(),
+    description: zod.string(),
+    benefits: zod.string(),
+    ctaLabel: zod.string(),
+    ctaUrl: zod.string(),
+    imageUrl: zod.string().nullable(),
+    isPublished: zod.boolean(),
+  })
+  .and(
+    zod.object({
+      id: zod.number(),
+      createdAt: zod.coerce.date(),
+      updatedAt: zod.coerce.date(),
+    }),
+  );
+
+/**
+ * @summary Delete a landing page
+ */
+export const DeleteLandingPageParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+/**
+ * @summary Duplicate a page as an unpublished draft
+ */
+export const DuplicateLandingPageParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+/**
  * Returns server health status
  * @summary Health check
  */

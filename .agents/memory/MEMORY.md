@@ -1,2 +1,3 @@
 - [Managed content compatibility](managed-content-compatibility.md) — New admin content overlays legacy reviews and tips so rich existing pages remain intact during migration.
 - [Connector production identity](connector-production-binding.md) — A connector may work in development yet reject an autoscale deployment identity; republishing alone may not repair the mapping.
+- [Workspace package installation](pnpm-package-helper.md) — Package helper may target the pnpm root despite a leaf-package directory argument.

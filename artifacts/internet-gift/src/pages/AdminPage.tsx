@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import LandingManager from './LandingManager';
 
 type Status = '처리중' | '접수완료' | '개통완료' | '취소';
 const STATUSES: Status[] = ['처리중', '접수완료', '개통완료', '취소'];
@@ -82,6 +83,7 @@ const ALL_ADMIN_TABS = [
   { id: 'resources', label: '관리자 자료', permission: 'content' },
   { id: 'reviews', label: '후기 관리', permission: 'content' },
   { id: 'tips', label: '꿀팁 관리', permission: 'content' },
+  { id: 'landing-pages', label: '랜딩페이지', permission: 'content' },
   { id: 'accounts', label: '관리자 관리', roles: ['owner', 'full'] },
 ];
 
@@ -587,7 +589,7 @@ export default function AdminPage() {
         </div>
 
         {/* Filter Bar */}
-        <div className="bg-white rounded-lg border border-gray-200 mb-6 flex flex-col p-5 shadow-sm">
+        {tab !== 'landing-pages' && <div className="bg-white rounded-lg border border-gray-200 mb-6 flex flex-col p-5 shadow-sm">
           <div className="flex flex-wrap gap-x-6 gap-y-4 items-end">
             <div className="space-y-2">
               <div className="flex bg-white border border-gray-200 rounded-sm overflow-hidden h-9">
@@ -697,7 +699,7 @@ export default function AdminPage() {
               </div>
             </div>
           </div>
-        </div>
+        </div>}
 
         {/* Tabs */}
         <div className="flex border-b border-gray-200 mb-6 overflow-x-auto no-scrollbar">
@@ -772,6 +774,7 @@ export default function AdminPage() {
                 onCreate={() => setActiveModal({ type: 'tips', item: null })}
               />
             )}
+            {tab === 'landing-pages' && <LandingManager token={token} />}
             {tab === 'accounts' && (
               <AccountsTable
                 data={accounts}

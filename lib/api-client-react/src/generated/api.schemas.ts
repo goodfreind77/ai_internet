@@ -5,6 +5,36 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export type LandingPageInputCategory =
+  (typeof LandingPageInputCategory)[keyof typeof LandingPageInputCategory];
+
+export const LandingPageInputCategory = {
+  당근마켓: "당근마켓",
+  구글광고: "구글광고",
+  "일반/기타": "일반/기타",
+} as const;
+
+export interface LandingPageInput {
+  slug: string;
+  title: string;
+  category: LandingPageInputCategory;
+  eyebrow: string;
+  headline: string;
+  description: string;
+  benefits: string;
+  ctaLabel: string;
+  ctaUrl: string;
+  /** @nullable */
+  imageUrl: string | null;
+  isPublished: boolean;
+}
+
+export type LandingPage = LandingPageInput & {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export interface HealthStatus {
   status: string;
 }

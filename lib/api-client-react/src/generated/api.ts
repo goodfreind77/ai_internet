@@ -23,6 +23,8 @@ import type {
   CreateConsultationRequest,
   ErrorResponse,
   HealthStatus,
+  LandingPage,
+  LandingPageInput,
 } from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
@@ -33,6 +35,511 @@ type AwaitedInput<T> = PromiseLike<T> | T;
 type Awaited<O> = O extends AwaitedInput<infer T> ? T : never;
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
+/**
+ * @summary View a published landing page
+ */
+export const getGetPublishedLandingPageUrl = (slug: string) => {
+  return `/api/landing-pages/${slug}`;
+};
+
+export const getPublishedLandingPage = async (
+  slug: string,
+  options?: RequestInit,
+): Promise<LandingPage> => {
+  return customFetch<LandingPage>(getGetPublishedLandingPageUrl(slug), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetPublishedLandingPageQueryKey = (slug: string) => {
+  return [`/api/landing-pages/${slug}`] as const;
+};
+
+export const getGetPublishedLandingPageQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPublishedLandingPage>>,
+  TError = ErrorType<void>,
+>(
+  slug: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getPublishedLandingPage>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetPublishedLandingPageQueryKey(slug);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getPublishedLandingPage>>
+  > = ({ signal }) =>
+    getPublishedLandingPage(slug, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!slug,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getPublishedLandingPage>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetPublishedLandingPageQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPublishedLandingPage>>
+>;
+export type GetPublishedLandingPageQueryError = ErrorType<void>;
+
+/**
+ * @summary View a published landing page
+ */
+
+export function useGetPublishedLandingPage<
+  TData = Awaited<ReturnType<typeof getPublishedLandingPage>>,
+  TError = ErrorType<void>,
+>(
+  slug: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getPublishedLandingPage>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetPublishedLandingPageQueryOptions(slug, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary List pages for authorized content administrators
+ */
+export const getListLandingPagesUrl = () => {
+  return `/api/admin/landing-pages`;
+};
+
+export const listLandingPages = async (
+  options?: RequestInit,
+): Promise<LandingPage[]> => {
+  return customFetch<LandingPage[]>(getListLandingPagesUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListLandingPagesQueryKey = () => {
+  return [`/api/admin/landing-pages`] as const;
+};
+
+export const getListLandingPagesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listLandingPages>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listLandingPages>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListLandingPagesQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof listLandingPages>>
+  > = ({ signal }) => listLandingPages({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listLandingPages>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ListLandingPagesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listLandingPages>>
+>;
+export type ListLandingPagesQueryError = ErrorType<unknown>;
+
+/**
+ * @summary List pages for authorized content administrators
+ */
+
+export function useListLandingPages<
+  TData = Awaited<ReturnType<typeof listLandingPages>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listLandingPages>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getListLandingPagesQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Create a landing page
+ */
+export const getCreateLandingPageUrl = () => {
+  return `/api/admin/landing-pages`;
+};
+
+export const createLandingPage = async (
+  landingPageInput: LandingPageInput,
+  options?: RequestInit,
+): Promise<LandingPage> => {
+  return customFetch<LandingPage>(getCreateLandingPageUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(landingPageInput),
+  });
+};
+
+export const getCreateLandingPageMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createLandingPage>>,
+    TError,
+    { data: BodyType<LandingPageInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createLandingPage>>,
+  TError,
+  { data: BodyType<LandingPageInput> },
+  TContext
+> => {
+  const mutationKey = ["createLandingPage"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createLandingPage>>,
+    { data: BodyType<LandingPageInput> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createLandingPage(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateLandingPageMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createLandingPage>>
+>;
+export type CreateLandingPageMutationBody = BodyType<LandingPageInput>;
+export type CreateLandingPageMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Create a landing page
+ */
+export const useCreateLandingPage = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createLandingPage>>,
+    TError,
+    { data: BodyType<LandingPageInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createLandingPage>>,
+  TError,
+  { data: BodyType<LandingPageInput> },
+  TContext
+> => {
+  return useMutation(getCreateLandingPageMutationOptions(options));
+};
+
+/**
+ * @summary Update a landing page
+ */
+export const getUpdateLandingPageUrl = (id: number) => {
+  return `/api/admin/landing-pages/${id}`;
+};
+
+export const updateLandingPage = async (
+  id: number,
+  landingPageInput: LandingPageInput,
+  options?: RequestInit,
+): Promise<LandingPage> => {
+  return customFetch<LandingPage>(getUpdateLandingPageUrl(id), {
+    ...options,
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(landingPageInput),
+  });
+};
+
+export const getUpdateLandingPageMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateLandingPage>>,
+    TError,
+    { id: number; data: BodyType<LandingPageInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateLandingPage>>,
+  TError,
+  { id: number; data: BodyType<LandingPageInput> },
+  TContext
+> => {
+  const mutationKey = ["updateLandingPage"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateLandingPage>>,
+    { id: number; data: BodyType<LandingPageInput> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateLandingPage(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateLandingPageMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateLandingPage>>
+>;
+export type UpdateLandingPageMutationBody = BodyType<LandingPageInput>;
+export type UpdateLandingPageMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Update a landing page
+ */
+export const useUpdateLandingPage = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateLandingPage>>,
+    TError,
+    { id: number; data: BodyType<LandingPageInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updateLandingPage>>,
+  TError,
+  { id: number; data: BodyType<LandingPageInput> },
+  TContext
+> => {
+  return useMutation(getUpdateLandingPageMutationOptions(options));
+};
+
+/**
+ * @summary Delete a landing page
+ */
+export const getDeleteLandingPageUrl = (id: number) => {
+  return `/api/admin/landing-pages/${id}`;
+};
+
+export const deleteLandingPage = async (
+  id: number,
+  options?: RequestInit,
+): Promise<void> => {
+  return customFetch<void>(getDeleteLandingPageUrl(id), {
+    ...options,
+    method: "DELETE",
+  });
+};
+
+export const getDeleteLandingPageMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteLandingPage>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteLandingPage>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  const mutationKey = ["deleteLandingPage"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteLandingPage>>,
+    { id: number }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return deleteLandingPage(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteLandingPageMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteLandingPage>>
+>;
+
+export type DeleteLandingPageMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Delete a landing page
+ */
+export const useDeleteLandingPage = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteLandingPage>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof deleteLandingPage>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  return useMutation(getDeleteLandingPageMutationOptions(options));
+};
+
+/**
+ * @summary Duplicate a page as an unpublished draft
+ */
+export const getDuplicateLandingPageUrl = (id: number) => {
+  return `/api/admin/landing-pages/${id}/duplicate`;
+};
+
+export const duplicateLandingPage = async (
+  id: number,
+  options?: RequestInit,
+): Promise<LandingPage> => {
+  return customFetch<LandingPage>(getDuplicateLandingPageUrl(id), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getDuplicateLandingPageMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof duplicateLandingPage>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof duplicateLandingPage>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  const mutationKey = ["duplicateLandingPage"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof duplicateLandingPage>>,
+    { id: number }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return duplicateLandingPage(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DuplicateLandingPageMutationResult = NonNullable<
+  Awaited<ReturnType<typeof duplicateLandingPage>>
+>;
+
+export type DuplicateLandingPageMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Duplicate a page as an unpublished draft
+ */
+export const useDuplicateLandingPage = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof duplicateLandingPage>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof duplicateLandingPage>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  return useMutation(getDuplicateLandingPageMutationOptions(options));
+};
 
 /**
  * Returns server health status

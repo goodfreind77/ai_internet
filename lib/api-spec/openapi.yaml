@@ -14,7 +14,99 @@ tags:
     description: Consultation request operations
   - name: applications
     description: Internet service application operations
+  - name: landing-pages
+    description: Landing page management
 paths:
+  /landing-pages/{slug}:
+    get:
+      operationId: getPublishedLandingPage
+      tags: [landing-pages]
+      summary: View a published landing page
+      parameters:
+        - in: path
+          name: slug
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Published landing page
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/LandingPage" }
+        "404":
+          description: Not found or not published
+  /admin/landing-pages:
+    get:
+      operationId: listLandingPages
+      tags: [landing-pages]
+      summary: List pages for authorized content administrators
+      responses:
+        "200":
+          description: Pages
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/LandingPage" }
+    post:
+      operationId: createLandingPage
+      tags: [landing-pages]
+      summary: Create a landing page
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LandingPageInput" }
+      responses:
+        "201":
+          description: Created page
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/LandingPage" }
+  /admin/landing-pages/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema: { type: integer }
+    patch:
+      operationId: updateLandingPage
+      tags: [landing-pages]
+      summary: Update a landing page
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LandingPageInput" }
+      responses:
+        "200":
+          description: Updated page
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/LandingPage" }
+    delete:
+      operationId: deleteLandingPage
+      tags: [landing-pages]
+      summary: Delete a landing page
+      responses:
+        "204":
+          description: Deleted
+  /admin/landing-pages/{id}/duplicate:
+    post:
+      operationId: duplicateLandingPage
+      tags: [landing-pages]
+      summary: Duplicate a page as an unpublished draft
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "201":
+          description: Draft copy
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/LandingPage" }
   /healthz:
     get:
       operationId: healthCheck
@@ -78,6 +170,30 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
+    LandingPageInput:
+      type: object
+      properties:
+        slug: { type: string }
+        title: { type: string }
+        category: { type: string, enum: ["당근마켓", "구글광고", "일반/기타"] }
+        eyebrow: { type: string }
+        headline: { type: string }
+        description: { type: string }
+        benefits: { type: string }
+        ctaLabel: { type: string }
+        ctaUrl: { type: string }
+        imageUrl: { type: ["string", "null"] }
+        isPublished: { type: boolean }
+      required: [slug, title, category, eyebrow, headline, description, benefits, ctaLabel, ctaUrl, imageUrl, isPublished]
+    LandingPage:
+      allOf:
+        - $ref: "#/components/schemas/LandingPageInput"
+        - type: object
+          properties:
+            id: { type: integer }
+            createdAt: { type: string, format: date-time }
+            updatedAt: { type: string, format: date-time }
+          required: [id, createdAt, updatedAt]
     HealthStatus:
       type: object
       properties:
