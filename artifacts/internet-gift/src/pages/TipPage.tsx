@@ -9,6 +9,7 @@ import devices from '@/assets/tips-devices.jpg';
 import guides from '@/assets/tips-guides.jpg';
 import news from '@/assets/tips-news.jpg';
 import { Eye, Search } from 'lucide-react';
+import { LEGACY_TIP_DATES } from '@/lib/tip-publication-dates';
 
 const PAGE_SIZE = 20;
 
@@ -20,15 +21,15 @@ function dedup(list: Tip[]): Tip[] {
 interface LegacyTip { id: number; slug: string; category: string; title: string; views: number; date: string; }
 
 const FEATURED_TIPS: LegacyTip[] = [
-  { id: 1, slug: 'why-us', category: '꼭 읽어보기', title: '인터넷가입은 AI인터넷에서!!', views: 1129, date: '2025-11-07' },
-  { id: 2, slug: 'lg-discount', category: '요금할인', title: 'LG유플러스 결합할인', views: 712, date: '2025-11-07' },
-  { id: 3, slug: 'kt-discount', category: '요금할인', title: 'KT 결합할인', views: 559, date: '2025-11-07' },
-  { id: 4, slug: 'sk-discount', category: '요금할인', title: 'SK브로드밴드 결합할인', views: 613, date: '2025-11-07' },
-  { id: 5, slug: 'new-vs-renewal', category: '꼭 읽어보기', title: '신규가입 VS 재약정', views: 743, date: '2025-11-07' },
+  { id: 1, slug: 'why-us', category: '꼭 읽어보기', title: '인터넷가입은 AI인터넷에서!!', views: 1129, date: LEGACY_TIP_DATES['why-us'] },
+  { id: 2, slug: 'lg-discount', category: '요금할인', title: 'LG유플러스 결합할인', views: 712, date: LEGACY_TIP_DATES['lg-discount'] },
+  { id: 3, slug: 'kt-discount', category: '요금할인', title: 'KT 결합할인', views: 559, date: LEGACY_TIP_DATES['kt-discount'] },
+  { id: 4, slug: 'sk-discount', category: '요금할인', title: 'SK브로드밴드 결합할인', views: 613, date: LEGACY_TIP_DATES['sk-discount'] },
+  { id: 5, slug: 'new-vs-renewal', category: '꼭 읽어보기', title: '신규가입 VS 재약정', views: 743, date: LEGACY_TIP_DATES['new-vs-renewal'] },
 ];
 
 const ALL_TIPS: LegacyTip[] = [
-  { id: 101, slug: '84', category: '새로운소식', title: 'KT 천만 프로모션이라고 아시나요? KT 인터넷 가입자 1,000만명 돌파 이벤트!', views: 314, date: '2025-11-07' },
+  { id: 101, slug: '84', category: '새로운소식', title: 'KT 천만 프로모션이라고 아시나요? KT 인터넷 가입자 1,000만명 돌파 이벤트!', views: 314, date: LEGACY_TIP_DATES['84'] },
 ];
 
 interface Tip {

@@ -5,6 +5,7 @@ import { ISPNav } from '@/components/ISPNav';
 import { Footer } from '@/components/Footer';
 import { TipCover } from '@/components/TipCover';
 import { RichArticle, isRichContent } from '@/components/RichArticle';
+import { LEGACY_TIP_DATES } from '@/lib/tip-publication-dates';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChevronLeft, DollarSign, Zap, MessageSquare, Shield, Check } from 'lucide-react';
@@ -1091,37 +1092,37 @@ const TIP_CONTENTS: Record<string, { title: string; subtitle: string; views: num
     title: '인터넷가입은 AI인터넷에서!!',
     subtitle: '10년 차 통신비 절약 해결사가 알려드리는 실패 없는 인터넷 가입 이유',
     views: 1129,
-    date: '2025-11-07',
+    date: LEGACY_TIP_DATES['why-us'],
   },
   'lg-discount': {
     title: 'LG U+ 결합할인, 가족만 된다고요? 당신이 몰랐던 5가지 숨겨진 꿀팁',
     subtitle: 'LG유플러스 결합할인 완벽 정리',
     views: 712,
-    date: '2025-11-07',
+    date: LEGACY_TIP_DATES['lg-discount'],
   },
   'kt-discount': {
     title: 'KT 결합할인 완벽 정리',
     subtitle: 'KT 인터넷+휴대폰 결합 시 최대 절약 방법',
     views: 559,
-    date: '2025-11-07',
+    date: LEGACY_TIP_DATES['kt-discount'],
   },
   'sk-discount': {
     title: 'SK브로드밴드 결합할인 완벽 정리',
     subtitle: 'SK브로드밴드 인터넷+B tv+휴대폰 결합 혜택',
     views: 613,
-    date: '2025-11-07',
+    date: LEGACY_TIP_DATES['sk-discount'],
   },
   'new-vs-renewal': {
     title: '신규가입 VS 재약정, 뭐가 더 유리할까?',
     subtitle: '상황별 최적 선택 가이드',
     views: 743,
-    date: '2025-11-07',
+    date: LEGACY_TIP_DATES['new-vs-renewal'],
   },
   '84': {
     title: 'KT 천만 프로모션이라고 아시나요? KT 인터넷 가입자 1,000만명 돌파 이벤트!',
     subtitle: 'KT 인터넷 가입자 1,000만명 돌파 특별 혜택',
     views: 314,
-    date: '2025-11-07',
+    date: LEGACY_TIP_DATES['84'],
   },
 };
 

@@ -1,6 +1,7 @@
 import app from "./app";
 import { logger } from "./lib/logger";
 import { importAuthorizedSourceTips } from "./lib/import-source-tips";
+import { scheduleTipPublicationDates } from "./lib/schedule-tip-dates";
 
 const rawPort = process.env["PORT"];
 
@@ -19,8 +20,9 @@ if (Number.isNaN(port) || port <= 0) {
 async function startServer(): Promise<void> {
   try {
     await importAuthorizedSourceTips();
+    await scheduleTipPublicationDates();
   } catch (err) {
-    logger.error({ err }, "Authorized source tips import failed; refusing to start");
+    logger.error({ err }, "Tip content setup failed; refusing to start");
     process.exit(1);
   }
 
