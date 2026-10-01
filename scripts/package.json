@@ -6,7 +6,14 @@
   "scripts": {
     "hello": "tsx ./src/hello.ts",
     "acquire-source-tips": "tsx ./src/acquire-source-tips.ts",
+    "upload-tip-covers": "tsx ./src/upload-tip-covers.ts",
+    "apply-tip-cover-thumbnails": "tsx ./src/apply-tip-cover-thumbnails.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@google-cloud/storage": "^7.16.0",
+    "@workspace/db": "workspace:*",
+    "sharp": "^0.34.5"
   },
   "devDependencies": {
     "@types/node": "catalog:",

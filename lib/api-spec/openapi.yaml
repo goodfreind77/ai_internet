@@ -16,7 +16,35 @@ tags:
     description: Internet service application operations
   - name: landing-pages
     description: Landing page management
+  - name: storage
+    description: Public static asset delivery
 paths:
+  /storage/public-objects/{filePath}:
+    get:
+      operationId: getPublicStorageObject
+      tags: [storage]
+      summary: Serve a public object from application storage
+      parameters:
+        - in: path
+          name: filePath
+          required: true
+          description: Object path relative to a configured public search path
+          schema: { type: string }
+      responses:
+        "200":
+          description: Public object
+          headers:
+            Cache-Control:
+              schema: { type: string }
+          content:
+            image/webp:
+              schema: { type: string, format: binary }
+            application/octet-stream:
+              schema: { type: string, format: binary }
+        "404":
+          description: Public object not found
+        "500":
+          description: Storage service error
   /landing-pages/{slug}:
     get:
       operationId: getPublishedLandingPage

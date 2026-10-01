@@ -1126,6 +1126,15 @@ const TIP_CONTENTS: Record<string, { title: string; subtitle: string; views: num
   },
 };
 
+const LEGACY_TIP_CATEGORIES: Record<string, string> = {
+  'why-us': '꼭 읽어보기',
+  'lg-discount': '요금할인',
+  'kt-discount': '요금할인',
+  'sk-discount': '요금할인',
+  'new-vs-renewal': '꼭 읽어보기',
+  '84': '새로운소식',
+};
+
 interface ManagedTip {
   id: number;
   title: string;
@@ -1213,7 +1222,7 @@ export default function TipDetailPage({ slug }: { slug: string }) {
                 <span>조회수 {managedTip.views}</span>
                 <span>{(managedTip.createdAt || managedTip.updatedAt || '').slice(0, 10)}</span>
               </div>
-              <div className="mb-6"><TipCover variant="hero" category={managedTip.category} title={managedTip.title} caption="AI인터넷 통신 가이드" thumbnail={managedTip.thumbnail} testId="img-tip-cover" /></div>
+              <div className="mb-6"><TipCover variant="hero" slug={managedTip.slug} category={managedTip.category} title={managedTip.title} caption="AI인터넷 통신 가이드" thumbnail={managedTip.thumbnail} testId="img-tip-cover" /></div>
               {isRichContent(managedTip.content)
                 ? <RichArticle content={managedTip.content} />
                 : <div className="whitespace-pre-wrap text-gray-700 leading-relaxed break-words" data-testid="text-tip-detail-content">{managedTip.content}</div>}
@@ -1263,6 +1272,10 @@ export default function TipDetailPage({ slug }: { slug: string }) {
           <div className="flex items-center gap-4 text-sm text-muted-foreground mb-8 pb-4 border-b">
             <span>조회수 {info.views}</span>
             <span>{info.date}</span>
+          </div>
+
+          <div className="mb-6">
+            <TipCover variant="hero" slug={slug} category={LEGACY_TIP_CATEGORIES[slug]} title={info.title} testId="img-tip-cover" />
           </div>
 
           {renderContent()}

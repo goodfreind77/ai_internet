@@ -1,0 +1,102 @@
+[
+  {
+    "altKo": "거실 공유기와 안방 문가에 설치된 중계기를 통해 집안 전체로 와이파이 신호가 퍼지는 모습",
+    "scene": "A modern Korean living room interior featuring a central wireless router on a clean wooden shelf away from the wall, with a small signal booster placed discreetly in an open doorway to a distant bedroom, conveying the concept of improving Wi-Fi coverage across a home without complex wiring.",
+    "slug": "5bfb38c0-2d00-4744-a94c-4c11029214f8"
+  },
+  {
+    "altKo": "온라인 복지 포털에서 통신비 감면 자격을 확인하고 신청을 준비하는 모습",
+    "scene": "A person sitting at a desk looking at a laptop screen displaying a simplified web-based benefit verification form, with a nearby official disability registration card or a generic welfare certificate, symbolizing the proactive search for telecom fee reduction eligibility.",
+    "slug": "54629fa0-e3e7-4379-8885-71dcb679af12"
+  },
+  {
+    "altKo": "인터넷 기사가 가정 내 랜 포트를 점검하며 수리 비용에 대해 안내하는 모습",
+    "scene": "A technician kneeling in front of a living room wall internet port holding a network tester, while the homeowner holds a repair invoice, illustrating the moment of verifying whether an internet issue falls under free maintenance or paid service.",
+    "slug": "cebd13c9-27b8-49bb-955a-a9e83debdc09"
+  },
+  {
+    "altKo": "매장 카운터에 놓인 결제 단말기와 인터넷 공유기, 그리고 세금계산서 서류가 함께 있는 모습",
+    "scene": "A small business cafe counter featuring a card payment terminal and a router, with a business tax invoice folder nearby, highlighting the distinction between residential and commercial internet infrastructure requirements.",
+    "slug": "75447a26-09cf-4cb2-bba1-3e0a09a57e53"
+  },
+  {
+    "altKo": "인터넷 가입 시 신분증 사본 대신 휴대폰 본인 인증 문자를 확인하는 장면",
+    "scene": "A person holding their smartphone to receive a verification code text message for a service application, with a physical ID card resting face down on a desk, representing the safe two-way verification process for internet contracts.",
+    "slug": "8960a09d-ccdb-4a59-abdf-ebac3c4a3e45"
+  },
+  {
+    "altKo": "인터넷 해지 후 공유기와 셋톱박스 등 임대 장비를 박스에 담아 정리하는 모습",
+    "scene": "A person packing a router, remote control, and power adapter into a labeled cardboard box, with a final bill statement on the side, depicting the complete termination process of an internet contract including equipment return.",
+    "slug": "e94401e3-bb4b-413d-b85e-65d15b1ecc7a"
+  },
+  {
+    "altKo": "인터넷 가입 사은품 지급 조건과 날짜가 적힌 메모를 스마트폰으로 확인하는 모습",
+    "scene": "A smartphone screen displaying a written agreement about internet installation gifts, with a calendar marked for a future payout date, symbolizing the necessary documentation and patience required for promotional incentives.",
+    "slug": "694870e0-f5e4-423c-94cc-aaefa27519f2"
+  },
+  {
+    "altKo": "기존 통신사 위약금과 신규 가입 사은품을 계산하여 대납 구조를 확인하는 책상 위 모습",
+    "scene": "A desk with an old internet bill showing a penalty amount, overlaid by a calculator calculating the difference from a new contract's gift incentive, illustrating the financial structure of the contract buyout process.",
+    "slug": "41d903cf-806c-4bc1-be0e-d1aee6d17f87"
+  },
+  {
+    "altKo": "인터넷 해지 시 분실한 공유기나 셋톱박스 등 임대 장비 확인 및 변상 기준을 점검하는 모습",
+    "scene": "An open cabinet showing a missing spot for a set-top box, with the homeowner holding a list of serial numbers and an official return receipt, representing the importance of returning leased equipment to avoid penalty fees.",
+    "slug": "c889cf87-d6a9-4f02-bfbb-9fb8db08413d"
+  },
+  {
+    "altKo": "명의도용방지서비스를 통해 내 이름으로 가입된 통신 회선을 한눈에 조회하는 모습",
+    "scene": "A laptop screen showing a formal 'Search for Registered Telecom Services' website page, with a person confirming their own name in the registration list, highlighting the security measure against identity theft.",
+    "slug": "9fbfff9e-e3a3-47f2-af10-49ffb09927e8"
+  },
+  {
+    "altKo": "달력에 표시된 통신비 납부 기일과 미납 안내 문자 메시지를 확인하며 연체 해결 순서를 생각하는 모습",
+    "scene": "A calendar with red circles on payment due dates and a notification on a phone showing a past-due alert for internet service, emphasizing the structured progression of payment delinquency and service suspension.",
+    "slug": "20460903-41fb-447f-bd47-127d353ebe3e"
+  },
+  {
+    "altKo": "전셋집에 벽 타공 없이 몰딩을 활용해 깔끔하게 인터넷 선을 설치하는 기사와 집주인 동의 문자",
+    "scene": "A technician carefully installing a network cable along a door frame in a rental apartment without drilling, while a smartphone screen shows a friendly text agreement with the landlord, demonstrating non-invasive installation.",
+    "slug": "551e5aa3-cb09-4d4b-aee9-428c599a6aca"
+  },
+  {
+    "altKo": "장기간 집을 비울 때 인터넷 서비스 일시정지 기능을 활용하는 모습",
+    "scene": "An empty, neatly organized living room with a covered router, showing a 'paused' status on a mobile app interface, representing the temporary suspension of internet service during a long absence.",
+    "slug": "d2f4fb8f-661c-4ba3-9641-aa5dc3e902f0"
+  },
+  {
+    "altKo": "인터넷 가입 상담 시 사은품 총액과 실제 현금 입금액을 구분하여 확인하는 모습",
+    "scene": "A person comparing various promotional offers on a desk with a notebook clearly separating 'Total Gift Amount' from 'Net Cash Deposit', highlighting the importance of verifying actual liquid value in contract negotiations.",
+    "slug": "f2a881fe-4ad0-47d7-974b-41f4e46c9341"
+  },
+  {
+    "altKo": "통신비 청구서에서 불필요하게 가입된 부가서비스 항목을 찾아 해지를 결정하는 모습",
+    "scene": "A magnifying glass placed over a detailed internet bill focusing on the 'Extra Services' section, with a person marking items to be canceled, showing the process of identifying and removing unnecessary monthly charges.",
+    "slug": "d4d83064-be17-4136-bf33-8523a6f3f33d"
+  },
+  {
+    "altKo": "인터넷 설치 기사 방문 전 벽면 단자 위치와 전원 콘센트를 점검하고 준비하는 모습",
+    "scene": "A person pointing to a home wall network outlet in an apartment while a technician prepares equipment, with a checklist on a nearby clipboard, representing the preparation required for a smooth installation appointment.",
+    "slug": "c8cc57b9-cac8-4bed-80b8-4f98fac6afb9"
+  },
+  {
+    "altKo": "인터넷 가입 시 사전승낙서와 업체 정보를 확인하며 안전한 판매처를 선택하는 모습",
+    "scene": "A desktop computer screen showing an official comparison table of different internet service providers, with a magnifying glass focused on the 'Official Accreditation' badge of a seller, illustrating the search for a legitimate contract source.",
+    "slug": "b4cd6a09-8adf-45d6-9595-46e8b005ae87"
+  },
+  {
+    "altKo": "인터넷, TV, 휴대폰 결합 할인과 개별 가입 비용을 각각 계산하여 총액을 비교하는 모습",
+    "scene": "A table showing two separate handwritten calculation lists for internet expenses, one with a 'Family Bundle' and one 'Standalone', visually comparing the long-term financial consequences of telecom bundling.",
+    "slug": "68b40460-9316-42a0-9af3-bd06fd588817"
+  },
+  {
+    "altKo": "은행 자동이체와 제휴카드 자동납부 중 자신에게 더 유리한 요금 할인 방식을 비교하는 모습",
+    "scene": "A split view showing an automatic bank transfer setup on a laptop screen versus a credit card payment dashboard, highlighting the choice between simple direct debits and potential credit card discount benefits.",
+    "slug": "d3f01e01-7847-4319-a3cf-77c41e9b2928"
+  },
+  {
+    "altKo": "인터넷 가입 계약서에 서명하기 전 월 요금과 약정 기간 등 핵심 항목을 꼼꼼히 확인하는 모습",
+    "scene": "A person sitting at a desk carefully reviewing a printed legal internet contract document with a pen in hand, focused on the section listing monthly costs, emphasizing the importance of verifying final terms before signing.",
+    "slug": "f5733247-b362-47d6-9bd9-7206ab2094b7"
+  }
+]

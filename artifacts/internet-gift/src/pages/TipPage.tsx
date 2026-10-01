@@ -98,7 +98,7 @@ function TipCard({
       data-testid={`card-tip-${testIdPrefix}-${tip.id}`}
       onClick={() => setLocation(`/tip/${tip.slug}`)}
     >
-      <TipCover category={tip.category} title={tip.title} thumbnail={tip.thumbnail} />
+      <TipCover slug={tip.slug} category={tip.category} title={tip.title} thumbnail={tip.thumbnail} />
       <div className="p-4 flex flex-col flex-1">
         <h3
           className="font-bold text-sm md:text-base mb-3 line-clamp-2 min-h-[2.5rem]"

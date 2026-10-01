@@ -2,6 +2,7 @@ import app from "./app";
 import { logger } from "./lib/logger";
 import { importAuthorizedSourceTips } from "./lib/import-source-tips";
 import { scheduleTipPublicationDates } from "./lib/schedule-tip-dates";
+import { importGeneratedTipCovers } from "./lib/import-tip-covers";
 
 const rawPort = process.env["PORT"];
 
@@ -21,6 +22,7 @@ async function startServer(): Promise<void> {
   try {
     await importAuthorizedSourceTips();
     await scheduleTipPublicationDates();
+    await importGeneratedTipCovers();
   } catch (err) {
     logger.error({ err }, "Tip content setup failed; refusing to start");
     process.exit(1);

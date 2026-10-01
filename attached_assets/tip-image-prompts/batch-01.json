@@ -1,0 +1,102 @@
+[
+  {
+    "altKo": "식당 계산대에 주문용 태블릿과 POS 단말기, 여러 대의 스마트폰이 복잡하게 얽혀 있어 인터넷 연결이 지연되는 상황",
+    "scene": "A crowded restaurant counter filled with numerous devices including multiple digital order tablets, a POS terminal, and a tangle of charging cables, viewed from a slightly elevated angle to emphasize the clutter causing network slowdowns.",
+    "slug": "7a2e104c-9be5-497b-ba9a-0801bde09567"
+  },
+  {
+    "altKo": "인테리어 공사 중인 가게에서 사장님이 개업 날짜가 적힌 달력과 도면을 보며 인터넷 설치 일정을 고민하는 모습",
+    "scene": "A shop owner looking at an architectural blueprint on a table in an empty, renovating commercial space, with a calendar marked for an opening date in the background and a technician testing a wall socket for internet installation.",
+    "slug": "6ea81523-ad75-4759-b7cf-f87d24da43df"
+  },
+  {
+    "altKo": "바쁜 계산대에서 카드 결제기가 오류 문구를 띄우고 있고, 랜선 연결 상태를 확인하려는 손길",
+    "scene": "A busy checkout counter with a card terminal displaying an error message, with a customer waiting in the background; a technician's hand is visible checking the ethernet cable connection behind the machine.",
+    "slug": "1e5d2137-0f5f-46cf-b9ec-411535680a26"
+  },
+  {
+    "altKo": "계산대 옆에 손님용 게스트 와이파이와 매장 업무용 단말기가 분리되어 있음을 보여주는 안내문",
+    "scene": "A cafe menu board near a cash register showing a QR code and network name for 'Guest WiFi' alongside a separate 'Staff Only' terminal, illustrating isolated networks.",
+    "slug": "e54d15de-dc39-4ba0-8d9c-dc33fd72438d"
+  },
+  {
+    "altKo": "매장 한구석에 설치된 CCTV와 이를 알리는 개인정보 보호 안내판이 붙어 있는 모습",
+    "scene": "A small shop interior with a wall-mounted CCTV camera in the corner, showing a clear 'CCTV Surveillance in Progress' sign nearby, with a focus on the privacy-conscious installation.",
+    "slug": "f24bd6fe-ec36-49ed-be72-bd5b240de3a0"
+  },
+  {
+    "altKo": "공유기 교체 후 스마트 가전들이 와이파이 연결을 잃고 앱에서 오프라인으로 표시되는 상황",
+    "scene": "A modern living room with a smartphone app interface overlay depicting 'Device Offline' icons, with a router and various smart home appliances in the background waiting for reconnection.",
+    "slug": "a9ffb3e9-e5db-471a-a0db-b6bd248906f6"
+  },
+  {
+    "altKo": "집 밖에서 스마트폰 앱으로 홈캠 영상을 확인하려 하지만 네트워크 오류로 화면이 제대로 나오지 않는 모습",
+    "scene": "A person holding a smartphone showing a live home security camera feed that is blurry and buffering, with the home interior partially visible in the background and a router nearby.",
+    "slug": "ec576b05-532a-491e-86f6-365d0bae0bea"
+  },
+  {
+    "altKo": "랜선 포트가 없는 방에 TV를 설치하기 위해 몰딩을 따라 길게 연결된 인터넷 랜선",
+    "scene": "An interior shot of a bedroom corner with a sleek television placed on a stand, showing a long white ethernet cable running along the floor molding from an adjacent room.",
+    "slug": "f22cdeae-530a-417c-8ab1-fb586e2d53cb"
+  },
+  {
+    "altKo": "공유기를 직렬로 연결해 주소 충돌이 발생한 이중 공유기 환경의 복잡한 배선 모습",
+    "scene": "A home network setup with two routers stacked together, with a tangled mess of cables connected to both devices, highlighting an inefficient daisy-chained network configuration.",
+    "slug": "539eaaeb-1ba7-4031-b8d0-4004f8f20230"
+  },
+  {
+    "altKo": "1년 거주 예정인데 3년 약정 서류를 고민하며 달력의 이사 예정일을 바라보는 모습",
+    "scene": "A person reviewing an internet subscription contract document highlighting the '3-year' term, with a calendar in the background showing a move-out date within one year.",
+    "slug": "8b5b9a79-fa2e-4d8a-83ce-8294d1a12616"
+  },
+  {
+    "altKo": "인터넷이 끊긴 상황에서 모뎀 표시등을 확인하며 기사를 부르기 전 스스로 점검하려는 모습",
+    "scene": "A homeowner looking at a wall-mounted modem with blinking status lights, holding a smartphone near a customer service app, indicating a search for troubleshooting steps.",
+    "slug": "25a626ea-ed48-4f66-abdd-75f0eec6fd7d"
+  },
+  {
+    "altKo": "기가급 인터넷을 쓰는데도 노후된 랜선으로 인해 속도 측정이 낮게 나오는 상황을 확인하는 모습",
+    "scene": "A person performing a speed test on a laptop connected by a frayed ethernet cable, with a router and modem visible; the screen shows a low speed despite a high-speed subscription.",
+    "slug": "2201c355-e876-4f72-8566-460e7386ef52"
+  },
+  {
+    "altKo": "부모님 댁의 오래된 인터넷 요금 청구서를 들고 불필요한 부가 항목을 정리하려는 자녀",
+    "scene": "A young person sitting at a desk with an open laptop, looking at a stack of old utility bills and a smartphone, calculating the costs for their parents' house.",
+    "slug": "8eb4f3ff-169f-4731-a6a9-c7037f2fa6bb"
+  },
+  {
+    "altKo": "룸메이트와 인터넷 비용 분담과 명의 책임을 논의하며 공유기를 사이에 두고 대화하는 모습",
+    "scene": "A shared apartment living room with two roommates sitting at a table with an internet router between them, discussing a shared contract and a split payment plan on a tablet.",
+    "slug": "b5b5d3fc-80f4-4187-8b28-ed08da53453b"
+  },
+  {
+    "altKo": "거실 공유기에서 나오는 와이파이 신호가 안방까지 도달하지 못해 끊기는 음영 지역 문제",
+    "scene": "A house interior showing a router in the hallway with a laptop in a closed bedroom; the Wi-Fi signal graphic on the screen fades out as it reaches the room, indicating a dead zone.",
+    "slug": "d5f1da29-bd07-449e-9475-c3d2fec1238c"
+  },
+  {
+    "altKo": "인터넷 결합을 해지한 후 가족들의 휴대폰 요금이 올라 청구서를 보고 놀라는 가족들",
+    "scene": "A family gathered around a table with a smartphone showing a monthly mobile bill that has unexpectedly increased after cancelling an internet bundle.",
+    "slug": "d67a2bdd-77b0-4b91-927d-b735632a8514"
+  },
+  {
+    "altKo": "방에 TV를 한 대 더 놓기 위해 셋톱박스를 추가 설치하며 발생하는 비용을 확인하는 모습",
+    "scene": "A living room setup with a second television in a small guest room, showing a technician connecting a new set-top box while the owner holds a billing document.",
+    "slug": "18ad3041-58b1-488e-b1fa-9879cac5abd8"
+  },
+  {
+    "altKo": "이사 온 집에서 전 거주자가 남기고 간 인터넷 회선이 아직 살아 있어 어떻게 처리할지 고민하는 모습",
+    "scene": "An empty apartment entrance hall with a modem left by a previous tenant, with a new tenant standing by the door holding a 'New Move-in' notice, pondering the active internet line.",
+    "slug": "dfba81c4-b02d-4a00-aa21-7e1476d5cb15"
+  },
+  {
+    "altKo": "통신사 이동 중 두 통신사의 회선이 겹쳐져 요금이 이중으로 청구된 기간을 확인하는 달력과 고지서",
+    "scene": "A calendar showing two overlapping dates circled in red, with two different telecom company bills placed side by side, symbolizing the double billing period during a service switch.",
+    "slug": "3906f30e-a6d9-449a-9dda-a3561b846cd1"
+  },
+  {
+    "altKo": "인터넷 속도를 올리기 위해 상담하며 약정 기간이 다시 시작되는지 계약 서류를 꼼꼼히 확인하는 모습",
+    "scene": "A person on the phone looking at a contract page titled 'Service Upgrade', while a router sits on a desk; the person is checking the new 3-year commitment date written on the document.",
+    "slug": "f6110863-86a8-4198-b2cf-902bba79bd59"
+  }
+]

@@ -39,6 +39,95 @@ type Awaited<O> = O extends AwaitedInput<infer T> ? T : never;
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 /**
+ * @summary Serve a public object from application storage
+ */
+export const getGetPublicStorageObjectUrl = (filePath: string) => {
+  return `/api/storage/public-objects/${filePath}`;
+};
+
+export const getPublicStorageObject = async (
+  filePath: string,
+  options?: RequestInit,
+): Promise<Blob> => {
+  return customFetch<Blob>(getGetPublicStorageObjectUrl(filePath), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetPublicStorageObjectQueryKey = (filePath: string) => {
+  return [`/api/storage/public-objects/${filePath}`] as const;
+};
+
+export const getGetPublicStorageObjectQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPublicStorageObject>>,
+  TError = ErrorType<void>,
+>(
+  filePath: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getPublicStorageObject>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetPublicStorageObjectQueryKey(filePath);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getPublicStorageObject>>
+  > = ({ signal }) =>
+    getPublicStorageObject(filePath, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!filePath,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getPublicStorageObject>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetPublicStorageObjectQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPublicStorageObject>>
+>;
+export type GetPublicStorageObjectQueryError = ErrorType<void>;
+
+/**
+ * @summary Serve a public object from application storage
+ */
+
+export function useGetPublicStorageObject<
+  TData = Awaited<ReturnType<typeof getPublicStorageObject>>,
+  TError = ErrorType<void>,
+>(
+  filePath: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getPublicStorageObject>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetPublicStorageObjectQueryOptions(filePath, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
  * @summary View a published landing page
  */
 export const getGetPublishedLandingPageUrl = (slug: string) => {

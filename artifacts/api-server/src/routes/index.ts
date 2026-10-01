@@ -4,6 +4,7 @@ import consultationsRouter from "./consultations";
 import contentRouter from "./content";
 import adminRouter from "./admin";
 import landingPagesRouter from "./landing-pages";
+import storageRouter from "./storage";
 
 const router: IRouter = Router();
 
@@ -12,5 +13,6 @@ router.use(adminRouter);
 router.use(consultationsRouter);
 router.use(contentRouter);
 router.use(landingPagesRouter);
+router.use(storageRouter);
 
 export default router;

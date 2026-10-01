@@ -8,6 +8,15 @@
 import * as zod from "zod";
 
 /**
+ * @summary Serve a public object from application storage
+ */
+export const GetPublicStorageObjectParams = zod.object({
+  filePath: zod.coerce
+    .string()
+    .describe("Object path relative to a configured public search path"),
+});
+
+/**
  * @summary View a published landing page
  */
 export const GetPublishedLandingPageParams = zod.object({
