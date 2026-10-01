@@ -3,6 +3,8 @@ import { useLocation } from 'wouter';
 import { Header } from '@/components/Header';
 import { ISPNav } from '@/components/ISPNav';
 import { Footer } from '@/components/Footer';
+import { TipCover } from '@/components/TipCover';
+import { RichArticle, isRichContent } from '@/components/RichArticle';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChevronLeft, DollarSign, Zap, MessageSquare, Shield, Check } from 'lucide-react';
@@ -1210,8 +1212,10 @@ export default function TipDetailPage({ slug }: { slug: string }) {
                 <span>조회수 {managedTip.views}</span>
                 <span>{(managedTip.createdAt || managedTip.updatedAt || '').slice(0, 10)}</span>
               </div>
-              {managedTip.thumbnail && <img src={managedTip.thumbnail} alt={managedTip.title} className="w-full rounded-lg mb-6" />}
-              <div className="whitespace-pre-wrap text-gray-700 leading-relaxed" data-testid="text-tip-detail-content">{managedTip.content}</div>
+              <div className="mb-6"><TipCover variant="hero" category={managedTip.category} title={managedTip.title} caption="AI인터넷 통신 가이드" thumbnail={managedTip.thumbnail} testId="img-tip-cover" /></div>
+              {isRichContent(managedTip.content)
+                ? <RichArticle content={managedTip.content} />
+                : <div className="whitespace-pre-wrap text-gray-700 leading-relaxed break-words" data-testid="text-tip-detail-content">{managedTip.content}</div>}
             </article>
             <div className="mt-10 flex justify-center">
               <Button variant="outline" onClick={() => setLocation('/tip')} data-testid="button-back-to-list-bottom">
