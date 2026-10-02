@@ -5,3 +5,4 @@
 - [Duplicate submission scope](lead-duplicate-scope.md) — Ten-minute phone deduplication stays separate by inquiry, landing page, and signup flow.
 - [Article-specific imagery](article-specific-imagery.md) — Tip covers must match each article individually; shared category images are only a fallback.
 - [GCS download cancellation](gcs-download-cancellation.md) — Browser-aborted image loads can crash Node 24 through a GCS SDK pipeline race; test cancellation, not just successful downloads.
+- [Statistics target confirmation](statistics-target-confirmation.md) — Match dated post references to the correct content section before changing view counts.
