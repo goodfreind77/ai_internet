@@ -2,9 +2,18 @@
   "name": "workspace",
   "version": "0.0.0",
   "license": "MIT",
+  "packageManager": "pnpm@10.26.1",
+  "engines": {
+    "node": ">=22.13 <25",
+    "pnpm": ">=10 <11"
+  },
   "scripts": {
-    "preinstall": "sh -c 'rm -f package-lock.json yarn.lock; case \"$npm_config_user_agent\" in pnpm/*) ;; *) echo \"Use pnpm instead\" >&2; exit 1 ;; esac'",
-    "build": "pnpm run typecheck && pnpm -r --if-present run build",
+    "preinstall": "node -e \"if (!process.env.npm_config_user_agent?.startsWith('pnpm/')) { console.error('Use pnpm: corepack enable && pnpm install'); process.exit(1); }\"",
+    "build": "node scripts/portable.mjs build",
+    "start": "node scripts/portable.mjs start",
+    "dev": "node scripts/portable.mjs dev",
+    "db:push": "node scripts/portable.mjs db:push",
+    "test:portable": "node scripts/verify-portable.mjs",
     "typecheck:libs": "tsc --build",
     "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck"
   },

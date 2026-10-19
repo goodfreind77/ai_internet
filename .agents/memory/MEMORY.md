@@ -1,9 +1,0 @@
-- [Managed content compatibility](managed-content-compatibility.md) — New admin content overlays legacy reviews and tips so rich existing pages remain intact during migration.
-- [Connector production identity](connector-production-binding.md) — A connector may work in development yet reject an autoscale deployment identity; republishing alone may not repair the mapping.
-- [Workspace package installation](pnpm-package-helper.md) — Package helper may target the pnpm root despite a leaf-package directory argument.
-- [Landing consultation privacy](landing-lead-privacy.md) — Keep landing inquiry contact details in the protected inbox, not third-party alerts without updated notice.
-- [Duplicate submission scope](lead-duplicate-scope.md) — Ten-minute phone deduplication stays separate by inquiry, landing page, and signup flow.
-- [Article-specific imagery](article-specific-imagery.md) — Tip covers must match each article individually; shared category images are only a fallback.
-- [GCS download cancellation](gcs-download-cancellation.md) — Browser-aborted image loads can crash Node 24 through a GCS SDK pipeline race; test cancellation, not just successful downloads.
-- [Statistics target confirmation](statistics-target-confirmation.md) — Match dated post references to the correct content section before changing view counts.
-- [Blog republishing](blog-republishing.md) — Tip exports need formatted text and usable images; preserve image-copy and file-download alternatives.

@@ -11,7 +11,29 @@ import {
 
 const REPLIT_SIDECAR_ENDPOINT = "http://127.0.0.1:1106";
 
-export const objectStorageClient = new Storage({
+const storageBackend = process.env.OBJECT_STORAGE_BACKEND || (process.env.REPL_ID ? "replit" : "gcs");
+if (!["replit", "gcs"].includes(storageBackend)) {
+  throw new Error("OBJECT_STORAGE_BACKEND must be replit or gcs.");
+}
+
+function externalStorage(): Storage {
+  if (!process.env.GCS_CREDENTIALS_JSON) {
+    return new Storage({ projectId: process.env.GOOGLE_CLOUD_PROJECT || undefined });
+  }
+  try {
+    const credentials = JSON.parse(process.env.GCS_CREDENTIALS_JSON);
+    if (!credentials.client_email || !credentials.private_key) throw new Error("Missing credential fields");
+    return new Storage({
+      projectId: process.env.GOOGLE_CLOUD_PROJECT || credentials.project_id,
+      credentials,
+    });
+  } catch {
+    // Never log parsed credentials or JSON parsing snippets containing secrets.
+    throw new Error("GCS_CREDENTIALS_JSON must contain valid Google service-account credentials.");
+  }
+}
+
+export const objectStorageClient = storageBackend === "gcs" ? externalStorage() : new Storage({
   credentials: {
     audience: "replit",
     subject_token_type: "access_token",
@@ -197,6 +219,15 @@ async function signObjectURL({
   method: "GET" | "PUT" | "DELETE" | "HEAD";
   ttlSec: number;
 }): Promise<string> {
+  if (storageBackend === "gcs") {
+    const actions = { GET: "read", PUT: "write", DELETE: "delete", HEAD: "read" } as const;
+    const [url] = await objectStorageClient.bucket(bucketName).file(objectName).getSignedUrl({
+      version: "v4",
+      action: actions[method],
+      expires: Date.now() + ttlSec * 1000,
+    });
+    return url;
+  }
   const response = await fetch(
     `${REPLIT_SIDECAR_ENDPOINT}/object-storage/signed-object-url`,
     {

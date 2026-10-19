@@ -10,6 +10,16 @@ export interface SearchQuery {
   sort: string;
 }
 
+type YouTubeVideoStats = {
+  id: string;
+  statistics: { viewCount?: string; likeCount?: string; commentCount?: string };
+};
+type YouTubeChannelStats = {
+  id: string;
+  statistics: { subscriberCount?: string };
+  snippet: { publishedAt: string };
+};
+
 const getPublishedAfter = (period: string) => {
   const now = new Date();
   switch (period) {
@@ -79,8 +89,12 @@ export function useYouTubeSearch(apiKey: string, query: SearchQuery | null) {
       const channelRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet&id=${channelIds}&key=${apiKey}`);
       const channelData = await channelRes.json();
 
-      const videoMap = new Map(videoData.items?.map((item: any) => [item.id, item]) || []);
-      const channelMap = new Map(channelData.items?.map((item: any) => [item.id, item]) || []);
+      const videoMap = new Map<string, YouTubeVideoStats>(
+        videoData.items?.map((item: YouTubeVideoStats) => [item.id, item] as const) || [],
+      );
+      const channelMap = new Map<string, YouTubeChannelStats>(
+        channelData.items?.map((item: YouTubeChannelStats) => [item.id, item] as const) || [],
+      );
 
       const results: VideoResult[] = items.map((item: any): VideoResult | null => {
         const v = videoMap.get(item.id.videoId);

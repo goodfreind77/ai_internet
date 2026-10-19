@@ -47,3 +47,41 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Secrets and machine-specific configuration
+.env
+.env.*
+!.env.example
+!.env.*.example
+.replit
+.replitignore
+replit.nix
+.config/
+.agents/
+.upm/
+*.pem
+*.key
+*.p12
+*.pfx
+**/service-account*.json
+**/credentials*.json
+
+# Generated files, private exports, diagnostics
+.pnpm-store/
+.turbo/
+build/
+coverage/
+test-results/
+playwright-report/
+screenshots/
+generated-artifacts/
+backups/
+*.dump
+*.backup
+dump*.sql
+backup*.sql
+*.log
+*.pid
+*.seed
+.DS_Store?
+Desktop.ini

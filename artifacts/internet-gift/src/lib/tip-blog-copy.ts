@@ -1,7 +1,9 @@
 import { isRichContent, sanitizeTipHtml } from '@/components/RichArticle';
 
 // Verified published origin: copied image/link URLs must work outside the preview.
-const PUBLISHED_ORIGIN = 'https://xn--ai-y14i784ep9k.com';
+const PUBLISHED_ORIGIN = new URL(
+  import.meta.env?.VITE_PUBLIC_SITE_URL || 'https://xn--ai-y14i784ep9k.com',
+).origin;
 
 export type BlogCopyTip = {
   title: string;

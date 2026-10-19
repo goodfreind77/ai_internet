@@ -30,7 +30,7 @@ async function startServer(): Promise<void> {
     process.exit(1);
   }
 
-  app.listen(port, (err) => {
+  app.listen(port, "0.0.0.0", (err) => {
     if (err) {
       logger.error({ err }, "Error listening on port");
       process.exit(1);

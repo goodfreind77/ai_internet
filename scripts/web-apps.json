@@ -1,0 +1,6 @@
+[
+  { "dir": "internet-gift", "package": "@workspace/internet-gift", "basePath": "/" },
+  { "dir": "youtube-analyzer", "package": "@workspace/youtube-analyzer", "basePath": "/youtube-analyzer/" },
+  { "dir": "internet-promo", "package": "@workspace/internet-promo", "basePath": "/internet-promo/" },
+  { "dir": "internet-promo-v1", "package": "@workspace/internet-promo-v1", "basePath": "/internet-promo-v1/" }
+]
