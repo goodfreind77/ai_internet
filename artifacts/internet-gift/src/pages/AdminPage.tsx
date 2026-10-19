@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import LandingManager from './LandingManager';
+import { TipBlogCopyDialog } from '@/components/TipBlogCopyDialog';
 
 type Status = '처리중' | '접수완료' | '개통완료' | '취소';
 const STATUSES: Status[] = ['처리중', '접수완료', '개통완료', '취소'];
@@ -1134,8 +1135,10 @@ function ReviewsTable({ data, filter, onEdit, onDelete, onCreate }: { data: Mana
 
 function TipsTable({ data, filter, onEdit, onDelete, onCreate }: { data: ManagedTip[]; filter: FilterState; onEdit: (i: ManagedTip) => void; onDelete: (id: number) => void; onCreate: () => void; }) {
   const filtered = applyFilters(data, filter);
+  const [copyTip, setCopyTip] = useState<ManagedTip | null>(null);
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+      {copyTip && <TipBlogCopyDialog tip={copyTip} onClose={() => setCopyTip(null)} />}
       <div className="p-4 flex justify-between items-center bg-white border-b border-gray-200">
         <h3 className="font-bold text-gray-900 text-base md:text-lg">꿀팁 목록</h3>
         <button onClick={onCreate} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-sm text-xs font-bold shadow-sm transition-colors">
@@ -1152,7 +1155,7 @@ function TipsTable({ data, filter, onEdit, onDelete, onCreate }: { data: Managed
               <th className="px-4 py-3 font-semibold text-center w-20">조회수</th>
               <th className="px-4 py-3 font-semibold text-center w-20">추천</th>
               <th className="px-4 py-3 font-semibold text-center w-20">상태</th>
-              <th className="px-4 py-3 font-semibold text-center w-32">관리</th>
+              <th className="px-4 py-3 font-semibold text-center w-52">관리</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -1182,6 +1185,7 @@ function TipsTable({ data, filter, onEdit, onDelete, onCreate }: { data: Managed
                 </td>
                 <td className="px-4 py-4 text-center">
                   <div className="flex items-center justify-center gap-1.5">
+                    <button type="button" onClick={() => setCopyTip(row)} aria-label={`${row.title} 블로그 복사`} className="border border-blue-200 bg-blue-50 text-blue-700 px-2.5 py-1 rounded-sm text-[11px] font-bold hover:bg-blue-100 transition-colors">블로그 복사</button>
                     <button onClick={() => onEdit(row)} className="border border-gray-300 bg-white text-gray-600 px-2.5 py-1 rounded-sm text-[11px] font-bold hover:bg-gray-50 transition-colors">수정</button>
                     <button onClick={() => { if(confirm('삭제하시겠습니까?')) onDelete(row.id) }} className="bg-[#dc2626] text-white px-2.5 py-1 rounded-sm text-[11px] font-bold hover:bg-red-700 transition-colors">삭제</button>
                   </div>

@@ -8,6 +8,7 @@
     "acquire-source-tips": "tsx ./src/acquire-source-tips.ts",
     "upload-tip-covers": "tsx ./src/upload-tip-covers.ts",
     "apply-tip-cover-thumbnails": "tsx ./src/apply-tip-cover-thumbnails.ts",
+    "test-tip-blog-copy": "node --test ./src/test-tip-blog-copy.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
@@ -17,6 +18,7 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
+    "jsdom": "^30.1.3",
     "tsx": "catalog:"
   }
 }

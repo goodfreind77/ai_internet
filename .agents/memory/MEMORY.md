@@ -6,3 +6,4 @@
 - [Article-specific imagery](article-specific-imagery.md) — Tip covers must match each article individually; shared category images are only a fallback.
 - [GCS download cancellation](gcs-download-cancellation.md) — Browser-aborted image loads can crash Node 24 through a GCS SDK pipeline race; test cancellation, not just successful downloads.
 - [Statistics target confirmation](statistics-target-confirmation.md) — Match dated post references to the correct content section before changing view counts.
+- [Blog republishing](blog-republishing.md) — Tip exports need formatted text and usable images; preserve image-copy and file-download alternatives.

@@ -58,3 +58,6 @@ channel = "stable-25_05"
 
 [userenv.shared]
 ADMIN_PASSWORD = "spam3800"
+
+[objectStorage]
+defaultBucketID = "replit-objstore-dc7b5b52-067c-45c9-bb8e-a51fbeb1853e"

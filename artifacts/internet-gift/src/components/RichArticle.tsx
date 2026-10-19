@@ -26,16 +26,16 @@ function ensureHook() {
   });
 }
 
-export function sanitizeTipHtml(html: string): string {
+export function sanitizeTipHtml(html: string, { allowImages = false }: { allowImages?: boolean } = {}): string {
   ensureHook();
   return DOMPurify.sanitize(html.slice(RICH_MARKER.length), {
-    ALLOWED_TAGS,
-    ALLOWED_ATTR: ['href', 'colspan', 'rowspan', 'target', 'rel'],
+    ALLOWED_TAGS: allowImages ? [...ALLOWED_TAGS, 'img'] : ALLOWED_TAGS,
+    ALLOWED_ATTR: ['href', 'colspan', 'rowspan', 'target', 'rel', ...(allowImages ? ['src', 'alt', 'width', 'height'] : [])],
     ALLOW_DATA_ATTR: false,
     ALLOW_ARIA_ATTR: false,
     ALLOWED_URI_REGEXP: /^(?:https?:|tel:|\/(?!\/)|#)/i,
-    FORBID_TAGS: ['img', 'picture', 'source', 'iframe', 'script', 'style', 'svg', 'video', 'audio', 'object', 'embed', 'form', 'input', 'link', 'meta'],
-    FORBID_ATTR: ['style', 'srcset', 'src', 'class', 'id'],
+    FORBID_TAGS: [...(allowImages ? [] : ['img']), 'picture', 'source', 'iframe', 'script', 'style', 'svg', 'video', 'audio', 'object', 'embed', 'form', 'input', 'link', 'meta'],
+    FORBID_ATTR: ['style', 'srcset', 'class', 'id', ...(allowImages ? [] : ['src'])],
   });
 }
 
